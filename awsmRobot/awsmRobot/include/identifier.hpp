@@ -13,4 +13,10 @@
 #include <iostream>
 using namespace std;
 
+class Identifier {
+    
+    
+    
+};
+
 #endif /* identifier_hpp */
