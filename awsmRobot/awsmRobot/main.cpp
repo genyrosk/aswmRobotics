@@ -7,15 +7,24 @@
 //
 
 #include <iostream>
+#include "brain.hpp"
+#include "mechanical.hpp"
+#include "line_follower.hpp"
+#include "navigator.hpp"
+using namespace std;
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    std::cout << "Hello, World!\n";
+    cout << "Hello, World!\n";
+    
+    Brain brain;
+    
+    cout << brain.status << endl;
+    brain.status_check();
+    
     return 0;
     
-}
-
-
-class brain {
-    public
 };
+
+
+
