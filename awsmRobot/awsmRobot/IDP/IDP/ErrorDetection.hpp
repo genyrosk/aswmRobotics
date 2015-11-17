@@ -10,14 +10,19 @@
 #define ErrorDetection_hpp
 
 #include <stdio.h>
+#include <stack>
+#include "Command.hpp"
 using namespace std;
 
 class ErrorDetection {
 public:
     
     int status;
+    time_t time_switched_to_online;
+    stack<Command> command_stack;
     
     void status_check();
+    time_t check_time();
     
 };
 

@@ -14,6 +14,7 @@
 		163A790A1BFA068C00A95CFF /* navigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A79051BFA068C00A95CFF /* navigator.cpp */; };
 		163A790C1BFA06B900A95CFF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A790B1BFA06B900A95CFF /* main.cpp */; };
 		163A790F1BFA06EC00A95CFF /* ErrorDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */; };
+		16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16AFCA1E1BFB3F62000A3338 /* Command.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +44,8 @@
 		163A790B1BFA06B900A95CFF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorDetection.cpp; sourceTree = "<group>"; };
 		163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ErrorDetection.hpp; sourceTree = "<group>"; };
+		16AFCA1E1BFB3F62000A3338 /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
+		16AFCA1F1BFB3F62000A3338 /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Command.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +91,8 @@
 				163A79001BFA068400A95CFF /* navigator.hpp */,
 				163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */,
 				163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */,
+				16AFCA1E1BFB3F62000A3338 /* Command.cpp */,
+				16AFCA1F1BFB3F62000A3338 /* Command.hpp */,
 			);
 			path = IDP;
 			sourceTree = "<group>";
@@ -151,6 +156,7 @@
 				163A790F1BFA06EC00A95CFF /* ErrorDetection.cpp in Sources */,
 				163A79061BFA068C00A95CFF /* brain.cpp in Sources */,
 				163A790A1BFA068C00A95CFF /* navigator.cpp in Sources */,
+				16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */,
 				163A790C1BFA06B900A95CFF /* main.cpp in Sources */,
 				163A79091BFA068C00A95CFF /* mechanical.cpp in Sources */,
 				163A79071BFA068C00A95CFF /* identifier.cpp in Sources */,
