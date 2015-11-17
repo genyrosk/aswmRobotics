@@ -15,6 +15,7 @@
 		163A790C1BFA06B900A95CFF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A790B1BFA06B900A95CFF /* main.cpp */; };
 		163A790F1BFA06EC00A95CFF /* ErrorDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */; };
 		16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16AFCA1E1BFB3F62000A3338 /* Command.cpp */; };
+		16E0D2D91BFB8AEE00236833 /* peakdetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +47,8 @@
 		163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ErrorDetection.hpp; sourceTree = "<group>"; };
 		16AFCA1E1BFB3F62000A3338 /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
 		16AFCA1F1BFB3F62000A3338 /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Command.hpp; sourceTree = "<group>"; };
+		16E0D2D71BFB8AE600236833 /* peakdetection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = peakdetection.hpp; sourceTree = "<group>"; };
+		16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = peakdetection.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +94,8 @@
 				163A79001BFA068400A95CFF /* navigator.hpp */,
 				163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */,
 				163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */,
+				16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */,
+				16E0D2D71BFB8AE600236833 /* peakdetection.hpp */,
 				16AFCA1E1BFB3F62000A3338 /* Command.cpp */,
 				16AFCA1F1BFB3F62000A3338 /* Command.hpp */,
 			);
@@ -159,6 +164,7 @@
 				16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */,
 				163A790C1BFA06B900A95CFF /* main.cpp in Sources */,
 				163A79091BFA068C00A95CFF /* mechanical.cpp in Sources */,
+				16E0D2D91BFB8AEE00236833 /* peakdetection.cpp in Sources */,
 				163A79071BFA068C00A95CFF /* identifier.cpp in Sources */,
 				163A79081BFA068C00A95CFF /* line_follower.cpp in Sources */,
 			);
