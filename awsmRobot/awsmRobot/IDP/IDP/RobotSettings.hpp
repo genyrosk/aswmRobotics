@@ -16,6 +16,7 @@
 class RobotSettings{
 public:
     RobotSettings();
+    ~RobotSettings();
     
     long start_time;
     int n_crackers_delivered;

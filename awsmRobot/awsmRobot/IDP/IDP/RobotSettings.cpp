@@ -18,6 +18,10 @@ RobotSettings::RobotSettings(){
     ldr_std_deviation=0;
 }
 
+RobotSettings::~RobotSettings(){
+    save();
+}
+
 int RobotSettings::save(){
     XMLDocument xmlDoc;
     xmlDoc.InsertFirstChild(xmlDoc.NewDeclaration());

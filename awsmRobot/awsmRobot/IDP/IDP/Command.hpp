@@ -18,7 +18,7 @@ public:
     int command_type;
     int speed;
     time_t start_time;
-    time_t elapsed_time;
+    double elapsed_time;
     
     void set_elapsed_time();
     void reverse_command();

@@ -11,6 +11,5 @@
 #include <time.h>
 
 void Command::set_elapsed_time(){
-    time_t endTime;
-    time(&endTime);
+    elapsed_time = difftime(start_time, time(NULL));
 }

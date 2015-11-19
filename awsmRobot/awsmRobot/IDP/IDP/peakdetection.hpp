@@ -26,7 +26,7 @@ public:
     void reset_max_values();
     
 private:
-    double mean, stdDeviation, max, maxMean, reading1, reading2, nStdDeviations, peakDetectDelay;
+    double mean, stdDeviation, maxMean, reading1, reading2, nStdDeviations, peakDetectDelay;
     int readingLag, nReadings;
     time_t lastPeakDetected;
     

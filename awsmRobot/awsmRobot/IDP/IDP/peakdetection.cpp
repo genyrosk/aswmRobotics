@@ -22,7 +22,6 @@ PeakDetection::PeakDetection(){
     
     mean = 0.0;
     stdDeviation = 0.0;
-    max = 0.0;
     maxMean = 0.0;
     reading1 = 0.0;
     reading2 = 0.0;
@@ -31,16 +30,17 @@ PeakDetection::PeakDetection(){
 void PeakDetection::load_calibration_data(double loadedMean, double loadedStdDeviation){
     mean = loadedMean;
     stdDeviation = loadedStdDeviation;
+    nReadings = readingLag;
 }
 
 void PeakDetection::reset_max_values(){
-    max = 0;
     maxMean = 0;
 }
 
 int PeakDetection::add_data_point(double dataPoint){
     cout << "Adding data point to PeakDetectionClass = " << dataPoint << endl;
     
+    double currentMean = maxMean = (dataPoint + reading1 + reading2)/3;
     reading2 = reading1;
     reading1 = dataPoint;
     
@@ -69,9 +69,8 @@ int PeakDetection::add_data_point(double dataPoint){
 			//Checking if the last peak was detected a minimum time ago
 			if(difftime(lastPeakDetected, time(NULL)) > peakDetectDelay){
 				cout << "Peak detected! Value = " << dataPoint << endl;
-				if(dataPoint > max){
-					max = dataPoint;
-					maxMean = (max + reading1 + reading2)/3;
+				if(currentMean > maxMean){
+                    maxMean = currentMean;
 				}
 				//Return 3 to indicate that a peak has been detected
 				return 3;

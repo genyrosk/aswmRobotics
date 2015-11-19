@@ -27,8 +27,22 @@ public:
 class Motors {
 public:
     int active = 0;
+    void set_motor_speed(int motor, int speed);
+    int get_motor_speed(int motor);
+    void set_ramp_time(int ramp_time);
 };
 
+class MicrocontrollerInterface {
+public:
+    bool write(int output_byte);
+    int read(int port_activation_byte);
+};
 
+class AnalogueInterface{
+public:
+    float readDistanceDetector();
+    float readLDRDetector();
+    float readTorque();
+};
 
 #endif /* mechanical_hpp */
