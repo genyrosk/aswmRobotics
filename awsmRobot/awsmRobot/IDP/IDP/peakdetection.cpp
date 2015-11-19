@@ -7,6 +7,7 @@
 //
 
 #include "peakdetection.hpp"
+#include  <cmath>
 using namespace std;
 
 // declare class instances here (needed in order to access their methods and properties
@@ -28,7 +29,7 @@ PeakDetection::PeakDetection(){
 }
 
 int PeakDetection::add_data_point(double dataPoint){
-    cout << "Adding data point to PeakDetectionClass = " << data_point << endl;
+    cout << "Adding data point to PeakDetectionClass = " << dataPoint << endl;
     
     reading2 = reading1;
     reading1 = dataPoint;
@@ -47,7 +48,7 @@ int PeakDetection::add_data_point(double dataPoint){
 		}
 		
 		//Process for dealing with background readings
-		if(!(abs(data_point - mean) > nStdDeviations * stdDeviation)){
+		if(!(abs(dataPoint - mean) > nStdDeviations * stdDeviation)){
 			update_mean_stdDeviation(dataPoint);
 			//Return 2 indicates that a background reading has been taken
 			return 2;
@@ -79,9 +80,9 @@ double PeakDetection::get_max_reading(){
 
 void PeakDetection::update_mean_stdDeviation(double dataPoint){
 	//Updating estimate of mean, weighting the value based compared to previous readings (note this is an unbiased estimator)
-		mean = (mean * nReadings + dataPoint)/(nReadings+1);
-		//Updating the estimate of the standard deviation
-		stdDeviation = sqrt((((nReadings-1) * stdDeviation * stdDeviation + nReadings * mean * mean + dataPoint * dataPoint) - mean * mean * (nReadings + 1))/nReadings);
+    mean = (mean * nReadings + dataPoint)/(nReadings+1);
+    //Updating the estimate of the standard deviation
+    stdDeviation = sqrt((((nReadings-1) * stdDeviation * stdDeviation + nReadings * mean * mean + dataPoint * dataPoint) - mean * mean * (nReadings + 1))/nReadings);
 		nReadings++;
 }
 // modify PeakDetection class methods

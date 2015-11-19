@@ -10,7 +10,7 @@
 #define Command_hpp
 
 #include <stdio.h>
-using namespace std;
+#include <time.h>
 
 class Command {
 public:

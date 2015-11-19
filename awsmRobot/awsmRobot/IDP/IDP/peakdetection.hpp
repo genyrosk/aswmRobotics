@@ -20,7 +20,7 @@ class PeakDetection {
 public:
     PeakDetection();
 
-    int add_data_point();
+    int add_data_point(double reading);
     double get_max_reading();
     
 private:

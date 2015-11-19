@@ -11,6 +11,7 @@
 #include "mechanical.hpp"
 #include "line_follower.hpp"
 #include "navigator.hpp"
+#include "RobotSettings.hpp"
 using namespace std;
 
 int main(int argc, const char * argv[]) {
@@ -36,8 +37,20 @@ int main(int argc, const char * argv[]) {
     cout << "path status:" << lineFollower.path_status << endl;
     cout << "path command:" << lineFollower.command << endl;
     
+    RobotSettings rSettings = RobotSettings();
+    if(rSettings.load() == 0){
+        cout << "Loaded previous settings successfully" << endl;
+    }
+    else{
+        cout << "Failed to load previous settings" << endl;
+    }
     
-    
+    if(rSettings.save() == 0){
+        cout << "Saved settings successfully" << endl;
+    }
+    else{
+        cout << "Failed to save settings" << endl;
+    }
     return 0;
 };
 

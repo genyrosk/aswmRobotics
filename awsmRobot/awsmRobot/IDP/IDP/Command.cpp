@@ -7,8 +7,10 @@
 //
 
 #include "Command.hpp"
-using namespace std;
+#include <stdio.h>
+#include <time.h>
 
-Command::set_elapsed_time(){
-    std::time_t endTime = time();
+void Command::set_elapsed_time(){
+    time_t endTime;
+    time(&endTime);
 }

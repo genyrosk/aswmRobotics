@@ -14,6 +14,8 @@
 		163A790A1BFA068C00A95CFF /* navigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A79051BFA068C00A95CFF /* navigator.cpp */; };
 		163A790C1BFA06B900A95CFF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A790B1BFA06B900A95CFF /* main.cpp */; };
 		163A790F1BFA06EC00A95CFF /* ErrorDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */; };
+		16413E171BFE1723002A3447 /* RobotSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16413E151BFE1723002A3447 /* RobotSettings.cpp */; };
+		16413E1D1BFE1C04002A3447 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16413E1B1BFE1C04002A3447 /* tinyxml2.cpp */; };
 		16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16AFCA1E1BFB3F62000A3338 /* Command.cpp */; };
 		16E0D2D91BFB8AEE00236833 /* peakdetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */; };
 /* End PBXBuildFile section */
@@ -45,6 +47,10 @@
 		163A790B1BFA06B900A95CFF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorDetection.cpp; sourceTree = "<group>"; };
 		163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ErrorDetection.hpp; sourceTree = "<group>"; };
+		16413E151BFE1723002A3447 /* RobotSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RobotSettings.cpp; sourceTree = "<group>"; };
+		16413E161BFE1723002A3447 /* RobotSettings.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RobotSettings.hpp; sourceTree = "<group>"; };
+		16413E1B1BFE1C04002A3447 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2.cpp; sourceTree = "<group>"; };
+		16413E1C1BFE1C04002A3447 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		16AFCA1E1BFB3F62000A3338 /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
 		16AFCA1F1BFB3F62000A3338 /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Command.hpp; sourceTree = "<group>"; };
 		16E0D2D71BFB8AE600236833 /* peakdetection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = peakdetection.hpp; sourceTree = "<group>"; };
@@ -65,6 +71,8 @@
 		163A78E91BFA05FB00A95CFF = {
 			isa = PBXGroup;
 			children = (
+				16413E1B1BFE1C04002A3447 /* tinyxml2.cpp */,
+				16413E1C1BFE1C04002A3447 /* tinyxml2.h */,
 				163A790B1BFA06B900A95CFF /* main.cpp */,
 				163A78F41BFA05FB00A95CFF /* IDP */,
 				163A78F31BFA05FB00A95CFF /* Products */,
@@ -98,6 +106,8 @@
 				16E0D2D71BFB8AE600236833 /* peakdetection.hpp */,
 				16AFCA1E1BFB3F62000A3338 /* Command.cpp */,
 				16AFCA1F1BFB3F62000A3338 /* Command.hpp */,
+				16413E151BFE1723002A3447 /* RobotSettings.cpp */,
+				16413E161BFE1723002A3447 /* RobotSettings.hpp */,
 			);
 			path = IDP;
 			sourceTree = "<group>";
@@ -161,6 +171,8 @@
 				163A790F1BFA06EC00A95CFF /* ErrorDetection.cpp in Sources */,
 				163A79061BFA068C00A95CFF /* brain.cpp in Sources */,
 				163A790A1BFA068C00A95CFF /* navigator.cpp in Sources */,
+				16413E1D1BFE1C04002A3447 /* tinyxml2.cpp in Sources */,
+				16413E171BFE1723002A3447 /* RobotSettings.cpp in Sources */,
 				16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */,
 				163A790C1BFA06B900A95CFF /* main.cpp in Sources */,
 				163A79091BFA068C00A95CFF /* mechanical.cpp in Sources */,
