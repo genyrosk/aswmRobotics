@@ -22,6 +22,8 @@ public:
 
     int add_data_point(double reading);
     double get_max_reading();
+    void load_calibration_data(double loadedMean, double loadedStdDeviation);
+    void reset_max_values();
     
 private:
     double mean, stdDeviation, max, maxMean, reading1, reading2, nStdDeviations, peakDetectDelay;

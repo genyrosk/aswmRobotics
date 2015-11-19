@@ -20,9 +20,10 @@ RobotSettings::RobotSettings(){
 
 int RobotSettings::save(){
     XMLDocument xmlDoc;
+    xmlDoc.InsertFirstChild(xmlDoc.NewDeclaration());
     
     XMLNode *pRoot = xmlDoc.NewElement("Root");
-    xmlDoc.InsertFirstChild(pRoot);
+    xmlDoc.InsertEndChild(pRoot);
     
     XMLElement *pTimeStarted = xmlDoc.NewElement("start_time");
     pTimeStarted->SetText(start_time);

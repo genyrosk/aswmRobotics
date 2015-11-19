@@ -28,6 +28,16 @@ PeakDetection::PeakDetection(){
     reading2 = 0.0;
 }
 
+void PeakDetection::load_calibration_data(double loadedMean, double loadedStdDeviation){
+    mean = loadedMean;
+    stdDeviation = loadedStdDeviation;
+}
+
+void PeakDetection::reset_max_values(){
+    max = 0;
+    maxMean = 0;
+}
+
 int PeakDetection::add_data_point(double dataPoint){
     cout << "Adding data point to PeakDetectionClass = " << dataPoint << endl;
     
@@ -43,7 +53,7 @@ int PeakDetection::add_data_point(double dataPoint){
 	}
 	//Enough readings have now been taken to distinguish peaks from background readings
 	else{
-		if(nReadings == 10){
+		if(nReadings == readingLag){
 			cout << "Calibration complete" << endl;
 		}
 		
