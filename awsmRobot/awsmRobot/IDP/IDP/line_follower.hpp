@@ -10,12 +10,15 @@
 #define line_follower_hpp
 
 #include <stdio.h>
+#include <time.h>
 #include <iostream>
 using namespace std;
 
 class LineFollower {
 public:
     string get_path_status(int ir_sensor_output);                        // path decision making
+    int current_status;
+    time_t time_on_line;
 };
 
 
