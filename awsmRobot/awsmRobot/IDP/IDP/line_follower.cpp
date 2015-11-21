@@ -13,8 +13,7 @@ using namespace std;
 
 // ------
 // ------
-//TODO: Change the function of this method to do something more useful, remove return string statements
-string LineFollower::get_path_status(int sensor_output){
+void LineFollower::get_path_status(int sensor_output){
     
     //Only interested in bits 0-2
     int ir_sensor_output = sensor_output bitand 0x07;
@@ -22,42 +21,39 @@ string LineFollower::get_path_status(int sensor_output){
     //Note bit is high when black detected, low when white detected
     switch (ir_sensor_output) {
         case 0x01:
+            //slightly too far left
             current_status = 0x01;
-            return "slightly too far left";
-            
         case 0x02:
+            // we're fucked...
             current_status = 0x02;
-            return "we're fucked..." ;
-            
         case 0x03:
+            // too far left
             current_status = 0x03;
-            return "too far left" ;
-            
         case 0x04:
+            // slightly too far right
             current_status = 0x04;
-            return "slightly too far right";
-
         case 0x05:
+            // perfect
             current_status = 0x05;
-            return "perfect";
-
         case 0x06:
+            // too far right
             current_status = 0x06;
-            return "too far right";
-
         case 0x07:
+            // lost line
             current_status = 0x07;
-            return "lost line";
-        
         default:
             break;
     }
+}
+
+bool LineFollower::on_junction(int sensor_output){
     
-    //Has a junction been detected?
+    //Only interested in bit 3
     int junction_status = sensor_output bitand 0x08;
     if(junction_status == 0x08){
-        current_status = 0x08;
-        return "junction sensed";
+        return false;
     }
-    return "invalid";
+    else{
+        return true;
+    }
 }

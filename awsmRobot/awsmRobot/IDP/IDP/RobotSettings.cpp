@@ -62,7 +62,7 @@ int RobotSettings::load(){
     }
     
     XMLNode * pRoot = xmlDoc.FirstChild();
-    if (pRoot == nullptr)
+    if (pRoot == 0)
     {
         return XML_ERROR_FILE_READ_ERROR;
     }
@@ -72,7 +72,7 @@ int RobotSettings::load(){
     XMLElement * pReturnBonus = pRoot->FirstChildElement("returned_start_box_bonus");
     XMLElement * pLdrMean = pRoot->FirstChildElement("ldr_mean");
     XMLElement * pLdrStdDeviation = pRoot->FirstChildElement("ldr_std_deviation");
-    if (pTimeStarted == nullptr || pNCrackers == nullptr || pReturnBonus == nullptr || pLdrMean == nullptr || pLdrStdDeviation == nullptr)
+    if (pTimeStarted == 0 || pNCrackers == 0 || pReturnBonus == 0 || pLdrMean == 0 || pLdrStdDeviation == 0)
     {
         return XML_ERROR_PARSING_ELEMENT;
     }

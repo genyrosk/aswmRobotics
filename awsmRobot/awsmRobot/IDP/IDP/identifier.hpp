@@ -11,11 +11,21 @@
 
 #include <stdio.h>
 #include <iostream>
+#include "peakdetection.hpp"
+#include "mechanical.hpp"
+#include "cracker.hpp"
 using namespace std;
 
 class Identifier {
+public:
+    Identifier();
     
+    enum { maxLimit = 3 };
+    Cracker crackers[maxLimit];
     
+private:
+    PeakDetection peak_detector;
+    AnalogueInterface analogue_interface;
     
 };
 

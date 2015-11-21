@@ -14,35 +14,36 @@
 using namespace std;
 
 
-class Actuator {
+class interface{
 public:
-    int active = 0;
+    robot_link rlink;
+};
+
+class Actuator : public interface {
+public:
 };
 
 class Collector {
 public:
-    int active = 0;
 };
 
-class Motors {
+class Motors : public interface {
 public:
-    int active = 0;
+    void set_drive_motor_speed(int left, int right);
     void set_motor_speed(int motor, int speed);
     int get_motor_speed(int motor);
     void set_ramp_time(int ramp_time);
 };
 
-class MicrocontrollerInterface {
+class MicrocontrollerInterface : public interface {
 public:
     bool write(int output_byte);
     int read(int port_activation_byte);
 };
 
-class AnalogueInterface{
+class AnalogueInterface : public interface {
 public:
-    float readDistanceDetector();
-    float readLDRDetector();
-    float readTorque();
+    float readADC(int port);
 };
 
 #endif /* mechanical_hpp */

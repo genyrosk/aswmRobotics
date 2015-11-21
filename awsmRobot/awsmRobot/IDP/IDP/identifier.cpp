@@ -8,3 +8,9 @@
 
 #include "identifier.hpp"
 using namespace std;
+
+Identifier::Identifier(){
+    for (int i = 0; i<3; i++) {
+        crackers[i] = Cracker(120*i);
+    }
+}

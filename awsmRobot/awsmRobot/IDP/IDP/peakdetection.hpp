@@ -15,15 +15,27 @@
 using namespace std;
 
 
-// declare Brain class and its properties + methods
+/*!
+ Concept:
+ This class is used to analyse the output from the LDR sensor, and detect peaks in the signal which would indicate a reading being taken. By identifying the value of the peak the cracker colour can be identified.
+ */
+
+
+// declare PeakDetection class and its properties + methods
 class PeakDetection {
 public:
     PeakDetection();
+    //TODO: Implement destructor which saves mean and std. deviation to robotsettings
+    ~PeakDetection();
 
+    ///As readings are taken from the ADC port, the function add_data_point should be called with an argument of the reading. This function will return an int to indicate what has been detected (1 for calibration, 2 for background reading, 3 for peak).
     int add_data_point(double reading);
+    
+    ///After a peak has been detected and the signal returned to normal levels, this function should be called to get the max value.
     double get_max_reading();
+    
+    ///If calibration readings have already been taken they can be loaded into the class using the load_calibration_data public function.
     void load_calibration_data(double loadedMean, double loadedStdDeviation);
-    void reset_max_values();
     
 private:
     double mean, stdDeviation, maxMean, reading1, reading2, nStdDeviations, peakDetectDelay;
@@ -31,6 +43,7 @@ private:
     time_t lastPeakDetected;
     
     void update_mean_stdDeviation(double dataPoint);
+    void reset_max_values();
 };
 
 #endif /* peakdetection_hpp */

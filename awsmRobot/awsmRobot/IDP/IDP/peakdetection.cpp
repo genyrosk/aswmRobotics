@@ -71,6 +71,7 @@ int PeakDetection::add_data_point(double dataPoint){
 				cout << "Peak detected! Value = " << dataPoint << endl;
 				if(currentMean > maxMean){
                     maxMean = currentMean;
+                    time(&lastPeakDetected);
 				}
 				//Return 3 to indicate that a peak has been detected
 				return 3;
@@ -88,8 +89,10 @@ double PeakDetection::get_max_reading(){
 }
 
 void PeakDetection::update_mean_stdDeviation(double dataPoint){
+    
 	//Updating estimate of mean, weighting the value based compared to previous readings (note this is an unbiased estimator)
     mean = (mean * nReadings + dataPoint)/(nReadings+1);
+    
     //Updating the estimate of the standard deviation
     stdDeviation = sqrt((((nReadings-1) * stdDeviation * stdDeviation + nReadings * mean * mean + dataPoint * dataPoint) - mean * mean * (nReadings + 1))/nReadings);
 		nReadings++;

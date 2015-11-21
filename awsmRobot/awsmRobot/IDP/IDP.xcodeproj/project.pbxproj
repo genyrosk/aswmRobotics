@@ -17,6 +17,7 @@
 		16413E171BFE1723002A3447 /* RobotSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16413E151BFE1723002A3447 /* RobotSettings.cpp */; };
 		16413E1D1BFE1C04002A3447 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16413E1B1BFE1C04002A3447 /* tinyxml2.cpp */; };
 		16466C351BFE96CF00B7C355 /* torqueanalysis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16466C331BFE96CF00B7C355 /* torqueanalysis.cpp */; };
+		166C36E31C00BB22005506C6 /* cracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 166C36E11C00BB22005506C6 /* cracker.cpp */; };
 		16AFCA201BFB3F62000A3338 /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16AFCA1E1BFB3F62000A3338 /* Command.cpp */; };
 		16E0D2D91BFB8AEE00236833 /* peakdetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,8 @@
 		16413E1C1BFE1C04002A3447 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		16466C331BFE96CF00B7C355 /* torqueanalysis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = torqueanalysis.cpp; path = ../torqueanalysis.cpp; sourceTree = "<group>"; };
 		16466C341BFE96CF00B7C355 /* torqueanalysis.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = torqueanalysis.hpp; path = ../torqueanalysis.hpp; sourceTree = "<group>"; };
+		166C36E11C00BB22005506C6 /* cracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cracker.cpp; sourceTree = "<group>"; };
+		166C36E21C00BB22005506C6 /* cracker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cracker.hpp; sourceTree = "<group>"; };
 		16AFCA1E1BFB3F62000A3338 /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
 		16AFCA1F1BFB3F62000A3338 /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Command.hpp; sourceTree = "<group>"; };
 		16E0D2D71BFB8AE600236833 /* peakdetection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = peakdetection.hpp; sourceTree = "<group>"; };
@@ -74,10 +77,10 @@
 		163A78E91BFA05FB00A95CFF = {
 			isa = PBXGroup;
 			children = (
-				16413E1B1BFE1C04002A3447 /* tinyxml2.cpp */,
-				16413E1C1BFE1C04002A3447 /* tinyxml2.h */,
+				166C36E01C00B770005506C6 /* Libraries */,
 				163A790B1BFA06B900A95CFF /* main.cpp */,
-				163A78F41BFA05FB00A95CFF /* IDP */,
+				166C36DF1C00B74E005506C6 /* Src */,
+				166C36DE1C00B733005506C6 /* Headers */,
 				163A78F31BFA05FB00A95CFF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,31 +93,51 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		163A78F41BFA05FB00A95CFF /* IDP */ = {
+		166C36DE1C00B733005506C6 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				16466C331BFE96CF00B7C355 /* torqueanalysis.cpp */,
 				16466C341BFE96CF00B7C355 /* torqueanalysis.hpp */,
+				163A78FC1BFA068400A95CFF /* brain.hpp */,
+				163A78FD1BFA068400A95CFF /* identifier.hpp */,
+				166C36E21C00BB22005506C6 /* cracker.hpp */,
+				163A78FE1BFA068400A95CFF /* line_follower.hpp */,
+				163A78FF1BFA068400A95CFF /* mechanical.hpp */,
+				163A79001BFA068400A95CFF /* navigator.hpp */,
+				163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */,
+				16E0D2D71BFB8AE600236833 /* peakdetection.hpp */,
+				16AFCA1F1BFB3F62000A3338 /* Command.hpp */,
+				16413E161BFE1723002A3447 /* RobotSettings.hpp */,
+			);
+			name = Headers;
+			path = IDP;
+			sourceTree = "<group>";
+		};
+		166C36DF1C00B74E005506C6 /* Src */ = {
+			isa = PBXGroup;
+			children = (
+				163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */,
+				16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */,
+				16AFCA1E1BFB3F62000A3338 /* Command.cpp */,
+				16466C331BFE96CF00B7C355 /* torqueanalysis.cpp */,
 				163A79011BFA068C00A95CFF /* brain.cpp */,
 				163A79021BFA068C00A95CFF /* identifier.cpp */,
 				163A79031BFA068C00A95CFF /* line_follower.cpp */,
 				163A79041BFA068C00A95CFF /* mechanical.cpp */,
-				163A79051BFA068C00A95CFF /* navigator.cpp */,
-				163A78FC1BFA068400A95CFF /* brain.hpp */,
-				163A78FD1BFA068400A95CFF /* identifier.hpp */,
-				163A78FE1BFA068400A95CFF /* line_follower.hpp */,
-				163A78FF1BFA068400A95CFF /* mechanical.hpp */,
-				163A79001BFA068400A95CFF /* navigator.hpp */,
-				163A790D1BFA06EC00A95CFF /* ErrorDetection.cpp */,
-				163A790E1BFA06EC00A95CFF /* ErrorDetection.hpp */,
-				16E0D2D81BFB8AEE00236833 /* peakdetection.cpp */,
-				16E0D2D71BFB8AE600236833 /* peakdetection.hpp */,
-				16AFCA1E1BFB3F62000A3338 /* Command.cpp */,
-				16AFCA1F1BFB3F62000A3338 /* Command.hpp */,
 				16413E151BFE1723002A3447 /* RobotSettings.cpp */,
-				16413E161BFE1723002A3447 /* RobotSettings.hpp */,
+				163A79051BFA068C00A95CFF /* navigator.cpp */,
+				166C36E11C00BB22005506C6 /* cracker.cpp */,
 			);
+			name = Src;
 			path = IDP;
+			sourceTree = "<group>";
+		};
+		166C36E01C00B770005506C6 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				16413E1B1BFE1C04002A3447 /* tinyxml2.cpp */,
+				16413E1C1BFE1C04002A3447 /* tinyxml2.h */,
+			);
+			name = Libraries;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,6 +198,7 @@
 			files = (
 				163A790F1BFA06EC00A95CFF /* ErrorDetection.cpp in Sources */,
 				163A79061BFA068C00A95CFF /* brain.cpp in Sources */,
+				166C36E31C00BB22005506C6 /* cracker.cpp in Sources */,
 				163A790A1BFA068C00A95CFF /* navigator.cpp in Sources */,
 				16413E1D1BFE1C04002A3447 /* tinyxml2.cpp in Sources */,
 				16413E171BFE1723002A3447 /* RobotSettings.cpp in Sources */,

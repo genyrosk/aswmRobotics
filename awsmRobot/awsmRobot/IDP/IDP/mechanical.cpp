@@ -17,24 +17,26 @@ bool MicrocontrollerInterface::write(int output_byte){
 int MicrocontrollerInterface::read(int port_activation_byte){
     //TODO: Error handling
     if(rlink.command (WRITE_PORT_1, port_activation_byte)){
-    return int param = rlink.request(READ_PORT_1);
+    return rlink.request(READ_PORT_1);
     }
 }
 
 
-float AnalogueInterface::readDistanceDetector(){
-    return rlink.request (ADC0);
+float AnalogueInterface::readADC(int port)(){
+    switch(port)
+    {
+        case 0:
+            return rlink.request (ADC0);
+        case 1:
+            return rlink.request (ADC1);
+        case 2:
+            return rlink.request (ADC2);
+            default:
+            return 0.0;
+    }
 }
 
-float AnalogueInterface::readLDRDetector(){
-    return rlink.request (ADC1);
-}
-
-float AnalogueInterface::readTorque(){
-    return rlink.request (ADC2);
-}
-
-void Motors::set_motor_1_speed(int motor, int speed){
+void Motors::set_motor_speed(int motor, int speed){
     switch(motor){
         case 1:
             rlink.command (MOTOR_1_GO, speed);
@@ -66,6 +68,11 @@ int Motors::get_motor_speed(int motor){
             return false;
             break;
     }
+}
+
+void Motors::set_drive_motor_speed(int left, int right){
+    set_motor_speed(1, left);
+    set_motor_speed(2, right);
 }
 
 void Motors::set_ramp_time(int ramp_time){

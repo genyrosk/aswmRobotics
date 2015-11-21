@@ -16,9 +16,12 @@ using namespace std;
 
 class LineFollower {
 public:
-    string get_path_status(int ir_sensor_output);                        // path decision making
+    
     int current_status;
     time_t time_on_line;
+    
+    void get_path_status(int sensor_output);                        // path decision making
+    bool on_junction(int sensor_output);
 };
 
 
