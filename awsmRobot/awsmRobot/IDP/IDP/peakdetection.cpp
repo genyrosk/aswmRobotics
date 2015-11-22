@@ -37,7 +37,7 @@ void PeakDetection::reset_max_values(){
     maxMean = 0;
 }
 
-int PeakDetection::add_data_point(double dataPoint){
+add_data_point_result PeakDetection::add_data_point(double dataPoint){
     cout << "Adding data point to PeakDetectionClass = " << dataPoint << endl;
     
     double currentMean = maxMean = (dataPoint + reading1 + reading2)/3;
@@ -48,8 +48,7 @@ int PeakDetection::add_data_point(double dataPoint){
     if(nReadings < readingLag){
 		cout << "Calibration in progress. " << nReadings << " readings taken" << endl; 
 		update_mean_stdDeviation(dataPoint);
-		//Status returned when setting up
-		return 1;
+        return add_data_point_result::CALIBRATING;
 	}
 	//Enough readings have now been taken to distinguish peaks from background readings
 	else{
@@ -60,8 +59,7 @@ int PeakDetection::add_data_point(double dataPoint){
 		//Process for dealing with background readings
 		if(!(abs(dataPoint - mean) > nStdDeviations * stdDeviation)){
 			update_mean_stdDeviation(dataPoint);
-			//Return 2 indicates that a background reading has been taken
-			return 2;
+            return add_data_point_result::BACKGROUNDREADING;
 		}
 		
 		//This is invoked when a peak has been detected. Note we dont want mean or stdDeviation to be altered from now on
@@ -73,12 +71,11 @@ int PeakDetection::add_data_point(double dataPoint){
                     maxMean = currentMean;
                     time(&lastPeakDetected);
 				}
-				//Return 3 to indicate that a peak has been detected
-				return 3;
+                return add_data_point_result::PEAKREADING;
 			}
 			//If not, noise must've pushed the reading back over the threshold
 			else{
-				return 2;
+                return add_data_point_result::BACKGROUNDREADING;
 			}
 		}
 	}

@@ -11,10 +11,11 @@
 
 #include <stdio.h>
 
-enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
+enum class cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
 
 class Cracker {
 public:
+    Cracker();
     Cracker(float angle);
     
     cracker_type type;
@@ -23,8 +24,9 @@ public:
     int nReadings;
     
     //Red, Black, Wood, White
-    enum { maxLimit = 4 };
-    double type_probabilities[maxLimit];
+    //enum { maxLimit = 4 };
+    const static int max_limit = 4;
+    double type_probabilities[max_limit];
     
     //Returns 1 if cracker has been identified, 0 if not
     int calculate_probabilities(double peak_reading);

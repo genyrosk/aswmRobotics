@@ -20,7 +20,8 @@ class Identifier {
 public:
     Identifier();
     
-    enum { maxLimit = 3 };
+    //enum { maxLimit = 3 };
+    const static int maxLimit = 3;
     Cracker crackers[maxLimit];
     
 private:

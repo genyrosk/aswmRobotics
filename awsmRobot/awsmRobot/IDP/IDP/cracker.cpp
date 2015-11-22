@@ -9,9 +9,19 @@
 #include "cracker.hpp"
 #include <cmath>
 
+Cracker::Cracker(){
+    type = cracker_type::UNKNOWN;
+    angle_from_reference = 0;
+    delivered = false;
+    nReadings = 0;
+    for(int i = 0; i<4; i++){
+        type_probabilities[i] = 0;
+    }
+}
+
 Cracker::Cracker(float angle){
     
-    type = UNKNOWN;
+    type = cracker_type::UNKNOWN;
     angle_from_reference = angle;
     delivered = false;
     nReadings = 0;

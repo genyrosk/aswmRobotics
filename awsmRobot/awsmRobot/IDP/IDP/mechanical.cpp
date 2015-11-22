@@ -19,20 +19,26 @@ int MicrocontrollerInterface::read(int port_activation_byte){
     if(rlink.command (WRITE_PORT_1, port_activation_byte)){
     return rlink.request(READ_PORT_1);
     }
+    else return 0;
 }
 
 
 float AnalogueInterface::readADC(int port)(){
+    float request_output = 0;
+    float max_reading = 255.0;
     switch(port)
     {
         case 0:
-            return rlink.request (ADC0);
+            request_output = (float)rlink.request(request_instruction::ADC0);
+            return request_output/max_reading;
         case 1:
-            return rlink.request (ADC1);
+            request_output = (float)rlink.request(request_instruction::ADC1);
+            return request_output/max_reading;
         case 2:
-            return rlink.request (ADC2);
+            request_output = (float)rlink.request(request_instruction::ADC2);
+            return request_output/max_reading;
             default:
-            return 0.0;
+            return request_output;
     }
 }
 
