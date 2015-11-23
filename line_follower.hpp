@@ -16,12 +16,19 @@ using namespace std;
 
 class LineFollower {
 public:
+
+	LineFollower();
     
     int current_status;
     time_t time_on_line;
+    int speed_right;
+    int speed_left;
     
     void get_path_status(int sensor_output);                        // path decision making
     bool on_junction(int sensor_output);
+    
+    void stay_in_line();
+    
 };
 
 
