@@ -55,8 +55,6 @@
 		16413E1C1BFE1C04002A3447 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		16466C331BFE96CF00B7C355 /* torqueanalysis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = torqueanalysis.cpp; path = ../torqueanalysis.cpp; sourceTree = "<group>"; };
 		16466C341BFE96CF00B7C355 /* torqueanalysis.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = torqueanalysis.hpp; path = ../torqueanalysis.hpp; sourceTree = "<group>"; };
-		164DC8321C0226EA0002EBD5 /* robot_instr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = robot_instr.h; sourceTree = "<group>"; };
-		164DC8331C0226F50002EBD5 /* robot_link.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = robot_link.h; sourceTree = "<group>"; };
 		166C36E11C00BB22005506C6 /* cracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cracker.cpp; sourceTree = "<group>"; };
 		166C36E21C00BB22005506C6 /* cracker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cracker.hpp; sourceTree = "<group>"; };
 		16AFCA1E1BFB3F62000A3338 /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
@@ -98,8 +96,6 @@
 		166C36DE1C00B733005506C6 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				164DC8331C0226F50002EBD5 /* robot_link.h */,
-				164DC8321C0226EA0002EBD5 /* robot_instr.h */,
 				16466C341BFE96CF00B7C355 /* torqueanalysis.hpp */,
 				163A78FC1BFA068400A95CFF /* brain.hpp */,
 				163A78FD1BFA068400A95CFF /* identifier.hpp */,

@@ -23,9 +23,8 @@ public:
     bool delivered;
     int nReadings;
     
-    //Red, Black, Wood, White
-    //enum { maxLimit = 4 };
     const static int max_limit = 4;
+    //Red, Black, Wood, White    
     double type_probabilities[max_limit];
     
     //Returns 1 if cracker has been identified, 0 if not

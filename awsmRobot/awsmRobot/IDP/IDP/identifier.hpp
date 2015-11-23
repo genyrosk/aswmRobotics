@@ -20,9 +20,11 @@ class Identifier {
 public:
     Identifier();
     
-    //enum { maxLimit = 3 };
     const static int maxLimit = 3;
     Cracker crackers[maxLimit];
+    
+    void id_procedure();
+    string read_status;
     
 private:
     PeakDetection peak_detector;

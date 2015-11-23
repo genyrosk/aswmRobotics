@@ -11,13 +11,12 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "robot_link.h"
 using namespace std;
 
 
 class interface{
 public:
-    robot_link rlink;
+    //robot_link rlink;
 };
 
 class Actuator : public interface {
@@ -44,7 +43,7 @@ public:
 
 class AnalogueInterface : public interface {
 public:
-    float readADC(int port);
+    double readADC(int port);
 };
 
 #endif /* mechanical_hpp */

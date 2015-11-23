@@ -16,12 +16,6 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
     
-    //Brain brain;
-    //LineFollower lineFollower;
-    
-    //cout << brain.status << endl;
-    //brain.status_check();
-    
     RobotSettings rSettings = RobotSettings();
     if(rSettings.load() == 0){
         cout << "Loaded previous settings successfully" << endl;
@@ -29,6 +23,9 @@ int main(int argc, const char * argv[]) {
     else{
         cout << "Failed to load previous settings" << endl;
     }
+    
+    Identifier identifier;
+    identifier.id_procedure();
     
     if(rSettings.save() == 0){
         cout << "Saved settings successfully" << endl;
