@@ -18,24 +18,23 @@
 using namespace std;
 
 
+enum class brain_status { move_to_pickup,
+    picking_up,
+    picked,
+    identifying,
+    indentified,
+    dropping,
+    moving_drop,
+};
+
 // declare Brain class and its properties + methods
 class Brain {
 public:
     
-    enum Status : uint16_t {
-        move_to_pickup,
-        picking_up,
-        picked,
-        identifying,
-        indentified,
-        dropping,
-        moving_drop,
-    };
+    brain_status Status;
     
-    int nCrackers = 0;
-    int packed = 0;
-    
-    int status = Status::picked;
+    int nCrackers;
+    int packed;
     
     void status_check();
     

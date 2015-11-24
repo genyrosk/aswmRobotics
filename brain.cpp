@@ -14,11 +14,6 @@ Actuator actuator;
 LineFollower linefollower;
 
 void Brain::status_check(){
-    cout << actuator.active << endl;
-    actuator.active = 1;
-    cout << actuator.active << endl;
-    
-    cout << Brain::status << endl;
     // Brain::status = dropping; // change class status
    
     
