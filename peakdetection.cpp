@@ -8,6 +8,7 @@
 
 #include "peakdetection.hpp"
 #include  <cmath>
+#include  <tuple>
 using namespace std;
 
 // declare class instances here (needed in order to access their methods and properties
@@ -69,14 +70,17 @@ string PeakDetection::add_data_point(double dataPoint){
             hysteresis(true);
             if(currentMean > peakMean){
                 peakMean = currentMean;
+                time(&peakDetectionTime);
             }
             return "PEAKREADING";
 		}
 	}
 }
 
-double PeakDetection::get_max_reading(){
-	return peakMean;
+tuple<time_t,double> PeakDetection::get_max_readings(){
+    tuple<time_t,double> peakReadingData = make_tuple(peakDetectionTime, peakMean);
+    reset_max_values();
+    return peakReadingData;
 }
 
 void PeakDetection::update_mean_stdDeviation(double dataPoint){

@@ -19,6 +19,7 @@ public:
     Pickup();
     
     int perform_pickup();
+    int dropoff(double angle_to_rotate);
     
 private:
     
@@ -30,7 +31,7 @@ private:
     
     bool set_distance_to_shelf(double demanded_distance);
     int set_wheel_speed(double demanded_distance);
-    void update_integral_distance();
+    void update_integral_distance(double demanded_distance);
     bool rotate_wheel(double angle_in_degrees);
     
 };

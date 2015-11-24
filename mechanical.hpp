@@ -11,12 +11,13 @@
 
 #include <stdio.h>
 #include <iostream>
+#include "robot_link.h"
 using namespace std;
 
 
 class interface{
 public:
-    //robot_link rlink;
+    robot_link rlink;
 };
 
 class Actuator : public interface {

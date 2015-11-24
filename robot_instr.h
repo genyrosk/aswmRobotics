@@ -1,6 +1,7 @@
 #ifndef _ROBOT_INSTR_INCLUDED
 #define _ROBOT_INSTR_INCLUDED
-enum command_instruction { MOTOR_1_GO                  = 139,
+enum command_instruction {
+               MOTOR_1_GO                  = 139,
 			   MOTOR_2_GO                  = 140,
 			   BOTH_MOTORS_GO_SAME         = 141,
 			   BOTH_MOTORS_GO_OPPOSITE     = 142,
@@ -19,7 +20,9 @@ enum command_instruction { MOTOR_1_GO                  = 139,
 			   STOP_SELECT                 = 155,
 			   STOP_IF_HIGH                = 156,
 			   STOP_IF_LOW                 = 157,
-			   SET_BAUD_RATE               = 159
+			   SET_BAUD_RATE               = 159,
+               MOTOR_3_GO                  = 168,
+               MOTOR_4_GO                  = 169
 };
 
 enum request_instruction {
@@ -44,7 +47,9 @@ enum request_instruction {
 			   ULTRA_SONIC_1               = 27,
 			   ULTRA_SONIC_2               = 28,
 			   TEST_INSTRUCTION            = 29,
-			   STATUS                      = 31
+			   STATUS                      = 31,
+               MOTOR_3                     = 41,
+               MOTOR_4                     = 42
 };
 
 const unsigned char TEST_INSTRUCTION_RESULT=123;

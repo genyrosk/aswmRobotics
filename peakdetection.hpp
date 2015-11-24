@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <tuple>
 using namespace std;
 
 
@@ -31,7 +32,7 @@ public:
     string add_data_point(double reading);
     
     ///After a peak has been detected and the signal returned to normal levels, this function should be called to get the max value.
-    double get_max_reading();
+    tuple<time_t,double> get_max_readings();
     
     ///If calibration readings have already been taken they can be loaded into the class using the load_calibration_data public function.
     void load_calibration_data(double loadedMean, double loadedStdDeviation);
@@ -40,6 +41,7 @@ public:
     
 private:
     double backgroundMean, backgroundStdDeviation, peakMean, reading1, reading2, nStdDeviations;
+    time_t peakDetectionTime;
     int readingLag, nReadings;
     bool peakBeingDetected;
     

@@ -16,6 +16,7 @@ Identifier::Identifier(){
     
     PeakDetection peak_detector;
     string read_status = "";
+    angle_cracker1_from_detector = 0;
 }
 
 void Identifier::id_procedure(){
@@ -52,12 +53,22 @@ void Identifier::id_procedure(){
                 continue;
             }
             if ( reading_peaks == true && read_status != "PEAKREADING" ) { // i.e. peakdetection has been finished
-                double peak = peak_detector.get_max_reading();
+                tuple<time_t,double> peakReadings = peak_detector.get_max_readings();
+                
+                time_t peakReadingTime = get<0>(peakReadings);
+                double peakReading = get<1>(peakReadings);
+                
+                //TODO: Find out rotation speed.
+                double rotation_speed = 1;
+                
+                double angleTurnedAfterPeak = difftime(time(NULL), peakReadingTime) * rotation_speed;
+                angle_cracker1_from_detector = 120 * i + angleTurnedAfterPeak;
+                
                 cout << "------------------ " << endl;
                 cout << "------------------ " << endl;
                 cout << "------------------ " << endl;
-                cout << "peak detected at : " << peak << endl;
-                crackers[i].calculate_probabilities( peak ); // will assign a cracker_type to our cracker object 
+                cout << "peak detected at : " << peakReading << endl;
+                crackers[i].calculate_probabilities( peakReading ); // will assign a cracker_type to our cracker object
                 break;
             }
             

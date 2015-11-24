@@ -24,7 +24,7 @@ Pickup::Pickup(){
 
 int Pickup::set_wheel_speed(double demand_distance){
     //TODO: Calibrate the tolerance
-    if(abs(distance_from_shelf - demand_distance) < 0.1){
+    if(abs(distance_from_shelf - demand_distance) < 0.5){
         return 0;
     }
     else{
@@ -51,9 +51,9 @@ int Pickup::set_wheel_speed(double demand_distance){
     }
 }
 
-void Pickup::update_integral_distance(){
+void Pickup::update_integral_distance(double demanded_distance){
     double diff_time = difftime(time(NULL), last_reading);
-    integral_distance += (diff_time * distance_from_shelf);
+    integral_distance += (diff_time * (demanded_distance - distance_from_shelf));
 }
 
 bool Pickup::set_distance_to_shelf(double demanded_distance) {
@@ -102,6 +102,15 @@ int Pickup::perform_pickup(){
         }
     }
     actuator_interface->extend();
+    return true;
+}
+
+int Pickup::dropoff(double angle_to_rotate){
+    
+    //TODO: Calibrate dropoff distance
+    int dropoff_distance = 10;
+    set_distance_to_shelf(dropoff_distance);
+    rotate_wheel(angle_to_rotate);
     return true;
 }
 

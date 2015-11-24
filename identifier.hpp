@@ -23,6 +23,8 @@ public:
     const static int maxLimit = 3;
     Cracker crackers[maxLimit];
     
+    double angle_cracker1_from_detector;
+    
     void id_procedure();
     string read_status;
     
