@@ -28,7 +28,8 @@ public:
     
 private:
     PeakDetection peak_detector;
-    AnalogueInterface analogue_interface;
+    AnalogueInterface *analogue_interface;
+    Motors *motors_interface;
     
 };
 

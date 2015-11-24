@@ -85,3 +85,27 @@ using namespace std;
 //void Motors::set_ramp_time(int ramp_time){
 //    rlink.command (RAMP_TIME, ramp_time);
 //}
+
+
+///Returns distance in cm from the distance detector 
+double AnalogueInterface::get_distance(){
+    //TODO: Make call to distance detector to read voltage
+    int DD_return = 0;
+    double m;
+    if(DD_return> 10 && DD_return <= 38){
+        m = 28.42;
+    }
+    else if(DD_return > 38 && DD_return <= 66){
+        m = 24.40;
+    }
+    else if(DD_return > 66 && DD_return <= 118){
+        m = 24.40;
+    }
+    else if(DD_return > 118 && DD_return <= 141){
+        m = 20.00;
+    }
+    else if(DD_return > 141 && DD_return <= 153){
+        m = 12.98;
+    }
+    return m/DD_return;
+}

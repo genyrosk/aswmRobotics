@@ -21,6 +21,8 @@ public:
 
 class Actuator : public interface {
 public:
+    void extend();
+    void retract();
 };
 
 class Collector {
@@ -44,6 +46,7 @@ public:
 class AnalogueInterface : public interface {
 public:
     double readADC(int port);
+    double get_distance();
 };
 
 #endif /* mechanical_hpp */
