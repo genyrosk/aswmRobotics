@@ -2,7 +2,7 @@
 //  line_follower.cpp
 //  awsmRobot
 //
-//  Created by Evgeny Roskach on 15/11/15.
+//  Created by Peter Boothroyd on 15/11/15.
 //  Copyright © 2015 Awsme. All rights reserved.
 //
 
@@ -13,23 +13,19 @@
 #include <time.h>
 using namespace std;
 
-
-/*
 LineFollower::LineFollower(){
-	current_status = 0x04;
-	default_speed = 100;	
+    current_status = 0x02;
+    left_wheel_speed = 100;
     time_on_line = 0;
-}
-*/
-
-LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr){
-	current_status = 0x02;	
-	left_wheel_speed = 100;
-    time_on_line = 0;
+    
     //TODO: Calibrate these gain values
     proportional_gain = 5;
     integral_gain = 5;
     negative_ramp = false;
+}
+
+LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr){
+    LineFollower();
     
     motors_interface = motorsPtr;
     micro_interface = microPtr;
@@ -57,7 +53,9 @@ int LineFollower::follow_line(double distance){
 		if(current_status == 0x08){
 			return true;
 		}
+        
 		right_wheel_speed = static_cast<int>(100 + proportional_error * proportional_gain + integral_error * integral_gain);
+        
 		motors_interface->set_drive_motor_speed(left_wheel_speed, right_wheel_speed);
 		
 		cout << "proportional error = " << proportional_error << " and proportional gain = " << proportional_gain << endl;
@@ -69,7 +67,7 @@ int LineFollower::follow_line(double distance){
 		time_in_ms = diff_ms(currentTime, lastReadingTime);
 		
 		distance_moved += (time_in_ms * currentMeanSpeed ) / (1000 * motors_interface->MAX_SPEED);
-		integral_error += time_in_ms * proportional_error/1000;
+		integral_error += (time_in_ms/1000) * proportional_error;
 	}
 	return false;
 }
@@ -80,8 +78,6 @@ void LineFollower::get_path_status(){
     
     //Only interested in bits 0-2
     int ir_sensor_output = sensor_output bitand 0x07;
-    
-    
     
     //Note bit is high when black detected, low when white detected
     switch (ir_sensor_output) {
@@ -131,10 +127,6 @@ void LineFollower::get_path_status(){
     if(junction_status == 0x08){
         current_status = 0x08;
     }
-}
-
-int LineFollower::diff_ms(timeval t1, timeval t2){
-	return ((t1.tv_sec - t2.tv_sec) * 1000000 + (t1.tv_usec - t2.tv_usec))/ 1000;
 }
 
 

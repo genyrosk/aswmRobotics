@@ -15,17 +15,11 @@ using namespace std;
 #include "torqueanalysis.hpp"
 #include "mechanical.hpp"
 
-//#define ROBOT_NUM  14                        // The id number (see below)
-//robot_link  rlink;                            // datatype for the robot link
-
 // Functions 
 /*
  * */
 void motors_start(int speed);
 void motors_mode(int mode);
-//int connect_remotely();
-//int get_sensor_output();
-//void stay_in_line( int current_status );
 stopwatch watch;
 ostringstream oss;
 
@@ -40,12 +34,14 @@ int main (){
 	if ( idp.connected == false ){
 		return -1;
 	}
-	
+    
+	/*
 	const int bit0 = 0x01;      // ’0000 0001’ individual bits
 	const int bit5 = 0x20;
 	
 	cout << bit0 << endl << bit5 << endl << endl;
-	
+	*/
+    
 	Identifier identifier;
 	//identifier.id_procedure();
 	
@@ -53,8 +49,6 @@ int main (){
 	int current_status = linefollower.current_status;
 	cout << "current status: " << current_status << endl << endl;
 	/*
-	stay_in_line( current_status );
-	
 	
 	int sensor[10] = {0x01,0x04,0x06,0x01,0x02,0x05,0x07,0x01,0x04,0x02};
 	

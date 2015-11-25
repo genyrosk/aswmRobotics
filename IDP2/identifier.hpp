@@ -2,7 +2,7 @@
 //  identifier.hpp
 //  awsmRobot
 //
-//  Created by Evgeny Roskach on 15/11/15.
+//  Created by Peter Boothroyd on 15/11/15.
 //  Copyright © 2015 Awsme. All rights reserved.
 //
 
@@ -19,7 +19,7 @@ using namespace std;
 class Identifier {
 public:
     Identifier();
-    Identifier(Motors * motorsPtr, AnalogueInterface * anaPtr)
+    Identifier(Motors * motorsPtr, AnalogueInterface * anaPtr, MicrocontrollerInterface * microPtr);
     
     const static int maxLimit = 3;
     Cracker crackers[maxLimit];
@@ -33,6 +33,7 @@ private:
     PeakDetection peak_detector;
     AnalogueInterface *analogue_interface;
     Motors *motors_interface;
+    MicrocontrollerInterface *micro_interface
     
 };
 

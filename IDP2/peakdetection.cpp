@@ -71,7 +71,7 @@ string PeakDetection::add_data_point(double dataPoint){
             hysteresis(true);
             if(currentMean > peakMean){
                 peakMean = currentMean;
-                time(&peakDetectionTime);
+                gettimeofday(&peakDetectionTime, NULL);
             }
             return "PEAKREADING";
 		}
@@ -82,7 +82,7 @@ double PeakDetection::get_max_reading(){
     return peakMean;
 }
 
-time_t PeakDetection::get_max_reading_time(){
+timeval PeakDetection::get_max_reading_time(){
     return peakDetectionTime;
 }
 
@@ -105,11 +105,11 @@ void PeakDetection::update_mean_stdDeviation(double dataPoint){
 
 void PeakDetection::hysteresis(bool peakDetected){
     if(!peakBeingDetected && peakDetected){
-        nStdDeviations -= 1;
+        nStdDeviations *= 2;
         peakBeingDetected = true;
     }
     else if(peakBeingDetected && !peakDetected){
-        nStdDeviations +=1;
+        nStdDeviations /= 2;
         peakBeingDetected = false;
     }
 }

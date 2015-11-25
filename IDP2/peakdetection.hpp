@@ -29,7 +29,7 @@ public:
     
     ///After a peak has been detected and the signal returned to normal levels, this function should be called to get the max value.
     double get_max_reading();
-    time_t get_max_reading_time();
+    timeval get_max_reading_time();
     
     ///If calibration readings have already been taken they can be loaded into the class using the load_calibration_data public function.
     void load_calibration_data(double loadedMean, double loadedStdDeviation);
@@ -38,7 +38,7 @@ public:
     
 private:
     double backgroundMean, backgroundStdDeviation, peakMean, reading1, reading2, nStdDeviations;
-    time_t peakDetectionTime;
+    timeval peakDetectionTime;
     int readingLag, nReadings;
     bool peakBeingDetected;
     

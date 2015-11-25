@@ -10,16 +10,47 @@
 #include <cmath>
 #include "pickup.hpp"
 #include "mechanical.hpp"
+#include "idp.h"
 
 
 Pickup::Pickup(){
-    time(&last_reading);
+    gettimeofday(&last_reading, NULL);
     distance_from_shelf = 80;
     integral_distance=0;
     
     //TODO: Calibrate these values negative as when it is far away demand_distance - distance_from_shelf < 0 and actually want the speed to be > 0
     proportional_gain = -0.5;
     integral_gain = -0.5;
+}
+
+int Pickup::perform_pickup(){
+    actuator_interface->retract();
+    
+    int distances[] = {20,15,10};
+    
+    for (int i = 0; i < 3; i++) {
+        if(set_distance_to_shelf(distances[i])){
+            rotate_wheel(120);
+        }
+    }
+    
+    actuator_interface->extend();
+    
+    return true;
+}
+
+int Pickup::dropoff(double angle_to_rotate){
+    
+    //TODO: Calibrate dropoff distance
+    int dropoff_distance = 10;
+    
+    set_distance_to_shelf(dropoff_distance);
+    rotate_wheel(angle_to_rotate);
+    actuator_interface->retract();
+    
+    //rotate_wheel(**ANGLE**);
+    actuator_interface->extend();
+    return true;
 }
 
 int Pickup::set_wheel_speed(double demand_distance){
@@ -52,7 +83,9 @@ int Pickup::set_wheel_speed(double demand_distance){
 }
 
 void Pickup::update_integral_distance(double demanded_distance){
-    double diff_time = difftime(time(NULL), last_reading);
+    timeval currentTime;
+    gettimeofday(&currentTime, NULL);
+    double diff_time = diff_ms(currentTime, last_reading)/1000;
     integral_distance += (diff_time * (demanded_distance - distance_from_shelf));
 }
 
@@ -79,37 +112,23 @@ bool Pickup::rotate_wheel(double angle_in_degrees){
     double angle_moved = 0;
     double current_speed = 0;
     double diffTime = 0;
-    time_t time_last_speed_reading = time(NULL);
-    //TODO: Find relationship between read speed and angular speed of wheel
-    double k = 1;
+    
+    timeval time_last_speed_reading, current_time;
+    gettimeofday(&time_last_speed_reading, NULL);
     
     motors_interface->set_motor_speed(3, 128);
     
     while(angle_moved < angle_in_degrees){
-        current_speed = k * motors_interface->get_motor_speed(3);
-        diffTime = difftime(time(NULL), time_last_speed_reading);
+        
+        current_speed = motors_interface->MAX_ROTATION_SPEED * motors_interface->get_motor_speed(3);
+        
+        gettimeofday(&current_time, NULL);
+        
+        diffTime = diff_ms(current_time, last_reading)/1000;
         angle_moved += current_speed * diffTime;
+        
+        time_last_speed_reading = current_time;
     }
     motors_interface->set_motor_speed(3, 0);
-    return true;
-}
-
-int Pickup::perform_pickup(){
-    int distances[] = {20,15,10};
-    for (int i = 0; i < 3; i++) {
-        if(set_distance_to_shelf(distances[i])){
-            rotate_wheel(120);
-        }
-    }
-    actuator_interface->extend();
-    return true;
-}
-
-int Pickup::dropoff(double angle_to_rotate){
-    
-    //TODO: Calibrate dropoff distance
-    int dropoff_distance = 10;
-    set_distance_to_shelf(dropoff_distance);
-    rotate_wheel(angle_to_rotate);
     return true;
 }
