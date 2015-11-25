@@ -7,14 +7,17 @@ using namespace std;
 #include <sstream>
 #include <cmath>
 
+#include "idp.h"
 #include "line_follower.hpp"
 #include "identifier.hpp"
 #include "torqueanalysis.hpp"
 
-#define ROBOT_NUM  14                        // The id number (see below)
-robot_link  rlink;                            // datatype for the robot link
+//#define ROBOT_NUM  14                        // The id number (see below)
+//robot_link  rlink;                            // datatype for the robot link
 
 // Functions 
+/*
+ * */
 void motors_start(int speed);
 void motors_mode(int mode);
 int connect_remotely();
@@ -24,9 +27,11 @@ stopwatch watch;
 ostringstream oss;
 int speed;
 
+
 int main (){
+	Idp idp;
 	
-	if ( connect_remotely() == -1 ){
+	if ( idp.connected == false ){
 		return -1;
 	}
 	
@@ -42,8 +47,10 @@ int main (){
 	
 	LineFollower linefollower;
 	int current_status = linefollower.current_status;
-	cout << "current status: " << current_status << endl << endl;
 	
+	
+	cout << "current status: " << current_status << endl << endl;
+	/*
 	stay_in_line( current_status );
 	
 	
@@ -65,10 +72,21 @@ int main (){
 	cout << "hex codes" << endl ;
 	int hex = get_sensor_output();
 	cout << hex << endl;
-	
+	*/
 	return 0;
 }
 
+
+
+
+
+
+
+
+/*
+ * DO NOT TRASPASS
+ * ---------POLICE--------POLICE----------POLICE------------
+ * ---------POLICE--------POLICE----------POLICE------------
 int get_sensor_output(){
 	
 	int iBus [4];
@@ -143,31 +161,31 @@ void motors_mode(int mode){
 	switch(mode){
 		case 0: 
 		// continue going straight
-			rlink.command (BOTH_MOTORS_GO_SAME, speed);
+			idp.rlink.command (BOTH_MOTORS_GO_SAME, speed);
 			break;
 		case 1: 
 		// compensate right slightly
-			rlink.command (MOTOR_1_GO, speed - 20);
-			rlink.command (MOTOR_2_GO, speed + 20);
+			idp.rlink.command (MOTOR_1_GO, speed - 20);
+			idp.rlink.command (MOTOR_2_GO, speed + 20);
 			break;
 		case 2: 
 		// compensate right strongly
-			rlink.command (MOTOR_1_GO, speed - 40);
-			rlink.command (MOTOR_2_GO, speed + 40);
+			idp.rlink.command (MOTOR_1_GO, speed - 40);
+			idp.rlink.command (MOTOR_2_GO, speed + 40);
 			break;
 		case 3: 
 		// compensate left slightly
-			rlink.command (MOTOR_1_GO, speed + 20);
-			rlink.command (MOTOR_2_GO, speed - 20);
+			idp.rlink.command (MOTOR_1_GO, speed + 20);
+			idp.rlink.command (MOTOR_2_GO, speed - 20);
 			break;
 		case 4: 
 		// compensate left strongly
-			rlink.command (MOTOR_1_GO, speed + 40);
-			rlink.command (MOTOR_2_GO, speed - 40);
+			idp.rlink.command (MOTOR_1_GO, speed + 40);
+			idp.rlink.command (MOTOR_2_GO, speed - 40);
 			break;
 		case 5: 
 		// go backwards 
-			rlink.command (BOTH_MOTORS_GO_OPPOSITE, speed);
+			idp.rlink.command (BOTH_MOTORS_GO_OPPOSITE, speed);
 			break;
 		default:
 			break;
@@ -186,41 +204,12 @@ void motors_start(int speed) {
 
 	//rlink.command (BOTH_MOTORS_GO_SAME, speed);
 	cout << "In motors_start, starting motor 4 " << endl;
-	rlink.command (MOTOR_1_GO, speed);
+	idp.rlink.command (MOTOR_1_GO, speed);
 	delay(1000);
-	rlink.command (MOTOR_2_GO, speed);
+	idp.rlink.command (MOTOR_2_GO, speed);
 }
+*/
 
-int connect_remotely(){
-	watch.start();
-	cout << "..." << endl;
-
-	int   val;
-	// data from microprocessor
-	if (!rlink.initialise(ROBOT_NUM)) {      // setup the link
-		cout << "Cannot initialise link" << endl;
-		rlink.print_errs("    ");
-		return -1;
-	}
-	
-	val = rlink.request(TEST_INSTRUCTION);   // send test instruction
-	if (val == TEST_INSTRUCTION_RESULT) {     // check result
-		cout << "Connected" << endl;
-		//return 0;                             // all OK, finish
-	}
-	else if (val == REQUEST_ERROR) {
-		cout << "Fatal errors on link:" << endl;
-		rlink.print_errs();
-		return -1;
-	}
-	else{
-		cout << "Test failed (bad value returned)" << endl;
-		return -1;
-	// error, finish
-	}
-	cout << "connection time " << watch.stop() << endl;
-	return 1;
-}
 
 
 

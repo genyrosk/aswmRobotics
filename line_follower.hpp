@@ -9,6 +9,8 @@
 #ifndef line_follower_hpp
 #define line_follower_hpp
 
+#include "idp.h"
+
 #include <stdio.h>
 #include <time.h>
 #include <iostream>
@@ -18,6 +20,7 @@ class LineFollower {
 public:
 
 	LineFollower();
+	Idp ipd;
     
     int current_status;
     time_t time_on_line;
@@ -27,8 +30,8 @@ public:
     void get_path_status(int sensor_output);                        // path decision making
     bool on_junction(int sensor_output);
     
-    void stay_in_line();
-    
+    void stay_in_line( int current_status );
+    void motors_mode(int mode);
 };
 
 
