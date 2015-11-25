@@ -23,7 +23,7 @@ LineFollower::LineFollower(){
 */
 
 LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr){
-	current_status = 0x04;	
+	current_status = 0x02;	
 	left_wheel_speed = 100;
     time_on_line = 0;
     //TODO: Calibrate these gain values
@@ -43,6 +43,8 @@ int LineFollower::follow_line(double distance){
 	proportional_error = 0;
 	integral_error = 0;
 	
+	cout << current_status << endl;
+	
 	timeval lastReadingTime;
 	timeval currentTime;
 	gettimeofday(&lastReadingTime, NULL);
@@ -57,6 +59,9 @@ int LineFollower::follow_line(double distance){
 		}
 		right_wheel_speed = static_cast<int>(100 + proportional_error * proportional_gain + integral_error * integral_gain);
 		motors_interface->set_drive_motor_speed(left_wheel_speed, right_wheel_speed);
+		
+		cout << "proportional error = " << proportional_error << " and proportional gain = " << proportional_gain << endl;
+		cout << "left speed = " << left_wheel_speed << " and right speed = " << right_wheel_speed << endl;
 		
 		currentMeanSpeed = (left_wheel_speed + right_wheel_speed)/2;
 		
