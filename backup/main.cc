@@ -6,7 +6,6 @@ using namespace std;
 #include <robot_delay.h>
 #include <sstream>
 #include <cmath>
-#include <time.h>
 
 #include "idp.h"
 #include "line_follower.hpp"
@@ -22,23 +21,22 @@ using namespace std;
  * */
 void motors_start(int speed);
 void motors_mode(int mode);
-//int connect_remotely();
-//int get_sensor_output();
-//void stay_in_line( int current_status );
+int connect_remotely();
+int get_sensor_output();
+void stay_in_line( int current_status );
 stopwatch watch;
 ostringstream oss;
+int speed;
 
 
 int main (){
 	Idp idp;
-	Motors motors = Motors(&idp);
-	Actuator actuator = Actuator(&idp);
-	AnalogueInterface analogueInterface = AnalogueInterface(&idp);
-	MicrocontrollerInterface microInterface = MicrocontrollerInterface(&idp);
 	
 	if ( idp.connected == false ){
 		return -1;
 	}
+	
+	speed = 100;
 	
 	const int bit0 = 0x01;      // ’0000 0001’ individual bits
 	const int bit5 = 0x20;
@@ -48,8 +46,12 @@ int main (){
 	Identifier identifier;
 	//identifier.id_procedure();
 	
-	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
+	Motors motors;
+	
+	LineFollower linefollower = new LineFollower( &idp );
 	int current_status = linefollower.current_status;
+	
+	
 	cout << "current status: " << current_status << endl << endl;
 	/*
 	stay_in_line( current_status );
@@ -74,11 +76,11 @@ int main (){
 	int hex = get_sensor_output();
 	cout << hex << endl;
 	*/
-	double distance = 1000;
-	linefollower.follow_line( distance);
-	delay(6000);
 	return 0;
 }
+
+
+
 
 
 

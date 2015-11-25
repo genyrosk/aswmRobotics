@@ -9,9 +9,8 @@
 #include "mechanical.hpp"
 using namespace std;
 
-MicrocontrollerInterface::MicrocontrollerInterface(Idp *idpPtr){
-	idp = idpPtr;
-}
+
+Idp *idp;
 
 bool MicrocontrollerInterface::write(int output_byte){
     //TODO: Error handling
@@ -28,9 +27,6 @@ int MicrocontrollerInterface::read(int port_activation_byte){
     }
 }
 
-AnalogueInterface::AnalogueInterface(Idp *idpPtr){
-	idp = idpPtr;
-}
 
 double AnalogueInterface::readADC(int port){
     double request_output = 0.0;
@@ -53,51 +49,21 @@ double AnalogueInterface::readADC(int port){
 
 }
 
-
-///Returns distance in cm from the distance detector 
-double AnalogueInterface::get_distance(){
-    //TODO: Make call to distance detector to read voltage
-    int DD_return = 0;
-    double m;
-    if(DD_return> 10 && DD_return <= 38){
-        m = 28.42;
-    }
-    else if(DD_return > 38 && DD_return <= 66){
-        m = 24.40;
-    }
-    else if(DD_return > 66 && DD_return <= 118){
-        m = 24.40;
-    }
-    else if(DD_return > 118 && DD_return <= 141){
-        m = 20.00;
-    }
-    else if(DD_return > 141 && DD_return <= 153){
-        m = 12.98;
-    }
-    return m/DD_return;
-}
-
-
-Motors::Motors(Idp *idpPtr){
-	idp = idpPtr;
-	//TODO: Measure max speed of drive motors
-	MAX_SPEED = 0.5;
-}
-
 void Motors::set_motor_speed(int motor, int speed){
     switch(motor){
         case 1:
             idp->rlink.command (MOTOR_1_GO, speed);
             break;
         case 2:
-            idp->rlink.command (MOTOR_2_GO, speed);
+            idp->rlink.command(MOTOR_2_GO, speed);
             break;
         case 3:
             idp->rlink.command (MOTOR_3_GO, speed);
             break;
         default:
             break;
-    } 
+    }
+    
 }
 
 int Motors::get_motor_speed(int motor){
@@ -124,6 +90,26 @@ void Motors::set_ramp_time(int ramp_time){
     idp->rlink.command (RAMP_TIME, ramp_time);
 }
 
-Actuator::Actuator(Idp *idpPtr){
-	idp = idpPtr;
+
+///Returns distance in cm from the distance detector 
+double AnalogueInterface::get_distance(){
+    //TODO: Make call to distance detector to read voltage
+    int DD_return = 0;
+    double m;
+    if(DD_return> 10 && DD_return <= 38){
+        m = 28.42;
+    }
+    else if(DD_return > 38 && DD_return <= 66){
+        m = 24.40;
+    }
+    else if(DD_return > 66 && DD_return <= 118){
+        m = 24.40;
+    }
+    else if(DD_return > 118 && DD_return <= 141){
+        m = 20.00;
+    }
+    else if(DD_return > 141 && DD_return <= 153){
+        m = 12.98;
+    }
+    return m/DD_return;
 }

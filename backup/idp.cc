@@ -3,6 +3,7 @@
 
 Idp::Idp(){
 	connected = false;
+	speed = 100;
 	robot_link  rlink; 
 	connect_remotely();
 }

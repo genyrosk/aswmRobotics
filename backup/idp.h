@@ -21,6 +21,7 @@ public:
 	bool connected;    
 	stopwatch watch;
 	ostringstream oss;
+	int speed;
 
 };
 

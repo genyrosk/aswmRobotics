@@ -15,39 +15,37 @@
 using namespace std;
 
 
-class Actuator {
+class interface{
 public:
-	Actuator(Idp * idpPtr);
-	Idp *idp;
+    //robot_link rlink;
+};
+
+class Actuator : public interface {
+public:
     void extend();
     void retract();
 };
 
-class Motors{
+class Collector {
 public:
-	Motors(Idp * idpPtr);
-	Idp *idp;
-	
-	double MAX_SPEED;
-	
+};
+
+class Motors : public interface {
+public:
     void set_drive_motor_speed(int left, int right);
     void set_motor_speed(int motor, int speed);
     int get_motor_speed(int motor);
     void set_ramp_time(int ramp_time);
 };
 
-class MicrocontrollerInterface {
+class MicrocontrollerInterface : public interface {
 public:
-	MicrocontrollerInterface(Idp * idpPtr);
-	Idp *idp;
     bool write(int output_byte);
     int read(int port_activation_byte);
 };
 
-class AnalogueInterface{
+class AnalogueInterface : public interface {
 public:
-	AnalogueInterface(Idp * idpPtr);
-	Idp *idp;
     double readADC(int port);
     double get_distance();
 };

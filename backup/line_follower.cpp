@@ -10,131 +10,73 @@
 
 #include <iostream>
 #include <sstream>
-#include <time.h>
 using namespace std;
 
 
-/*
-LineFollower::LineFollower(){
-	current_status = 0x04;
-	default_speed = 100;	
-    time_on_line = 0;
-}
-*/
 
-LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr){
-	current_status = 0x04;	
-	left_wheel_speed = 100;
-    time_on_line = 0;
-    //TODO: Calibrate these gain values
-    proportional_gain = 5;
-    integral_gain = 5;
-    negative_ramp = false;
-    
-    motors_interface = motorsPtr;
-    micro_interface = microPtr;
-    analogue_interface = anaPtr;
+LineFollower::LineFollower(Idp *idp){
+	int current_status = 0x04;
+	*idp = idp;
+	
+    //time_t time_on_line = 0;
+    //int speed_right = 0;
+    //int speed_left = 0;
 }
 // ------
 // ------
-
-int LineFollower::follow_line(double distance){
-	distance_moved = 0;
-	proportional_error = 0;
-	integral_error = 0;
-	
-	timeval lastReadingTime;
-	timeval currentTime;
-	gettimeofday(&lastReadingTime, NULL);
-	
-	double currentMeanSpeed = 0;
-	int time_in_ms = 0;
-	
-	while(distance_moved < 1.25 * distance){
-		get_path_status();
-		if(current_status == 0x08){
-			return true;
-		}
-		right_wheel_speed = static_cast<int>(100 + proportional_error * proportional_gain + integral_error * integral_gain);
-		motors_interface->set_drive_motor_speed(left_wheel_speed, right_wheel_speed);
-		
-		currentMeanSpeed = (left_wheel_speed + right_wheel_speed)/2;
-		
-		gettimeofday(&currentTime, NULL);
-		time_in_ms = diff_ms(currentTime, lastReadingTime);
-		
-		distance_moved += (time_in_ms * currentMeanSpeed ) / (1000 * motors_interface->MAX_SPEED);
-		integral_error += time_in_ms * proportional_error/1000;
-	}
-	return false;
-}
-
-void LineFollower::get_path_status(){
-    
-    int sensor_output = micro_interface->read(0x0F);
+void LineFollower::get_path_status(int sensor_output){
     
     //Only interested in bits 0-2
     int ir_sensor_output = sensor_output bitand 0x07;
-    
-    
     
     //Note bit is high when black detected, low when white detected
     switch (ir_sensor_output) {
         case 0x01:
             //slightly too far left
             current_status = 0x01;
-            proportional_error = -1;
             break;
         case 0x02:
             // we're fucked... must be the negative ramp, bastards
             current_status = 0x02;
-            proportional_error = 0;
-            negative_ramp = true;
             break;
         case 0x03:
             // too far left
             current_status = 0x03;
-            proportional_error = -2;
             break;
         case 0x04:
             // slightly too far right
             current_status = 0x04;
-            proportional_error = 1;
             break;
         case 0x05:
             // perfect
             current_status = 0x05;
-            proportional_error = 0;
-            negative_ramp = false;
             break;
         case 0x06:
             // too far right
             current_status = 0x06;
-            proportional_error = 2;
             break;
         case 0x07:
             // lost line
             current_status = 0x07;
-            proportional_error *= 3;
             break;
         default:
             break;
     }
+}
+
+bool LineFollower::on_junction(int sensor_output){
     
+    //Only interested in bit 3
     int junction_status = sensor_output bitand 0x08;
-    
     if(junction_status == 0x08){
-        current_status = 0x08;
+        return false;
+    }
+    else{
+        return true;
     }
 }
 
-int LineFollower::diff_ms(timeval t1, timeval t2){
-	return ((t1.tv_sec - t2.tv_sec) * 1000000 + (t1.tv_usec - t2.tv_usec))/ 1000;
-}
 
-
-
-/*
 void LineFollower::stay_in_line( int current_status ){
 	
 	switch (current_status) {
@@ -185,31 +127,31 @@ void LineFollower::motors_mode(int mode){
 	switch(mode){
 		case 0: 
 		// continue going straight
-			motors_interface->idp->rlink.command (BOTH_MOTORS_GO_SAME, default_speed);
+			idp->rlink.command (BOTH_MOTORS_GO_SAME, idp->speed);
 			break;
 		case 1: 
 		// compensate right slightly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed - 20);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed + 20);
+			idp->rlink.command (MOTOR_1_GO, idp->speed - 20);
+			idp->rlink.command (MOTOR_2_GO, idp->speed + 20);
 			break;
 		case 2: 
 		// compensate right strongly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed - 40);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed + 40);
+			idp->rlink.command (MOTOR_1_GO, idp->speed - 40);
+			idp->rlink.command (MOTOR_2_GO, idp->speed + 40);
 			break;
 		case 3: 
 		// compensate left slightly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed + 20);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed - 20);
+			idp->rlink.command (MOTOR_1_GO, idp->speed + 20);
+			idp->rlink.command (MOTOR_2_GO, idp->speed - 20);
 			break;
 		case 4: 
 		// compensate left strongly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed + 40);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed - 40);
+			idp->rlink.command (MOTOR_1_GO, idp->speed + 40);
+			idp->rlink.command (MOTOR_2_GO, idp->speed - 40);
 			break;
 		case 5: 
 		// go backwards 
-			motors_interface->idp->rlink.command (BOTH_MOTORS_GO_OPPOSITE, default_speed);
+			idp->rlink.command (BOTH_MOTORS_GO_OPPOSITE, idp->speed);
 			break;
 		default:
 			break;
@@ -217,4 +159,3 @@ void LineFollower::motors_mode(int mode){
 	
 
 }
-*/
