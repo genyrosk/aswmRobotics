@@ -17,7 +17,9 @@ using namespace std;
 
 LineFollower::LineFollower(){
     current_status = 0x02;
+    cout<<"Left wheel speed: "<< left_wheel_speed <<endl;
     left_wheel_speed = 100;
+    cout<<"Left wheel speed: "<< left_wheel_speed <<endl;
     time_on_line = 0;
     
     //TODO: Calibrate these gain values
@@ -36,7 +38,24 @@ LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPt
 // ------
 // ------
 
+int LineFollower::reverse_after_pickup(){
+	get_path_status();
+	motors_interface->set_drive_motor_speed( -128, -128);
+	if(current_status == 0x08){
+		motors_interface->set_drive_motor_speed(0, 0);
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
 int LineFollower::follow_line(double distance){
+	left_wheel_speed = 100;
+	//TODO: Remove test code
+	int sensor[] = {0x05,0x05,0x04,0x04,0x05,0x05,0x04,0x04,0x06,0x06,0x05,0x05,0x01,0x01,0x03,0x03,0x01,0x01,0x05,0x06, 0x05,0x05,0x04,0x04,0x05,0x05,0x04,0x04,0x06,0x06,0x05,0x05,0x01,0x01,0x03,0x03,0x01,0x01,0x05,0x06};
+	int j = 0;
+	
 	distance_moved = 0;
 	proportional_error = 0;
 	integral_error = 0;
@@ -50,10 +69,16 @@ int LineFollower::follow_line(double distance){
 	double currentMeanSpeed = 0;
 	double time_in_s = 0;
 	
-	while(distance_moved < 1.25 * distance){
-		get_path_status();
+	//TODO: REMOVE J
+	while(j<40 && distance_moved < 1.25 * distance){
+		
+		//TODO: Add in emergency stop if distance detector indicates obstacle?
+		//get_path_status();
+		current_status = sensor[j];
+		delay(10);
+		
 		cout << "Current status: " << current_status << endl;
-		cout << "Current distance: " << distance_moved << endl;
+		cout << "Current distance moved: " << distance_moved << endl;
 		if(current_status == 0x08){
 			motors_interface->set_drive_motor_speed(0, 0);
 			return true;
@@ -72,14 +97,12 @@ int LineFollower::follow_line(double distance){
 		else if(right_wheel_speed < 0){
 			right_wheel_speed = 127 - right_wheel_speed;
 		}
-		
-		cout << "Right wheel speed, after sign-magnitude conversion: " << right_wheel_speed << endl;
         
 		motors_interface->set_drive_motor_speed(left_wheel_speed, right_wheel_speed);
 		
 		cout << "proportional error = " << proportional_error << " and proportional gain = " << proportional_gain << endl;
 		cout << "integral error = " << integral_error << " and integral gain = " << integral_gain << endl;
-		cout << "left speed = " << left_wheel_speed << " and right speed = " << right_wheel_speed << endl;
+		cout << "left speed = " << left_wheel_speed << " and right speed = " << right_wheel_speed << endl << endl;
 		
 		currentMeanSpeed = (left_wheel_speed + right_wheel_speed)/2;
 		
@@ -89,6 +112,7 @@ int LineFollower::follow_line(double distance){
 		
 		distance_moved += (time_in_s * currentMeanSpeed * motors_interface->MAX_SPEED) / 127;
 		integral_error += (time_in_s) * proportional_error;
+		j++;
 	}
 	return false;
 }
@@ -171,7 +195,7 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 		lastReadingTime = currentTime;
 		
 		//TODO: Update half width of device
-		double angle = (time_in_s * current_speed * motors_interface->MAX_SPEED  * 10 / 127 );
+		double angle = (time_in_s * current_speed * motors_interface->MAX_SPEED  * 14.8 / 127 );
 		
 		angle_moved += angle * angle_sign;
 		angle_moved_magnitude = abs(angle_moved);
@@ -243,90 +267,3 @@ void LineFollower::get_path_status(){
         current_status = 0x08;
     }
 }
-
-
-
-/*
-void LineFollower::stay_in_line( int current_status ){
-	
-	switch (current_status) {
-        case 0x01:
-            //slightly too far left
-            cout << "slightly too far left" << endl;
-            motors_mode(3);
-            break;
-        case 0x02:
-            // we're fucked... must be the negative ramp, bastards
-            cout << "we're fucked... must be the negative ramp, bastards" << endl;
-            motors_mode(5);
-            break;
-        case 0x03:
-            // too far left
-            cout << "too far left" << endl;
-            motors_mode(4);
-            break;
-        case 0x04:
-            // slightly too far right
-            cout << "slightly too far right" << endl;
-            motors_mode(1);
-            break;
-        case 0x05:
-            // perfect
-            cout << "perfect" << endl;
-            motors_mode(0);
-            break;
-        case 0x06:
-            // too far right
-            cout << "too far right" << endl;
-            motors_mode(2);
-            break;
-        case 0x07:
-            // lost line
-            cout << "lost line" << endl;
-            motors_mode(5);
-            break;
-        default:
-            break;
-    }
-	
-	
-}
-
-void LineFollower::motors_mode(int mode){
-	
-	switch(mode){
-		case 0: 
-		// continue going straight
-			motors_interface->idp->rlink.command (BOTH_MOTORS_GO_SAME, default_speed);
-			break;
-		case 1: 
-		// compensate right slightly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed - 20);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed + 20);
-			break;
-		case 2: 
-		// compensate right strongly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed - 40);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed + 40);
-			break;
-		case 3: 
-		// compensate left slightly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed + 20);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed - 20);
-			break;
-		case 4: 
-		// compensate left strongly
-			motors_interface->idp->rlink.command (MOTOR_1_GO, default_speed + 40);
-			motors_interface->idp->rlink.command (MOTOR_2_GO, default_speed - 40);
-			break;
-		case 5: 
-		// go backwards 
-			motors_interface->idp->rlink.command (BOTH_MOTORS_GO_OPPOSITE, default_speed);
-			break;
-		default:
-			break;
-	}
-	
-
-}
-*/

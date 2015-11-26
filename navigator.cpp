@@ -1,9 +1,10 @@
 #include "navigator.hpp"
 #include "line_follower.hpp"
 
-Navigator::Navigator(){
+Navigator::Navigator(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr, Identifier * idenPtr){
 	
-	LineFollower linefollower;
+	linefollower = LineFollower(motorsPtr, microPtr, anaPtr);
+	identifier_interface = idenPtr;
 
 }
 
@@ -20,15 +21,37 @@ bool Navigator::go_to_dock(){
 
 	return true;
 }
-	
-void Navigator::go_to_junction(){
 
+bool Navigator::reverse_after_pickup(){
+	linefollower.reverse_after_pickup();
 }
 
-void Navigator::skip_junction(){
-
+bool Navigator::deliver_to_d3(){
+	//TODO: Measure distances, deal with negative ramp
+	if(linefollower.follow_line(100)){
+		if(identifier_interface->cracker_present(WHITE)){
+			return true;
+		}
+		linefollower.turn(-90,127);
+		return false;
+	}
+	else{
+		//LOST!
+		return false;
+	}
 }
 
-void Navigator::turn(int degrees){
-	
+bool Navigator::deliver_to_d1(){
+	if(linefollower.follow_line(100)){
+		
+	}
+}
+
+bool Navigator::test_nav(){
+	if(linefollower.follow_line(50)){
+		if(linefollower.turn(90, 127)){
+			return true;
+		}
+	}
+	return false;
 }

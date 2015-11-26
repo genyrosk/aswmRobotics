@@ -24,6 +24,7 @@ public:
 	LineFollower(Motors * motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr);
 	int follow_line(double distance);
 	int turn(double angle_in_degrees, int speed);
+	int reverse_after_pickup();
     int current_status;
     bool negative_ramp;
 

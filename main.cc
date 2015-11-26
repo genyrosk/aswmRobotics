@@ -27,26 +27,6 @@ ostringstream oss;
 int main (){
 	Idp idp;
 	Motors motors = Motors(&idp);
-	/*
-	cout << "Driving motors with speed 127" << endl;
-	motors.set_drive_motor_speed(127,127);
-	delay(1000);
-	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
-	delay(1000);
-	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
-	delay(1000);
-	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
-	delay(1000);
-	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
-	delay(1000);
-	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
-	motors.set_drive_motor_speed(0,0);
-	cout << "Finished driving wheels, starting sorter" << endl;
-	*/
-	motors.set_motor_speed(3,127);
-	delay(5000);
-	motors.set_motor_speed(3,0);
-	cout << "Finished" << endl;
 	
 	Actuator actuator = Actuator(&idp);
 	AnalogueInterface analogueInterface = AnalogueInterface(&idp);
@@ -69,6 +49,8 @@ int main (){
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	int current_status = linefollower.current_status;
 	cout << "current status: " << current_status << endl << endl;
+	linefollower.follow_line(100);
+	
 	/*
 	
 	int sensor[10] = {0x01,0x04,0x06,0x01,0x02,0x05,0x07,0x01,0x04,0x02};

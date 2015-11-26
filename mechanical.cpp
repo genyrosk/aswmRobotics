@@ -120,6 +120,17 @@ int Motors::get_motor_speed(int motor){
 }
 
 void Motors::set_drive_motor_speed(int left, int right){
+    cout << "Left before: " << left << endl;
+    if(left > 127){
+		left = 127;
+	}
+    else if(left < -128){
+		left = -128;
+	}
+	if(left < 0){
+		left = 127 - left;
+	}
+	cout << "Left after: " << left << endl;
     set_motor_speed(1, left);
     cout << "Right before: " << right << endl;
     
@@ -149,10 +160,10 @@ Actuator::Actuator(Idp *idpPtr){
 
 void Actuator::extend(){
 	//TODO: Get port allocations
-    //idp->rlink.command(WRITE_PORT_1, port_activation_byte);
+    idp->rlink.command(WRITE_PORT_1, 0xFF);
 }
 
 void Actuator::retract(){
     //TODO: Get port allocations
-    //idp->rlink.command(WRITE_PORT_1, port_activation_byte);
+    idp->rlink.command(WRITE_PORT_1, 0xFF);
 }

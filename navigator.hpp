@@ -11,6 +11,8 @@
 
 #include "idp.h"
 #include "line_follower.hpp"
+#include "mechanical.hpp"
+#include "identifier.hpp"
 
 #include <stdio.h>
 #include <time.h>
@@ -18,12 +20,20 @@
 
 class Navigator {
 public:
-	
+
 	Navigator();
+	Navigator(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr, Identifier * idenPtr);
 	
 	bool go_to_dock();
 	void turn(int degrees);
+	bool test_nav();
+	bool reverse_after_pickup();
+	bool deliver_to_d3();
+	bool deliver_to_d1();
 	
+	Identifier * identifier_interface;
+	
+	LineFollower linefollower;
 };
 
 

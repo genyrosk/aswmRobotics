@@ -90,3 +90,14 @@ void Identifier::id_procedure(){
     }
     
 }
+
+bool Identifier::cracker_present(cracker_type type){
+	bool present = false;
+	for(int i = 0; i< 3; i++){
+		if(identifier_interface->crackers[i].type == WHITE){
+			deliver = true;
+			return true;
+		}
+	}
+	return false;
+}

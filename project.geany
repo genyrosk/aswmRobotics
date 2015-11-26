@@ -6,21 +6,23 @@ description=1B IDP
 run_cmd=./main
 
 [files]
-current_page=5
+current_page=13
 FILE_NAME_0=0;C++;0;EUTF-8;1;1;0;tinyxml2.cpp;0;4
 FILE_NAME_1=0;C++;0;EUTF-8;1;1;0;RobotSettings.cpp;0;4
 FILE_NAME_2=3543;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fpickup.cpp;0;4
 FILE_NAME_3=3497;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fpeakdetection.cpp;0;4
-FILE_NAME_4=1918;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fmechanical.cpp;0;4
-FILE_NAME_5=1085;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fmain.cc;0;4
-FILE_NAME_6=1054;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fline_follower.cpp;0;4
-FILE_NAME_7=2114;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fidentifier.cpp;0;4
+FILE_NAME_4=3654;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fmechanical.cpp;0;4
+FILE_NAME_5=498;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fmain.cc;0;4
+FILE_NAME_6=3363;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fidentifier.cpp;0;4
+FILE_NAME_7=625;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fidentifier.hpp;0;4
 FILE_NAME_8=1649;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fcracker.cpp;0;4
-FILE_NAME_9=807;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fidentifier.hpp;0;4
+FILE_NAME_9=29;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fcracker.hpp;0;4
 FILE_NAME_10=967;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fidp.cc;0;4
 FILE_NAME_11=453;C;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fidp.h;0;4
-FILE_NAME_12=424;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fnavigator.hpp;0;4
-FILE_NAME_13=165;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fnavigator.cpp;0;4
+FILE_NAME_12=636;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fnavigator.hpp;0;4
+FILE_NAME_13=962;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fnavigator.cpp;0;4
+FILE_NAME_14=1132;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fline_follower.cpp;0;4
+FILE_NAME_15=573;C++;0;EUTF-8;1;1;0;%2Fgroups%2FIB%2Fidp%2Fidp-m201%2Fpeb42%2Fold_c%2Fline_follower.hpp;0;4
 
 [indentation]
 indent_width=4
