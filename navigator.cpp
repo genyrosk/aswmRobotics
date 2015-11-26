@@ -23,7 +23,7 @@ bool Navigator::go_to_dock(){
 }
 
 bool Navigator::reverse_after_pickup(){
-	linefollower.reverse_after_pickup();
+	return linefollower.reverse_after_pickup();
 }
 
 bool Navigator::deliver_to_d3(){

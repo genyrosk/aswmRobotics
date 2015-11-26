@@ -8,6 +8,12 @@
 
 #include "RobotSettings.hpp"
 #include "tinyxml2.h"
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <unistd.h>
+#include <limits.h>
+
 using namespace tinyxml2;
 
 RobotSettings::RobotSettings(){
@@ -49,13 +55,34 @@ int RobotSettings::save(){
     pLdrStdDeviation->SetText(ldr_std_deviation);
     pRoot->InsertEndChild(pLdrStdDeviation);
 
-    XMLError eResult = xmlDoc.SaveFile("/Users/peterboothroyd/Documents/Computing/IDP/aswmRobotics/m201robotsettings.xml");
+	char result[PATH_MAX];
+	ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+	std::string directory_path = std::string(result, (count>0) ? count : 0);
+	std::cout << directory_path << std::endl;
+	
+	std::string file_path = directory_path + "m201robotsettings.xml";
+	std::cout << file_path << std::endl;
+	
+	const char *char_file_path = file_path.c_str();
+	
+    XMLError eResult = xmlDoc.SaveFile(char_file_path);
     return eResult;
 };
 
 int RobotSettings::load(){
     XMLDocument xmlDoc;
-    XMLError eResult = xmlDoc.LoadFile("/Users/peterboothroyd/Documents/Computing/IDP/aswmRobotics/m201robotsettings.xml");
+ 
+	char result[PATH_MAX];
+	ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+	std::string directory_path = std::string(result, (count>0) ? count : 0);
+	std::cout << directory_path << std::endl;
+	
+	std::string file_path = directory_path + "m201robotsettings.xml";
+	std::cout << file_path << std::endl;
+	
+	const char *char_file_path = file_path.c_str();
+ 
+    XMLError eResult = xmlDoc.LoadFile(char_file_path);
     
     if(eResult != 0){
         return eResult;

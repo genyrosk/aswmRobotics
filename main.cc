@@ -14,6 +14,7 @@ using namespace std;
 #include "identifier.hpp"
 #include "torqueanalysis.hpp"
 #include "mechanical.hpp"
+#include "RobotSettings.hpp"
 
 // Functions 
 /*
@@ -25,6 +26,20 @@ ostringstream oss;
 
 
 int main (){
+	RobotSettings robotSettings;
+	if(robotSettings.load() == 0){
+		cout << "Settings loaded successfully" << endl;
+	}
+	else{
+		cout << "Settings not found" << endl;
+	}
+	
+	if(robotSettings.save() == 0){
+		cout << "Settings saved successfully" << endl;
+	}
+	else{
+		cout << "Error saving settings" << endl;
+	}
 	Idp idp;
 	Motors motors = Motors(&idp);
 	
