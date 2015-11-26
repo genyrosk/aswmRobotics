@@ -21,19 +21,10 @@ public:
 	
 	Navigator();
 	
-	
-	void go_to_dock();
-	
-	
-	void go_to_junction();
-	void skip_junction();
+	bool go_to_dock();
 	void turn(int degrees);
 	
-	
-	
-	
-	
-}
+};
 
 
 #endif /* navigator_hpp */

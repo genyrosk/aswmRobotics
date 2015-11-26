@@ -33,23 +33,24 @@ AnalogueInterface::AnalogueInterface(Idp *idpPtr){
 }
 
 double AnalogueInterface::readADC(int port){
-    double request_output = 0.0;
-    double max_reading = 255.0;
+    int request_output = 0;
+    int max_reading = 255;
     
     switch(port)
     {
         case 0:
             request_output = idp->rlink.request(ADC0);
-            return request_output/max_reading;
+            break;
         case 1:
             request_output = idp->rlink.request(ADC1);
-            return request_output/max_reading;
+            break;
         case 2:
             request_output = idp->rlink.request(ADC2);
-            return request_output/max_reading;
+            break;
         default:
             return request_output;
     }
+    return 5*(request_output/max_reading);
 
 }
 
@@ -57,6 +58,7 @@ double AnalogueInterface::readADC(int port){
 ///Returns distance in cm from the distance detector 
 double AnalogueInterface::get_distance(){
     //TODO: Make call to distance detector to read voltage
+    //int DD_return = 255 * readADC(**DISTANCEDETECTORPORT**)/5;
     int DD_return = 0;
     double m;
     if(DD_return> 10 && DD_return <= 38){
@@ -80,8 +82,10 @@ double AnalogueInterface::get_distance(){
 
 Motors::Motors(Idp *idpPtr){
 	idp = idpPtr;
-	//TODO: Measure max speed of drive motors
-	MAX_SPEED = 0.5;
+	//Max speed of drive motors in cm/s
+	MAX_SPEED = 6.59;
+	//Max speed in degrees/s
+    MAX_ROTATION_SPEED=310;
 }
 
 void Motors::set_motor_speed(int motor, int speed){
@@ -117,6 +121,21 @@ int Motors::get_motor_speed(int motor){
 
 void Motors::set_drive_motor_speed(int left, int right){
     set_motor_speed(1, left);
+    cout << "Right before: " << right << endl;
+    
+    if(right > 255){
+		right = 255;
+	}
+	if(right > 127){
+		right = right - 128;
+	}
+	else if(right < 0){
+		right = 0;
+	}
+	else if(right <= 127){
+		right = 128 + right;
+	}
+	cout << "Right after: " << right << endl;
     set_motor_speed(2, right);
 }
 
@@ -126,4 +145,14 @@ void Motors::set_ramp_time(int ramp_time){
 
 Actuator::Actuator(Idp *idpPtr){
 	idp = idpPtr;
+}
+
+void Actuator::extend(){
+	//TODO: Get port allocations
+    //idp->rlink.command(WRITE_PORT_1, port_activation_byte);
+}
+
+void Actuator::retract(){
+    //TODO: Get port allocations
+    //idp->rlink.command(WRITE_PORT_1, port_activation_byte);
 }

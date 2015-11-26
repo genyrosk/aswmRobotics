@@ -21,11 +21,10 @@ public:
     Cracker();
     Cracker(float angle);
     
-    string cracker_type2[5];
-    string type2;
+    //string cracker_type2[5];
+    //string type2;
     
     cracker_type type;
-    
     
     float angle_from_reference;
     bool delivered;

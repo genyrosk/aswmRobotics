@@ -24,7 +24,7 @@ public:
 private:
     
     double distance_from_shelf, integral_distance, proportional_gain, integral_gain, speed_gain;
-    time_t last_reading;
+    timeval last_reading;
     AnalogueInterface *analogue_interface;
     Motors *motors_interface;
     Actuator *actuator_interface;

@@ -2,7 +2,7 @@
 //  line_follower.hpp
 //  awsmRobot
 //
-//  Created by Evgeny Roskach on 15/11/15.
+//  Created by Peter Boothroyd on 15/11/15.
 //  Copyright © 2015 Awsme. All rights reserved.
 //
 
@@ -23,6 +23,7 @@ public:
 	LineFollower();
 	LineFollower(Motors * motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr);
 	int follow_line(double distance);
+	int turn(double angle_in_degrees, int speed);
     int current_status;
     bool negative_ramp;
 
@@ -37,10 +38,6 @@ private:
     AnalogueInterface * analogue_interface;
     
     void get_path_status();                       // path decision making
-    int diff_ms(timeval t1, timeval t2);
-    
-    //void stay_in_line( int current_status );
-    //void motors_mode(int mode);
 };
 
 

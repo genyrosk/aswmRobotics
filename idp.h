@@ -11,7 +11,6 @@ using namespace std;
 #include <time.h>
 #define ROBOT_NUM  14 	// The id number (see below)
 
-
 class Idp {
 public:
 
@@ -25,8 +24,9 @@ public:
 
 };
 
-int diff_ms(timeval t1, timeval t2){
+inline int diff_ms(timeval t1, timeval t2){
     return ((t1.tv_sec - t2.tv_sec) * 1000000 + (t1.tv_usec - t2.tv_usec))/1000;
 }
+
 
 #endif

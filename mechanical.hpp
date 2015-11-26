@@ -29,6 +29,7 @@ public:
 	Idp *idp;
 	
 	double MAX_SPEED;
+    double MAX_ROTATION_SPEED;
 	
     void set_drive_motor_speed(int left, int right);
     void set_motor_speed(int motor, int speed);

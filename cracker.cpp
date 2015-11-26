@@ -11,7 +11,7 @@
 using namespace std;
 
 Cracker::Cracker(){
-    cracker_type=UNKNOWN;
+    type = UNKNOWN;
     //string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
     //string type2 = cracker_type2[4];
     
@@ -24,9 +24,10 @@ Cracker::Cracker(){
 }
 
 Cracker::Cracker(float angle){
-    string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
-    string type2 = cracker_type2[4];
+    //string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
+    //string type2 = cracker_type2[4];
     
+    type = UNKNOWN;
     angle_from_reference = angle;
     delivered = false;
     nReadings = 0;
@@ -37,8 +38,10 @@ Cracker::Cracker(float angle){
 
 int Cracker::calculate_probabilities(double peak_reading){
     //TODO: Calculate these values from experiments (Again Red, Black, Wood, White)
-    double mean[] = {2.235,2.718,2.923,1.401};
-    double std_deviation[] = {0.009805,0.027576,0.002021,0.017709};
+    double mean[] = {2.235,2.718,1.923,1.401};
+    double std_deviation[] = {0.10437,0.17504,0.04738,0.14027};
+    
+    cout<< "Peak reading: " << peak_reading << endl;
     
     for (int i = 0; i<4; i++) {
         double normalised_reading = fabs(peak_reading - mean[i]) / std_deviation[i];
@@ -51,21 +54,17 @@ int Cracker::calculate_probabilities(double peak_reading){
     int iterator = 0;
     double max = type_probabilities[0];
     for (int i = 1; i<4; i++) {
+		cout << "Probability of " << static_cast<cracker_type>(i) << " = " << type_probabilities[i] << endl;
         if(type_probabilities[i]>max){
             iterator = i;
             max = type_probabilities[i];
         }
     }
-    /* Removing min probability criteria
-    if(max<0.75){
-        return 0;
-    }
-    else{
-     */
-    type = static_cast<cracker_type>(iterator);;
+    
+    type = static_cast<cracker_type>(iterator);
+    cout << "Detected type: " << type << endl;
     
     return 1;
-    //}
 }
 
 

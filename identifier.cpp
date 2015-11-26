@@ -2,11 +2,13 @@
 //  identifier.cpp
 //  awsmRobot
 //
-//  Created by Evgeny Roskach on 15/11/15.
+//  Created by Peter Boothroyd on 15/11/15.
 //  Copyright © 2015 Awsme. All rights reserved.
 //
 
 #include "identifier.hpp"
+#include "idp.h"
+#include <sys/time.h>
 using namespace std;
 
 Identifier::Identifier(){
@@ -19,10 +21,12 @@ Identifier::Identifier(){
     angle_cracker1_from_detector = 0;
 }
 
-Identifier::Identifier(Motors * motorsPtr, AnalogueInterface * anaPtr){
+Identifier::Identifier(Motors * motorsPtr, AnalogueInterface * anaPtr, MicrocontrollerInterface * microPtr){
+    
     Identifier();
     analogue_interface = anaPtr;
     motors_interface = motorsPtr;
+    micro_interface = microPtr;
 }
 
 void Identifier::id_procedure(){
@@ -44,8 +48,7 @@ void Identifier::id_procedure(){
         int j = 0;
         
         while( cracker_unknown && j<60) {
-            //sleep(1);
-            // int data_value = read LDR -> returns an int between 1 and 255
+            //int data_value = analogue_interface->readADC(**LDRPORTNUMBER**);
             double data_value = value_simulator[j];
             cout << "index: " << j << endl;
             cout << "data_value: " << data_value << endl;
@@ -53,7 +56,7 @@ void Identifier::id_procedure(){
             read_status = peak_detector.add_data_point( data_value );
             cout << "read status: " << read_status << endl;
             
-            if ( read_status == "PEAKREADING" ){ // i.e. it equals "PEAKREADING"
+            if ( read_status == "PEAKREADING" ){
                 reading_peaks = true;
                 j++;
                 continue;
@@ -62,12 +65,15 @@ void Identifier::id_procedure(){
                 
                 timeval peakReadingTime = peak_detector.get_max_reading_time();
                 double peakReading = peak_detector.get_max_reading();
+                cout << "Peak reading value: " << peakReading << endl;
                 
-                //TODO: Find out rotation speed.
-                double rotation_speed = 1;
+                double rotation_speed = motors_interface->MAX_ROTATION_SPEED;
                 
-                timeval currentTime = gettimeofday();
-                double angleTurnedAfterPeak = time_ms(time(NULL), peakReadingTime) * rotation_speed;
+                timeval currentTime;
+                gettimeofday(&currentTime, NULL);
+                
+                double angleTurnedAfterPeak = diff_ms(currentTime, peakReadingTime) * rotation_speed;
+                
                 angle_cracker1_from_detector = 120 * i + angleTurnedAfterPeak;
                 
                 cout << "------------------ " << endl;

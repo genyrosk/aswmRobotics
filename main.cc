@@ -15,17 +15,11 @@ using namespace std;
 #include "torqueanalysis.hpp"
 #include "mechanical.hpp"
 
-//#define ROBOT_NUM  14                        // The id number (see below)
-//robot_link  rlink;                            // datatype for the robot link
-
 // Functions 
 /*
  * */
 void motors_start(int speed);
 void motors_mode(int mode);
-//int connect_remotely();
-//int get_sensor_output();
-//void stay_in_line( int current_status );
 stopwatch watch;
 ostringstream oss;
 
@@ -33,6 +27,27 @@ ostringstream oss;
 int main (){
 	Idp idp;
 	Motors motors = Motors(&idp);
+	/*
+	cout << "Driving motors with speed 127" << endl;
+	motors.set_drive_motor_speed(127,127);
+	delay(1000);
+	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
+	delay(1000);
+	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
+	delay(1000);
+	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
+	delay(1000);
+	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
+	delay(1000);
+	cout << "Current speed: " << motors.get_motor_speed(1) << endl;
+	motors.set_drive_motor_speed(0,0);
+	cout << "Finished driving wheels, starting sorter" << endl;
+	*/
+	motors.set_motor_speed(3,127);
+	delay(5000);
+	motors.set_motor_speed(3,0);
+	cout << "Finished" << endl;
+	
 	Actuator actuator = Actuator(&idp);
 	AnalogueInterface analogueInterface = AnalogueInterface(&idp);
 	MicrocontrollerInterface microInterface = MicrocontrollerInterface(&idp);
@@ -40,12 +55,14 @@ int main (){
 	if ( idp.connected == false ){
 		return -1;
 	}
-	
+    
+	/*
 	const int bit0 = 0x01;      // ’0000 0001’ individual bits
 	const int bit5 = 0x20;
 	
 	cout << bit0 << endl << bit5 << endl << endl;
-	
+	*/
+    
 	Identifier identifier;
 	//identifier.id_procedure();
 	
@@ -53,8 +70,6 @@ int main (){
 	int current_status = linefollower.current_status;
 	cout << "current status: " << current_status << endl << endl;
 	/*
-	stay_in_line( current_status );
-	
 	
 	int sensor[10] = {0x01,0x04,0x06,0x01,0x02,0x05,0x07,0x01,0x04,0x02};
 	
@@ -74,11 +89,12 @@ int main (){
 	cout << "hex codes" << endl ;
 	int hex = get_sensor_output();
 	cout << hex << endl;
-	*/
+	
 	double distance = 1000;
 	linefollower.follow_line( distance);
 	delay(6000);
 	return 0;
+	*/
 }
 
 
