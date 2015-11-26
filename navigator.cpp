@@ -18,8 +18,7 @@ bool Navigator::go_to_dock(){
 			}
 		}
 	}
-
-	return true;
+	return false;
 }
 
 bool Navigator::reverse_after_pickup(){

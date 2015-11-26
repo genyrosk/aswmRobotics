@@ -43,6 +43,8 @@ public:
 	Idp *idp;
     bool write(int output_byte);
     int read(int port_activation_byte);
+    void indicate_lost();
+    void flash_leds(int time);
 };
 
 class AnalogueInterface{

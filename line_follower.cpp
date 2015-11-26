@@ -35,8 +35,6 @@ LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPt
     micro_interface = microPtr;
     analogue_interface = anaPtr;
 }
-// ------
-// ------
 
 int LineFollower::reverse_after_pickup(){
 	get_path_status();

@@ -15,6 +15,8 @@ using namespace std;
 #include "torqueanalysis.hpp"
 #include "mechanical.hpp"
 #include "RobotSettings.hpp"
+#include "navigator.hpp"
+#include "pickup.hpp"
 
 // Functions 
 /*
@@ -34,12 +36,6 @@ int main (){
 		cout << "Settings not found" << endl;
 	}
 	
-	if(robotSettings.save() == 0){
-		cout << "Settings saved successfully" << endl;
-	}
-	else{
-		cout << "Error saving settings" << endl;
-	}
 	Idp idp;
 	Motors motors = Motors(&idp);
 	
@@ -50,35 +46,24 @@ int main (){
 	if ( idp.connected == false ){
 		return -1;
 	}
-    
-	/*
-	const int bit0 = 0x01;      // ’0000 0001’ individual bits
-	const int bit5 = 0x20;
 	
-	cout << bit0 << endl << bit5 << endl << endl;
-	*/
-    
 	Identifier identifier;
-	//identifier.id_procedure();
+	identifier.id_procedure();
 	
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	int current_status = linefollower.current_status;
 	cout << "current status: " << current_status << endl << endl;
 	linefollower.follow_line(100);
 	
+	Pickup pickup = Pickup(&motors, &analogueInterface, &actuator);
+	
+	
+	//Main loop
+	Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+	nav.go_to_dock();
+	
 	/*
-	
-	int sensor[10] = {0x01,0x04,0x06,0x01,0x02,0x05,0x07,0x01,0x04,0x02};
-	
-	for (int i=0; i<10; i++){
-		
-		current_status = sensor[i];
-		stay_in_line( current_status );
-		delay(1000);
-	}
-	
-	
-	
+
 	cout << "starting motors at speed " << speed << endl;
 	motors_start(speed);
 	delay(4000);
@@ -92,6 +77,14 @@ int main (){
 	delay(6000);
 	return 0;
 	*/
+	
+	
+	if(robotSettings.save() == 0){
+		cout << "Settings saved successfully" << endl;
+	}
+	else{
+		cout << "Error saving settings" << endl;
+	}
 }
 
 

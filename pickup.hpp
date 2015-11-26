@@ -17,6 +17,7 @@ class Pickup{
 public:
     
     Pickup();
+    Pickup(Motors *motorsPtr, AnalogueInterface * anaPtr, Actuator *actPtr);
     
     int perform_pickup();
     int dropoff(double angle_to_rotate);

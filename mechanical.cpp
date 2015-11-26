@@ -28,6 +28,21 @@ int MicrocontrollerInterface::read(int port_activation_byte){
     }
 }
 
+void MicrocontrollerInterface::indicate_lost(){
+	//TODO: Find out output_byte
+	int output_byte = 0x00;
+	idp->rlink.command (WRITE_PORT_1, output_byte);
+}
+
+void MicrocontrollerInterface::flash_leds(int time){
+	//TODO: Finalise output bytes, turn on, off, on ,off...
+	int output_byte = 0x01;
+	write(output_byte);
+	delay(100);
+	write(output_byte);
+	delay(100);
+}
+
 AnalogueInterface::AnalogueInterface(Idp *idpPtr){
 	idp = idpPtr;
 }

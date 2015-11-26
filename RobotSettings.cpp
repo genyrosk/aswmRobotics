@@ -58,9 +58,11 @@ int RobotSettings::save(){
 	char result[PATH_MAX];
 	ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
 	std::string directory_path = std::string(result, (count>0) ? count : 0);
+	size_t pos = std::string(directory_path).find_last_of('/');
+	std::string directory_path_sub = std::string(directory_path).substr(0,pos+1);
 	std::cout << directory_path << std::endl;
 	
-	std::string file_path = directory_path + "m201robotsettings.xml";
+	std::string file_path = directory_path_sub + "m201robotsettings.xml";
 	std::cout << file_path << std::endl;
 	
 	const char *char_file_path = file_path.c_str();
@@ -75,9 +77,11 @@ int RobotSettings::load(){
 	char result[PATH_MAX];
 	ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
 	std::string directory_path = std::string(result, (count>0) ? count : 0);
+	size_t pos = std::string(directory_path).find_last_of('/');
+	std::string directory_path_sub = std::string(directory_path).substr(0,pos+1);
 	std::cout << directory_path << std::endl;
 	
-	std::string file_path = directory_path + "m201robotsettings.xml";
+	std::string file_path = directory_path_sub + "m201robotsettings.xml";
 	std::cout << file_path << std::endl;
 	
 	const char *char_file_path = file_path.c_str();
@@ -88,7 +92,7 @@ int RobotSettings::load(){
         return eResult;
     }
     
-    XMLNode * pRoot = xmlDoc.FirstChild();
+    XMLNode * pRoot = xmlDoc.FirstChild()->NextSibling();
     if (pRoot == 0)
     {
         return XML_ERROR_FILE_READ_ERROR;
@@ -99,6 +103,7 @@ int RobotSettings::load(){
     XMLElement * pReturnBonus = pRoot->FirstChildElement("returned_start_box_bonus");
     XMLElement * pLdrMean = pRoot->FirstChildElement("ldr_mean");
     XMLElement * pLdrStdDeviation = pRoot->FirstChildElement("ldr_std_deviation");
+    
     if (pTimeStarted == 0 || pNCrackers == 0 || pReturnBonus == 0 || pLdrMean == 0 || pLdrStdDeviation == 0)
     {
         return XML_ERROR_PARSING_ELEMENT;
@@ -113,6 +118,5 @@ int RobotSettings::load(){
     {
         return XML_ERROR_PARSING_ELEMENT;
     }
-    
     return XML_SUCCESS;
 };

@@ -11,21 +11,10 @@
 using namespace std;
 
 Cracker::Cracker(){
-    type = UNKNOWN;
-    //string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
-    //string type2 = cracker_type2[4];
-    
-    angle_from_reference = 0;
-    delivered = false;
-    nReadings = 0;
-    for(int i = 0; i<4; i++){
-        type_probabilities[i] = 0;
-    }
+    Cracker(0);
 }
 
 Cracker::Cracker(float angle){
-    //string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
-    //string type2 = cracker_type2[4];
     
     type = UNKNOWN;
     angle_from_reference = angle;

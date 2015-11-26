@@ -81,14 +81,40 @@ void Identifier::id_procedure(){
                 cout << "------------------ " << endl;
                 cout << "peak detected at : " << peakReading << endl;
                 crackers[i].calculate_probabilities( peakReading ); // will assign a cracker_type to our cracker object
+                indicate_cracker_type(crackers[i].type);
                 break;
             }
-            
-            j++;
-            
+            j++;          
         }
     }
     
+}
+
+void Identifier::indicate_cracker_type(cracker_type type){
+	
+	micro_interface->flash_leds(100);
+	micro_interface->flash_leds(100);
+	int output_byte;
+	
+	if(type == RED){
+		output_byte = 0x01;
+		micro_interface->write(output_byte);
+	}
+	else if(type == WOOD){
+		output_byte = 0x01;
+		micro_interface->write(output_byte);
+	}
+	else if(type == BLACK){
+		output_byte = 0x01;
+		micro_interface->write(output_byte);
+	}
+	else if(type == WHITE){
+		output_byte = 0x01;
+		micro_interface->write(output_byte);
+	}
+	
+	micro_interface->flash_leds(100);
+	micro_interface->flash_leds(100);
 }
 
 bool Identifier::cracker_present(cracker_type type){

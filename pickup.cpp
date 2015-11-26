@@ -24,6 +24,13 @@ Pickup::Pickup(){
     integral_gain = -0.5;
 }
 
+Pickup::Pickup(Motors *motorsPtr, AnalogueInterface * anaPtr, Actuator *actPtr){
+	Pickup();
+	analogue_interface = anaPtr;
+	motors_interface = motorsPtr;
+	actuator_interface = actPtr;
+}
+
 int Pickup::perform_pickup(){
     actuator_interface->retract();
     
