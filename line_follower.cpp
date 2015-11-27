@@ -16,7 +16,7 @@
 using namespace std;
 
 LineFollower::LineFollower(){
-    current_status = 0x05;
+    current_status = 0x02;
     negative_ramp = false;
 }
 
@@ -41,6 +41,76 @@ int LineFollower::reverse_after_pickup(){
 	}
 }
 
+void LineFollower::get_path_status(){
+	
+    //TODO: byte should be 0x0F
+    int sensor_output = micro_interface->read(0xFF);
+    int ir_sensor_output = sensor_output bitand 0x07;
+    
+    //Only interested in bits 0-2
+    if(negative_ramp){
+		ir_sensor_output = ir_sensor_output xor 0xFF;
+	}    
+    
+    //Note bit is high when black detected, low when white detected
+    switch (ir_sensor_output) {
+        case 0x06:
+            //slightly too far left
+            this->current_status = 0x06;
+            this->proportional_error = -1;
+            break;
+        case 0x05:
+            // we're fucked... must be the negative ramp, bastards
+            this->current_status = 0x05;
+            this->proportional_error = 0;
+            this->negative_ramp = !negative_ramp;
+            break;
+        case 0x04:
+            // too far left
+            this->current_status = 0x04;
+            this->proportional_error = -2;
+            break;
+        case 0x03:
+            // slightly too far right
+            this->current_status = 0x03;
+            this->proportional_error = 1;
+            break;
+        case 0x02:
+            // perfect
+            this->current_status = 0x02;
+            this->proportional_error = 0;
+            this->negative_ramp = false;
+            break;
+        case 0x01:
+            // too far right
+            this->current_status = 0x01;
+            this->proportional_error = 2;
+            break;
+        case 0x00:
+            // lost line
+            this->current_status = 0x00;
+            this->proportional_error *= 3;
+            break;
+        case 0x07:
+			// Junction detected
+			this->current_status = 0x07;
+			this->proportional_error = 0;
+            break;
+        default:
+            break;
+    }
+    
+    int junction_status = sensor_output bitand 0x08;
+    
+    if(junction_status == 0x08){
+        current_status = 0x08;
+    }
+    
+    cout << "proportion error: " << this->proportional_error << endl;
+    cout << "current status: " << this->current_status << endl;
+}
+
+
 int LineFollower::follow_line(double distance){
 
 	//TODO: Remove test code
@@ -50,6 +120,7 @@ int LineFollower::follow_line(double distance){
 	distance_moved = 0;
 	proportional_error = 0;
 	integral_error = 0;
+	current_status = 0x02;
 	
 	cout << "Following line for distance: " << distance << ". Current status: " << current_status << endl;
 	
@@ -69,7 +140,9 @@ int LineFollower::follow_line(double distance){
 		cout << "Current status: " << current_status << endl;
 		cout << "Current distance moved: " << distance_moved << endl;
 		
-		if(current_status == 0x08 || analogue_interface->get_distance() <= 10){
+		//TODO: Add this into if || analogue_interface->get_distance() <= 10
+		if(current_status == 0x08){
+			cout<< "Exited while loop, status: " << current_status << " .Distance: " << analogue_interface->get_distance() << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
 			return true;
 		}
@@ -262,64 +335,3 @@ void LineFollower::get_path_status(int testHexCode){
 }
 */
 
-void LineFollower::get_path_status(){
-    
-    int sensor_output = micro_interface->read(0x0F);
-    int ir_sensor_output = sensor_output bitand 0x07;
-    
-    //Only interested in bits 0-2
-    if(negative_ramp){
-		ir_sensor_output = ir_sensor_output xor 0xFF;
-	}    
-    
-    //Note bit is high when black detected, low when white detected
-    switch (ir_sensor_output) {
-        case 0x01:
-            //slightly too far left
-            current_status = 0x01;
-            proportional_error = -1;
-            break;
-        case 0x02:
-            // we're fucked... must be the negative ramp, bastards
-            current_status = 0x02;
-            proportional_error = 0;
-            negative_ramp = !negative_ramp;
-            break;
-        case 0x03:
-            // too far left
-            current_status = 0x03;
-            proportional_error = -2;
-            break;
-        case 0x04:
-            // slightly too far right
-            current_status = 0x04;
-            proportional_error = 1;
-            break;
-        case 0x05:
-            // perfect
-            current_status = 0x05;
-            proportional_error = 0;
-            negative_ramp = false;
-            break;
-        case 0x06:
-            // too far right
-            current_status = 0x06;
-            proportional_error = 2;
-            break;
-        case 0x07:
-            // lost line
-            current_status = 0x07;
-            proportional_error *= 3;
-            break;
-        default:
-            break;
-    }
-    
-    int junction_status = sensor_output bitand 0x08;
-    
-    if(junction_status == 0x08){
-        current_status = 0x08;
-    }
-    
-    cout << "get_path_status, proportion error: " << proportional_error << endl;
-}

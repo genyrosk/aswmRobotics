@@ -15,13 +15,15 @@ MicrocontrollerInterface::MicrocontrollerInterface(Idp *idpPtr){
 
 bool MicrocontrollerInterface::write(int output_byte){
     //TODO: Error handling
-    return idp->rlink.command (WRITE_PORT_1, output_byte);
+    return idp->rlink.command (WRITE_PORT_4, output_byte);
 }
 
 int MicrocontrollerInterface::read(int port_activation_byte){
     //TODO: Error handling
-    if(idp->rlink.command (WRITE_PORT_1, port_activation_byte)){
-    return idp->rlink.request(READ_PORT_1);
+    int writeReturn = idp->rlink.command (WRITE_PORT_4, port_activation_byte);
+    if(writeReturn){
+		int readReturn = idp->rlink.request(READ_PORT_4);
+		return readReturn;
     }
     else {
         return 0;
@@ -240,7 +242,7 @@ int Motors::get_motor_speed(int motor){
 void Motors::set_drive_motor_speed(int left, int right){
 	//Converting to sign magnitude, ensuring within correct bounds and inverting speed of left wheel as
 	//it is mounted in a flipped orientation
-	right *= -1;
+	left *= -1;
 	
     if(left > 127){
 		left = 127;

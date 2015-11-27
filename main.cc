@@ -29,6 +29,7 @@ ostringstream oss;
 
 
 int main (){
+	/*
 	RobotSettings robotSettings;
 	if(robotSettings.load() == 0){
 		cout << "Settings loaded successfully" << endl;
@@ -36,6 +37,7 @@ int main (){
 	else{
 		cout << "Settings not found" << endl;
 	}
+	*/
 	
 	//Setting up interfaces
 	Idp idp;
@@ -55,9 +57,14 @@ int main (){
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	cout << "current status: " << linefollower.current_status << endl;
 	linefollower.get_path_status();
+	linefollower.follow_line(100);
+	//linefollower.turn(-90,127);
 	cout << "current status: " << linefollower.current_status << endl;
 	
+	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+	//identifier.indicate_cracker_type(RED);
 	
+	/*
 	//Main loop
 	 Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
 	 Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
@@ -72,9 +79,10 @@ int main (){
 	 	//DELIVER TYPE WHITE CRACKERS
 	 	for(int i = 0; i < nWhiteCrackers; i++){
 			
-			pickup.dropoff();
+			pickup.dropoff(WHITE);
 		}
 	 }
+	*/
 	
 	/*
 if(identifier_interface->cracker_present(WHITE)){
@@ -94,13 +102,14 @@ if(identifier_interface->cracker_present(WHITE)){
 	return 0;
 	*/
 	
-	
+	/*
 	if(robotSettings.save() == 0){
 		cout << "Settings saved successfully" << endl;
 	}
 	else{
 		cout << "Error saving settings" << endl;
 	}
+	*/
 }
 
 

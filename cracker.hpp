@@ -13,7 +13,7 @@
 #include <iostream>
 using namespace std;
 
-enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
+enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN, DELIVERED };
 //string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
 
 class Cracker {

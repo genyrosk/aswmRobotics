@@ -23,9 +23,10 @@ public:
     
     const static int maxLimit = 3;
     Cracker crackers[maxLimit];
+    string read_status;
     
     double angle_cracker1_from_detector;
-    void indicate_cracker_type(cracker_type type); 
+    void indicate_cracker_type(cracker_type type);
     int n_crackers_present(cracker_type type);
     
     void id_procedure();

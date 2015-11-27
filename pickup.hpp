@@ -13,6 +13,7 @@
 #include <time.h>
 #include "mechanical.hpp"
 #include "identifier.hpp"
+#include "cracker.hpp"
 
 class Pickup{
 public:
@@ -22,6 +23,7 @@ public:
     
     int perform_pickup();
     int dropoff(double angle_to_rotate);
+    void dropoff(cracker_type type);
     
 private:
     
