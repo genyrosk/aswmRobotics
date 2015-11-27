@@ -13,7 +13,7 @@
 #include <iostream>
 using namespace std;
 
-enum  cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
+enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
 //string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
 
 class Cracker {
@@ -28,7 +28,6 @@ public:
     
     float angle_from_reference;
     bool delivered;
-    int nReadings;
     
     //Red, Black, Wood, White
     const static int max_limit = 4;
@@ -38,7 +37,7 @@ public:
     int calculate_probabilities(double peak_reading);
 
 private:
-    double normal_dist_cdf(float x);
+    double normal_dist_cdf(double x);
 };
 
 #endif /* cracker_hpp */

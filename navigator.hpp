@@ -32,6 +32,7 @@ public:
 	bool deliver_to_d1();
 	
 	Identifier * identifier_interface;
+	MicrocontrollerInterface * micro_interface;
 	
 	LineFollower linefollower;
 };

@@ -20,6 +20,16 @@ using namespace std;
 class LineFollower {
 public:
 
+	double proportional_error, integral_error, distance_moved;
+	
+	//TODO: Calibrate these gain values
+	static const double proportional_gain = 10;
+	static const double integral_gain = 20;
+    static const int left_wheel_speed = 100;
+    
+    int right_wheel_speed;
+    timeval start_time_on_line;
+
 	LineFollower();
 	LineFollower(Motors * motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr);
 	int follow_line(double distance);
@@ -27,18 +37,18 @@ public:
 	int reverse_after_pickup();
     int current_status;
     bool negative_ramp;
+    
+    void get_path_status();
 
 private:
-    
-    double time_on_line, proportional_error, proportional_gain, integral_error, integral_gain, distance_moved;
-    int left_wheel_speed, right_wheel_speed;
-    timeval start_time_on_line;
     
     Motors *motors_interface;
     MicrocontrollerInterface * micro_interface;
     AnalogueInterface * analogue_interface;
     
-    void get_path_status();                       // path decision making
+    //TODO: Change signature after testing
+     
+    void get_path_status(int testHexCode);                       // path decision making
 };
 
 

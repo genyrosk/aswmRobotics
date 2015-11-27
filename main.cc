@@ -17,6 +17,7 @@ using namespace std;
 #include "RobotSettings.hpp"
 #include "navigator.hpp"
 #include "pickup.hpp"
+#include "cracker.hpp"
 
 // Functions 
 /*
@@ -36,10 +37,9 @@ int main (){
 		cout << "Settings not found" << endl;
 	}
 	
+	//Setting up interfaces
 	Idp idp;
-	Motors motors = Motors(&idp);
-	
-	Actuator actuator = Actuator(&idp);
+	Motors motors = Motors(&idp);	
 	AnalogueInterface analogueInterface = AnalogueInterface(&idp);
 	MicrocontrollerInterface microInterface = MicrocontrollerInterface(&idp);
 	
@@ -47,23 +47,39 @@ int main (){
 		return -1;
 	}
 	
-	Identifier identifier;
-	identifier.id_procedure();
+	//motors.set_drive_motor_speed(127,127);
+	//delay(100000);
+	//identifier.id_procedure();
+	
 	
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
-	int current_status = linefollower.current_status;
-	cout << "current status: " << current_status << endl << endl;
-	linefollower.follow_line(100);
-	
-	Pickup pickup = Pickup(&motors, &analogueInterface, &actuator);
+	cout << "current status: " << linefollower.current_status << endl;
+	linefollower.get_path_status();
+	cout << "current status: " << linefollower.current_status << endl;
 	
 	
 	//Main loop
-	Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
-	nav.go_to_dock();
+	 Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+	 Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+	 Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);	
+	 
+	 nav.go_to_dock();
+	 pickup.perform_pickup();
+	 identifier.id_procedure();
+	 nav.deliver_to_d3();
+	 int nWhiteCrackers = identifier.n_crackers_present(WHITE);
+	 if(nWhiteCrackers > 0){
+	 	//DELIVER TYPE WHITE CRACKERS
+	 	for(int i = 0; i < nWhiteCrackers; i++){
+			
+			pickup.dropoff();
+		}
+	 }
 	
 	/*
-
+if(identifier_interface->cracker_present(WHITE)){
+			return true;
+		}
 	cout << "starting motors at speed " << speed << endl;
 	motors_start(speed);
 	delay(4000);
@@ -118,89 +134,6 @@ int get_sensor_output(){
 	return hex;
 }
 
-void stay_in_line( int current_status ){
-	
-	switch (current_status) {
-        case 0x01:
-            //slightly too far left
-            cout << "slightly too far left" << endl;
-            motors_mode(3);
-            break;
-        case 0x02:
-            // we're fucked... must be the negative ramp, bastards
-            cout << "we're fucked... must be the negative ramp, bastards" << endl;
-            motors_mode(5);
-            break;
-        case 0x03:
-            // too far left
-            cout << "too far left" << endl;
-            motors_mode(4);
-            break;
-        case 0x04:
-            // slightly too far right
-            cout << "slightly too far right" << endl;
-            motors_mode(1);
-            break;
-        case 0x05:
-            // perfect
-            cout << "perfect" << endl;
-            motors_mode(0);
-            break;
-        case 0x06:
-            // too far right
-            cout << "too far right" << endl;
-            motors_mode(2);
-            break;
-        case 0x07:
-            // lost line
-            cout << "lost line" << endl;
-            motors_mode(5);
-            break;
-        default:
-            break;
-    }
-	
-	
-}
-
-
-void motors_mode(int mode){
-	
-	switch(mode){
-		case 0: 
-		// continue going straight
-			idp.rlink.command (BOTH_MOTORS_GO_SAME, speed);
-			break;
-		case 1: 
-		// compensate right slightly
-			idp.rlink.command (MOTOR_1_GO, speed - 20);
-			idp.rlink.command (MOTOR_2_GO, speed + 20);
-			break;
-		case 2: 
-		// compensate right strongly
-			idp.rlink.command (MOTOR_1_GO, speed - 40);
-			idp.rlink.command (MOTOR_2_GO, speed + 40);
-			break;
-		case 3: 
-		// compensate left slightly
-			idp.rlink.command (MOTOR_1_GO, speed + 20);
-			idp.rlink.command (MOTOR_2_GO, speed - 20);
-			break;
-		case 4: 
-		// compensate left strongly
-			idp.rlink.command (MOTOR_1_GO, speed + 40);
-			idp.rlink.command (MOTOR_2_GO, speed - 40);
-			break;
-		case 5: 
-		// go backwards 
-			idp.rlink.command (BOTH_MOTORS_GO_OPPOSITE, speed);
-			break;
-		default:
-			break;
-	}
-	
-
-}
 
 void motors_start(int speed) {
 

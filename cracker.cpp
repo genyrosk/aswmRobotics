@@ -19,26 +19,21 @@ Cracker::Cracker(float angle){
     type = UNKNOWN;
     angle_from_reference = angle;
     delivered = false;
-    nReadings = 0;
     for(int i = 0; i<4; i++){
         type_probabilities[i] = 0;
     }
 }
 
-int Cracker::calculate_probabilities(double peak_reading){
+int Cracker::calculate_probabilities(double peak_value){
     //TODO: Calculate these values from experiments (Again Red, Black, Wood, White)
     double mean[] = {2.235,2.718,1.923,1.401};
     double std_deviation[] = {0.10437,0.17504,0.04738,0.14027};
     
-    cout<< "Peak reading: " << peak_reading << endl;
-    
-    for (int i = 0; i<4; i++) {
-        double normalised_reading = fabs(peak_reading - mean[i]) / std_deviation[i];
+    for (int i = 0; i < 4; i++) {
+        double normalised_reading = fabs(peak_value - mean[i]) / std_deviation[i];
         double calculated_probability = 2*(1 - normal_dist_cdf(normalised_reading));
-        type_probabilities[i] = (nReadings * type_probabilities[i] + calculated_probability) / (nReadings + 1);
+        type_probabilities[i] = calculated_probability;
     }
-    
-    nReadings++;
     
     int iterator = 0;
     double max = type_probabilities[0];
@@ -58,7 +53,7 @@ int Cracker::calculate_probabilities(double peak_reading){
 
 
 //Algorithm sourced from http://www.johndcook.com/blog/cpp_phi/ and is in the public domain
-double Cracker::normal_dist_cdf(float x){
+double Cracker::normal_dist_cdf(double x){
     // constants
     double a1 =  0.254829592;
     double a2 = -0.284496736;

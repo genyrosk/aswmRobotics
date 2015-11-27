@@ -12,12 +12,13 @@
 #include <stdio.h>
 #include <time.h>
 #include "mechanical.hpp"
+#include "identifier.hpp"
 
 class Pickup{
 public:
     
     Pickup();
-    Pickup(Motors *motorsPtr, AnalogueInterface * anaPtr, Actuator *actPtr);
+    Pickup(Motors *motorsPtr, AnalogueInterface * anaPtr, MicrocontrollerInterface *microPtr, Identifier *idenPtr);
     
     int perform_pickup();
     int dropoff(double angle_to_rotate);
@@ -28,12 +29,14 @@ private:
     timeval last_reading;
     AnalogueInterface *analogue_interface;
     Motors *motors_interface;
-    Actuator *actuator_interface;
+    MicrocontrollerInterface *micro_interface;
+    Identifier *identifier_interface;
     
     bool set_distance_to_shelf(double demanded_distance);
     int set_wheel_speed(double demanded_distance);
     void update_integral_distance(double demanded_distance);
-    bool rotate_wheel(double angle_in_degrees);
+    bool rotate_wheel(double angle_in_degrees, bool final_drop);
+    bool rotate_wheel_for_dropoff();
     
 };
 

@@ -25,11 +25,11 @@ public:
     Cracker crackers[maxLimit];
     
     double angle_cracker1_from_detector;
-    bool cracker_present(cracker_type type);
-    void indicate_cracker_type(cracker_type type);
+    void indicate_cracker_type(cracker_type type); 
+    int n_crackers_present(cracker_type type);
     
     void id_procedure();
-    string read_status;
+    void update_angle(double delta_angle);
     
 private:
     PeakDetection peak_detector;

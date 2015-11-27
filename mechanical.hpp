@@ -14,15 +14,6 @@
 #include "idp.h"
 using namespace std;
 
-
-class Actuator {
-public:
-	Actuator(Idp * idpPtr);
-	Idp *idp;
-    void extend();
-    void retract();
-};
-
 class Motors{
 public:
 	Motors(Idp * idpPtr);
@@ -45,14 +36,28 @@ public:
     int read(int port_activation_byte);
     void indicate_lost();
     void flash_leds(int time);
+    void extend_actuator();
+    void retract_actuator();
+    void request_crackers();
+    void indicate_red();
+    void indicate_black();
+    void indicate_white();
+    void indicate_wood();
+    
+private:
+	void led1(bool on);
+    void led2(bool on);
+    void indicate_type(bool led1on, bool led2on);
 };
 
 class AnalogueInterface{
 public:
 	AnalogueInterface(Idp * idpPtr);
 	Idp *idp;
-    double readADC(int port);
     double get_distance();
+    double readLDR();
+private:
+    double readADC(int port);
 };
 
 #endif /* mechanical_hpp */

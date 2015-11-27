@@ -5,19 +5,21 @@ Navigator::Navigator(Motors *motorsPtr, MicrocontrollerInterface * microPtr, Ana
 	
 	linefollower = LineFollower(motorsPtr, microPtr, anaPtr);
 	identifier_interface = idenPtr;
+	micro_interface = microPtr;
 
 }
 
 //Navigate to dock from start point
 bool Navigator::go_to_dock(){
 	//TODO: Measure distances
-	if(linefollower.follow_line(15)){
-		if(linefollower.follow_line(80)){
-			if(linefollower.follow_line(80)){
+	if(linefollower.follow_line(19)){
+		if(linefollower.follow_line(64)){
+			if(linefollower.follow_line(84)){
 				return true;
 			}
 		}
 	}
+	micro_interface->indicate_lost();
 	return false;
 }
 
@@ -27,23 +29,21 @@ bool Navigator::reverse_after_pickup(){
 
 bool Navigator::deliver_to_d3(){
 	//TODO: Measure distances, deal with negative ramp
-	if(linefollower.follow_line(100)){
-		if(identifier_interface->cracker_present(WHITE)){
+	if(linefollower.turn(-90,127)){
+		if(linefollower.follow_line(185)){
 			return true;
 		}
-		linefollower.turn(-90,127);
-		return false;
 	}
-	else{
-		//LOST!
-		return false;
-	}
+	//LOST!
+	micro_interface->indicate_lost();
+	return false;
 }
 
 bool Navigator::deliver_to_d1(){
 	if(linefollower.follow_line(100)){
-		
+		return true;
 	}
+	return false;
 }
 
 bool Navigator::test_nav(){
