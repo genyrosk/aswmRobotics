@@ -29,7 +29,14 @@ public:
 	bool test_nav();
 	bool reverse_after_pickup();
 	bool deliver_to_d3();
-	bool deliver_to_d1();
+	bool nav_to_d1();
+	void deliver_to_d1();
+	bool return_after_d1();
+	bool deliver_to_d2();
+	bool nav_to_d4();
+	bool deliver_to_d4();
+	bool return_after_d4();
+	bool return_dock();
 	
 	Identifier * identifier_interface;
 	MicrocontrollerInterface * micro_interface;

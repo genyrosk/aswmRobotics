@@ -19,11 +19,8 @@ bool MicrocontrollerInterface::write(int output_byte){
 }
 
 int MicrocontrollerInterface::read(int port_activation_byte){
-    //TODO: Error handling
-    int writeReturn = idp->rlink.command (WRITE_PORT_4, port_activation_byte);
-    if(writeReturn){
-		int readReturn = idp->rlink.request(READ_PORT_4);
-		return readReturn;
+    if(idp->rlink.command (WRITE_PORT_4, port_activation_byte)){
+		return idp->rlink.request(READ_PORT_4);
     }
     else {
         return 0;
@@ -45,13 +42,9 @@ void MicrocontrollerInterface::indicate_lost(){
 
 void MicrocontrollerInterface::flash_leds(int time){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x10;
-	int output_byte_off = current_status bitand 0xEF;
+	int output_byte_on = current_status bitor 0x60;
+	int output_byte_off = current_status bitand 0x9F;
 	
-	write(output_byte_on);
-	delay(time);
-	write(output_byte_off);
-	delay(time);
 	write(output_byte_on);
 	delay(time);
 	write(output_byte_off);
@@ -60,18 +53,17 @@ void MicrocontrollerInterface::flash_leds(int time){
 
 void MicrocontrollerInterface::request_crackers(){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x04;
-	int output_byte_off = current_status bitand 0xFB;
+	int output_byte_on = current_status bitor 0x10;
+	int output_byte_off = current_status bitand 0xEF;
 	
 	write(output_byte_on);
 	delay(5000);
 	write(output_byte_off);
-	delay(5000);
 }
 void MicrocontrollerInterface::led1(bool on){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x40;
-	int output_byte_off = current_status bitand 0xBF;
+	int output_byte_on = current_status bitor 0x20;
+	int output_byte_off = current_status bitand 0xDF;
 	
 	if(on){
 		write(output_byte_on);
@@ -83,8 +75,8 @@ void MicrocontrollerInterface::led1(bool on){
 
 void MicrocontrollerInterface::led2(bool on){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x20;
-	int output_byte_off = current_status bitand 0xDF;
+	int output_byte_on = current_status bitor 0x40;
+	int output_byte_off = current_status bitand 0xBF;
 	
 	if(on){
 		write(output_byte_on);
@@ -111,6 +103,7 @@ void MicrocontrollerInterface::indicate_wood(){
 }
 
 void MicrocontrollerInterface::indicate_type(bool led1on, bool led2on){
+	
 	flash_leds(100);
 	flash_leds(100);
 	

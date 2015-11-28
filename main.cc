@@ -12,7 +12,6 @@ using namespace std;
 #include "idp.h"
 #include "line_follower.hpp"
 #include "identifier.hpp"
-#include "torqueanalysis.hpp"
 #include "mechanical.hpp"
 #include "RobotSettings.hpp"
 #include "navigator.hpp"
@@ -49,6 +48,74 @@ int main (){
 		return -1;
 	}
 	
+	/*
+	// ---------------- COMPETITION CODE ----------------
+	Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+	Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+	Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);	
+	
+	nav.go_to_dock();
+	pickup.perform_pickup();
+	identifier.id_procedure();
+	nav.deliver_to_d3();
+	int nCrackers = identifier.n_crackers_present(WHITE);
+	if(nCrackers > 0){
+		pickup.dropoff(WHITE);
+	}
+	nav.nav_to_d1();
+	nCrackers = identifier.n_crackers_present(BLACK);
+	if(nCrackers > 0){
+		nav.deliver_to_d1();
+		pickup.dropoff(BLACK);
+	}
+	nav.deliver_to_d2();
+	nCrackers = identifier.n_crackers_present(RED);
+	if(nCrackers > 0){
+		pickup.dropoff(RED);
+	}
+	nav.nav_to_d4();
+	nCrackers = identifier.n_crackers_present(WOOD);
+	if(nCrackers > 0){
+		nav.deliver_to_d4();
+		pickup.dropoff(RED);
+		nav.return_after_d4();
+	}
+	nav.return_dock();
+	
+	//Made it around the board once!
+	
+	pickup.perform_pickup();
+	identifier.id_procedure();
+	nav.deliver_to_d3();
+	nCrackers = identifier.n_crackers_present(WHITE);
+	if(nCrackers > 0){
+		pickup.dropoff(WHITE);
+	}
+	nav.nav_to_d1();
+	nCrackers = identifier.n_crackers_present(BLACK);
+	if(nCrackers > 0){
+		nav.deliver_to_d1();
+		pickup.dropoff(BLACK);
+	}
+	nav.deliver_to_d2();
+	nCrackers = identifier.n_crackers_present(RED);
+	if(nCrackers > 0){
+		pickup.dropoff(RED);
+	}
+	nav.nav_to_d4();
+	nCrackers = identifier.n_crackers_present(WOOD);
+	if(nCrackers > 0){
+		nav.deliver_to_d4();
+		pickup.dropoff(RED);
+		nav.return_after_d4();
+	}
+	nav.return_dock();
+	*/
+	
+	
+	// ------- TEST CODE -------
+	
+	
 	//motors.set_drive_motor_speed(127,127);
 	//delay(100000);
 	//identifier.id_procedure();
@@ -57,37 +124,16 @@ int main (){
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	cout << "current status: " << linefollower.current_status << endl;
 	linefollower.get_path_status();
-	linefollower.follow_line(100);
+	linefollower.follow_line(100.0, true);
 	//linefollower.turn(-90,127);
 	cout << "current status: " << linefollower.current_status << endl;
 	
 	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
 	//identifier.indicate_cracker_type(RED);
 	
-	/*
-	//Main loop
-	 Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
-	 Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
-	 Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);	
-	 
-	 nav.go_to_dock();
-	 pickup.perform_pickup();
-	 identifier.id_procedure();
-	 nav.deliver_to_d3();
-	 int nWhiteCrackers = identifier.n_crackers_present(WHITE);
-	 if(nWhiteCrackers > 0){
-	 	//DELIVER TYPE WHITE CRACKERS
-	 	for(int i = 0; i < nWhiteCrackers; i++){
-			
-			pickup.dropoff(WHITE);
-		}
-	 }
-	*/
+	
 	
 	/*
-if(identifier_interface->cracker_present(WHITE)){
-			return true;
-		}
 	cout << "starting motors at speed " << speed << endl;
 	motors_start(speed);
 	delay(4000);

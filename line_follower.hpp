@@ -28,17 +28,17 @@ public:
     static const int left_wheel_speed = 100;
     
     int right_wheel_speed;
-    timeval start_time_on_line;
 
 	LineFollower();
 	LineFollower(Motors * motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr);
-	int follow_line(double distance);
+	int follow_line(double distance, bool toJunction);
 	int turn(double angle_in_degrees, int speed);
 	int reverse_after_pickup();
     int current_status;
     bool negative_ramp;
     
     void get_path_status();
+    void turn_degrees(double degrees);
 
 private:
     
@@ -46,9 +46,7 @@ private:
     MicrocontrollerInterface * micro_interface;
     AnalogueInterface * analogue_interface;
     
-    //TODO: Change signature after testing
-     
-    void get_path_status(int testHexCode);                       // path decision making
+    //void get_path_status(int testHexCode);                       // path decision making
 };
 
 

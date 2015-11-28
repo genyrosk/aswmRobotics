@@ -13,27 +13,22 @@
 #include <iostream>
 using namespace std;
 
-enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN, DELIVERED };
-//string cracker_type2[5] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
+enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
+const static char* cracker_type_strings[] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
 
 class Cracker {
 public:
     Cracker();
-    Cracker(float angle);
-    
-    //string cracker_type2[5];
-    //string type2;
-    
+    Cracker(double angle);
+
     cracker_type type;
     
-    float angle_from_reference;
-    bool delivered;
+    double angle_from_reference;
     
     //Red, Black, Wood, White
     const static int max_limit = 4;
     double type_probabilities[max_limit];
     
-    //Returns 1 if cracker has been identified, 0 if not
     int calculate_probabilities(double peak_reading);
 
 private:

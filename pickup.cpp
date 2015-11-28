@@ -57,7 +57,21 @@ int Pickup::perform_pickup(){
 }
 
 void Pickup::dropoff(cracker_type type){
-	
+	//TODO: Measure angle detector to base
+	int cracker_angle;
+	double angle_detector_base = 90;
+	for(int i = 0; i < 3 ; i++){
+		if(identifier_interface->crackers[i].type == type){
+			cracker_angle = static_cast<int>(identifier_interface->crackers[i].angle_from_reference + identifier_interface->angle_cracker1_from_detector);
+			cracker_angle = cracker_angle % 360;
+			if(cracker_angle < angle_detector_base){
+				dropoff(angle_detector_base - cracker_angle);
+			}
+			else{
+				dropoff(360 + angle_detector_base - cracker_angle);
+			}
+		}
+	}
 }
 
 int Pickup::dropoff(double angle_to_rotate){

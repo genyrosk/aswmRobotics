@@ -12,8 +12,9 @@
 using namespace std;
 
 Identifier::Identifier(){
+	double angle = 120.0;
     for (int i = 0; i<3; i++) {
-        crackers[i] = Cracker(120*i);
+        crackers[i] = Cracker(angle * i);
     }
     
     PeakDetection peak_detector;

@@ -14,11 +14,9 @@ Cracker::Cracker(){
     Cracker(0);
 }
 
-Cracker::Cracker(float angle){
-    
+Cracker::Cracker(double angle){
     type = UNKNOWN;
     angle_from_reference = angle;
-    delivered = false;
     for(int i = 0; i<4; i++){
         type_probabilities[i] = 0;
     }
@@ -38,7 +36,7 @@ int Cracker::calculate_probabilities(double peak_value){
     int iterator = 0;
     double max = type_probabilities[0];
     for (int i = 1; i<4; i++) {
-		cout << "Probability of " << static_cast<cracker_type>(i) << " = " << type_probabilities[i] << endl;
+		cout << "Probability of " << cracker_type_strings[i] << " = " << type_probabilities[i] << endl;
         if(type_probabilities[i]>max){
             iterator = i;
             max = type_probabilities[i];
