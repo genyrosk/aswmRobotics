@@ -14,7 +14,6 @@ MicrocontrollerInterface::MicrocontrollerInterface(Idp *idpPtr){
 }
 
 bool MicrocontrollerInterface::write(int output_byte){
-    //TODO: Error handling
     return idp->rlink.command (WRITE_PORT_4, output_byte);
 }
 
@@ -162,7 +161,6 @@ double AnalogueInterface::readADC(int port){
 ///Returns distance in cm from the distance detector 
 double AnalogueInterface::get_distance(){
     
-    //TODO: Make call to distance detector to read voltage
     double DD_return = readADC(0);
     double m = 0;
     

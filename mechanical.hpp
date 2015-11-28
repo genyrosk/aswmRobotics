@@ -44,10 +44,12 @@ public:
     void indicate_white();
     void indicate_wood();
     
-private:
-	void led1(bool on);
+    void led1(bool on);
     void led2(bool on);
     void indicate_type(bool led1on, bool led2on);
+    
+private:
+	
 };
 
 class AnalogueInterface{

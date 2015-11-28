@@ -15,6 +15,7 @@
 #include "identifier.hpp"
 #include "cracker.hpp"
 
+//TODO: Move private methods back
 class Pickup{
 public:
     
@@ -24,6 +25,8 @@ public:
     int perform_pickup();
     int dropoff(double angle_to_rotate);
     void dropoff(cracker_type type);
+    bool set_distance_to_shelf(double demanded_distance);
+    bool rotate_wheel(double angle_in_degrees, bool final_drop);
     
 private:
     
@@ -34,10 +37,9 @@ private:
     MicrocontrollerInterface *micro_interface;
     Identifier *identifier_interface;
     
-    bool set_distance_to_shelf(double demanded_distance);
+    
     int set_wheel_speed(double demanded_distance);
     void update_integral_distance(double demanded_distance);
-    bool rotate_wheel(double angle_in_degrees, bool final_drop);
     bool rotate_wheel_for_dropoff();
     
 };
