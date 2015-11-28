@@ -181,6 +181,7 @@ int main (){
      nav.go_to_dock();
      pickup.perform_pickup();
      identifier.id_procedure();
+     nav.reverse_after_pickup();
      nav.deliver_to_d3();
      int nCrackers = identifier.n_crackers_present(WHITE);
      if(nCrackers > 0){

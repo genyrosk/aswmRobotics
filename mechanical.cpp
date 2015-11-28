@@ -2,7 +2,7 @@
 //  mechanical.cpp
 //  awsmRobot
 //
-//  Created by Evgeny Roskach on 15/11/15.
+//  Created by Peter Boothroyd on 15/11/15.
 //  Copyright © 2015 Awsme. All rights reserved.
 //
 
