@@ -43,6 +43,7 @@ int Pickup::perform_pickup(){
 		cout << "Moving to distance: " << distances[i] << endl;
         if(set_distance_to_shelf(distances[i])){
             cout << "In position, rotating wheel..." << endl;
+            //TODO: may have to implement different angles - eg first rotates 100, then 110 then 120 for tolerances
             rotate_wheel(120, false);
         }
         else{
@@ -60,14 +61,26 @@ void Pickup::dropoff(cracker_type type){
 	//TODO: Measure angle detector to base
 	int cracker_angle;
 	double angle_detector_base = 90;
+    cout << "Request to drop type: " << type << endl;
+    
 	for(int i = 0; i < 3 ; i++){
+        cout << "Cracker[" << i << "] type  = " << identifier_interface->crackers[i].type << endl;
 		if(identifier_interface->crackers[i].type == type){
+            
+            cout << "Types match! Starting drop off sequence... " << endl;
+            
 			cracker_angle = static_cast<int>(identifier_interface->crackers[i].angle_from_reference + identifier_interface->angle_cracker1_from_detector);
+            cout << "Cracker angle = " << cracker_angle << endl;
+            
 			cracker_angle = cracker_angle % 360;
+            cout << "Cracker angle after modulus = " << cracker_angle << endl;
+            
 			if(cracker_angle < angle_detector_base){
+                cout << "Between LDR and dropoff positions, rotating angle: " << angle_detector_base - cracker_angle << endl;
 				dropoff(angle_detector_base - cracker_angle);
 			}
 			else{
+                cout << "Past dropoff position, rotating angle: " << 360 + angle_detector_base - cracker_angle << endl;
 				dropoff(360 + angle_detector_base - cracker_angle);
 			}
 		}
@@ -110,17 +123,6 @@ int Pickup::set_wheel_speed(double demand_distance){
         double requested_speed = control_signal * speed_gain;
         int int_speed = static_cast<int>(128*requested_speed);
         
-        cout << "Calculated speed before sign magnitude: " << int_speed << endl;
-        //Convert to sign-magnitude and force to be within bounds
-        if(int_speed > 127){
-            int_speed = 127;
-        }
-        if(int_speed<-128){
-            int_speed = -128;
-        }
-        if(int_speed<0){
-            int_speed = 128 - int_speed;
-        }
         cout << "Calculated speed after sign magnitude: " << int_speed << endl;
         return int_speed;
     }
@@ -129,8 +131,10 @@ int Pickup::set_wheel_speed(double demand_distance){
 void Pickup::update_integral_distance(double demanded_distance){
     timeval currentTime;
     gettimeofday(&currentTime, NULL);
+    
     double diff_time = diff_ms(currentTime, last_reading)/1000;
     cout << "Difference in time (s): " << diff_time << endl;
+    
     integral_distance += (diff_time * (demanded_distance - distance_from_shelf));
     cout << "Integral distance: " << integral_distance << endl;
 }
@@ -146,10 +150,10 @@ bool Pickup::set_distance_to_shelf(double demanded_distance) {
         motors_interface->set_drive_motor_speed(wheel_speed, wheel_speed);
         
         if(wheel_speed != 0){
-			cout << "Reached demanded_distance" << endl;
             continue;
         }
         else{
+            cout << "Reached demanded_distance" << endl;
             return true;
         } 
     }
@@ -178,7 +182,7 @@ bool Pickup::rotate_wheel(double angle_in_degrees, bool final_drop){
     
     while(angle_moved < angle_in_degrees){
         
-        current_speed = motors_interface->MAX_ROTATION_SPEED * motors_interface->get_motor_speed(3) / 127;
+        current_speed = motors_interface->MAX_ROTATION_SPEED * setRotationSpeed / 127;
         
         gettimeofday(&current_time, NULL);
         
@@ -189,8 +193,10 @@ bool Pickup::rotate_wheel(double angle_in_degrees, bool final_drop){
 		
         angle_moved += current_speed * diffTime;
         
+        cout << "Current angle: " << angle_moved << endl;
         time_last_speed_reading = current_time;
     }
+    cout << "Reached demanded angle." << endl;
     motors_interface->set_motor_speed(3, 0);
     return true;
 }

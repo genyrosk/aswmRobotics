@@ -29,6 +29,7 @@ bool Navigator::reverse_after_pickup(){
 bool Navigator::deliver_to_d3(){
 	if(linefollower.turn(-90,127)){
 		if(linefollower.follow_line(185.0, true)){
+            micro_interface->request_crackers();
 			return true;
 		}
 	}
@@ -117,7 +118,7 @@ bool Navigator::return_dock(){
 
 bool Navigator::test_nav(){
 	if(linefollower.follow_line(50.0, true)){
-		if(linefollower.turn(90, 127)){
+		if(linefollower.turn(-90, 127)){
 			return true;
 		}
 	}

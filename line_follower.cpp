@@ -28,7 +28,6 @@ LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPt
     analogue_interface = anaPtr;
 }
 
-//TODO: Probably dont need this. Implement a method which overcomes the length issue of the robot
 int LineFollower::reverse_after_pickup(){
 	get_path_status();
 	motors_interface->set_drive_motor_speed( -128, -128);
@@ -140,7 +139,6 @@ int LineFollower::follow_line(double distance, bool toJunction){
 	//TODO: REMOVE J
 	while(distance_moved < 1.25 * distance){
 		
-		//TODO: Add in emergency stop if distance detector indicates obstacle?
 		get_path_status();
 		distance_to_obstacle = analogue_interface->get_distance();
 		

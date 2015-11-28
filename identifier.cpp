@@ -94,7 +94,7 @@ void Identifier::id_procedure(){
                 cout << "Peak reading in identifier : " << peakReading << endl;
                 
                 crackers[i].calculate_probabilities(peakReading); // will assign a cracker_type to our cracker object
-                //TODO: Uncomment: indicate_cracker_type(crackers[i].type);
+                indicate_cracker_type(crackers[i].type);
                 break;
             }
             //j++;          
@@ -130,6 +130,5 @@ int Identifier::n_crackers_present(cracker_type type){
 			nType++;
 		}
 	}
-	
 	return nType;
 }

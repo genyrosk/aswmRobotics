@@ -48,91 +48,198 @@ int main (){
 		return -1;
 	}
 	
-	/*
-	// ---------------- COMPETITION CODE ----------------
-	Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
-	Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
-	Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);	
-	
-	nav.go_to_dock();
-	pickup.perform_pickup();
-	identifier.id_procedure();
-	nav.deliver_to_d3();
-	int nCrackers = identifier.n_crackers_present(WHITE);
-	if(nCrackers > 0){
-		pickup.dropoff(WHITE);
-	}
-	nav.nav_to_d1();
-	nCrackers = identifier.n_crackers_present(BLACK);
-	if(nCrackers > 0){
-		nav.deliver_to_d1();
-		pickup.dropoff(BLACK);
-	}
-	nav.deliver_to_d2();
-	nCrackers = identifier.n_crackers_present(RED);
-	if(nCrackers > 0){
-		pickup.dropoff(RED);
-	}
-	nav.nav_to_d4();
-	nCrackers = identifier.n_crackers_present(WOOD);
-	if(nCrackers > 0){
-		nav.deliver_to_d4();
-		pickup.dropoff(RED);
-		nav.return_after_d4();
-	}
-	nav.return_dock();
-	
-	//Made it around the board once!
-	
-	pickup.perform_pickup();
-	identifier.id_procedure();
-	nav.deliver_to_d3();
-	nCrackers = identifier.n_crackers_present(WHITE);
-	if(nCrackers > 0){
-		pickup.dropoff(WHITE);
-	}
-	nav.nav_to_d1();
-	nCrackers = identifier.n_crackers_present(BLACK);
-	if(nCrackers > 0){
-		nav.deliver_to_d1();
-		pickup.dropoff(BLACK);
-	}
-	nav.deliver_to_d2();
-	nCrackers = identifier.n_crackers_present(RED);
-	if(nCrackers > 0){
-		pickup.dropoff(RED);
-	}
-	nav.nav_to_d4();
-	nCrackers = identifier.n_crackers_present(WOOD);
-	if(nCrackers > 0){
-		nav.deliver_to_d4();
-		pickup.dropoff(RED);
-		nav.return_after_d4();
-	}
-	nav.return_dock();
-	*/
-	
-	
 	// ------- TEST CODE -------
 	
-	
+	//TESTING DRIVE MOTORS:
 	//motors.set_drive_motor_speed(127,127);
 	//delay(100000);
-	//identifier.id_procedure();
 	
 	
+    //LINE FOLLOWING TESTS:
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	cout << "current status: " << linefollower.current_status << endl;
 	linefollower.get_path_status();
+    
+    //FOLLOW STRAIGHT LINE
 	linefollower.follow_line(100.0, true);
-	//linefollower.turn(-90,127);
-	cout << "current status: " << linefollower.current_status << endl;
+    
+    //FOLLOW SET DISTANCE
+    linefollower.follow_line(50.0, false);
+	
+    //PERFORM TURN
+    linefollower.turn(-90,127);
+    
+    //TURN SET ANGLE
+    linefollower.turn_degrees(45);
+    
+    
+    
+    //NAVIGATION TESTS:
+    Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+    Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+    
+    //LINKING FOLLOW LINE AND TURN
+    nav.test_nav();
+    
+    
+    
+    //PICKUP TESTS:
+    Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);
+    
+    //STOP AT DISTANCE
+    pickup.set_distance_to_shelf(10);
+    
+    //ALIGNS CORRECTLY
+    pickup.perform_pickup();
+    
+    
+    
+    //DROPOFF TESTS:
+    
+    //CALCULATE ANGLE TO ROTATE
+    identifier.crackers[0].type == WHITE;
+    identifier.crackers[1].type == RED;
+    identifier.crackers[2].type == WOOD;
+    identifier.angle_cracker1_from_detector = 57;
+    pickup.dropoff(WHITE);
+    
+    //DEALING WITH MULTIPLE CRACKERS OF SAME TYPE
+    identifier.crackers[0].type == WHITE;
+    identifier.crackers[1].type == WHITE;
+    identifier.crackers[2].type == WHITE;
+    identifier.angle_cracker1_from_detector = 76;
+    pickup.dropoff(WHITE);
+    
+    
+    
+    //IDENTIFICATION TESTS:
+    
+    //ANGLE UPDATED CORRECTLY
+    identifier.angle_cracker1_from_detector = 78;
+    cout << "Initial angle: "<< identifier.angle_cracker1_from_detector << endl;
+    pickup.rotate_wheel(40, false);
+    cout << "Predicted final angle: "<< 78 + 40 << ". Actual final angle: " << identifier.angle_cracker1_from_detector << endl;
+    
+    
+    
+    //LED INDICATION TESTS:
+    
+    //CRACKER REQUEST
+    microInterface.request_crackers();
+    
+    //FLASH LEDS
+    microInterface.flash_leds(100);
+    microInterface.flash_leds(100);
+    
+    //SOS
+    microInterface.indicate_lost();
+    
+    //LED1&2 ON/OFF
+    microInterface.led1(true);
+    delay(5000);
+    microInterface.led1(false);
+    delay(5000);
+    microInterface.led2(true);
+    delay(5000);
+    microInterface.led2(false);
+    delay(5000);
+    
+    //INDICATE TYPES
+    microInterface.indicate_red();
+    microInterface.indicate_black();
+    microInterface.indicate_white();
+    microInterface.indicate_wood();
+    
+    //ACTUATOR TESTS:
+    microInterface.extend_actuator();
+    delay(5000);
+    microInterface.retract_actuator();
+    
+    
+    
+    //ANALOGUE TESTS:
+    
+    //READ FROM LDR
+    analogueInterface.readLDR();
+    
+    //READ DISTANCE
+    analogueInterface.get_distance();
 	
 	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
 	//identifier.indicate_cracker_type(RED);
 	
 	
-	
+    
+    
+     // ---------------- COMPETITION CODE ----------------
+     
+     /*
+     Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+     Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+     Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);
+     
+     nav.go_to_dock();
+     pickup.perform_pickup();
+     identifier.id_procedure();
+     nav.deliver_to_d3();
+     int nCrackers = identifier.n_crackers_present(WHITE);
+     if(nCrackers > 0){
+     pickup.dropoff(WHITE);
+     }
+     nav.nav_to_d1();
+     nCrackers = identifier.n_crackers_present(BLACK);
+     if(nCrackers > 0){
+     nav.deliver_to_d1();
+     pickup.dropoff(BLACK);
+     }
+     nav.deliver_to_d2();
+     nCrackers = identifier.n_crackers_present(RED);
+     if(nCrackers > 0){
+     pickup.dropoff(RED);
+     }
+     nav.nav_to_d4();
+     nCrackers = identifier.n_crackers_present(WOOD);
+     if(nCrackers > 0){
+     nav.deliver_to_d4();
+     pickup.dropoff(RED);
+     nav.return_after_d4();
+     }
+     nav.return_dock();
+     
+     //Made it around the board once!
+     
+     pickup.perform_pickup();
+     identifier.id_procedure();
+     nav.deliver_to_d3();
+     nCrackers = identifier.n_crackers_present(WHITE);
+     if(nCrackers > 0){
+     pickup.dropoff(WHITE);
+     }
+     nav.nav_to_d1();
+     nCrackers = identifier.n_crackers_present(BLACK);
+     if(nCrackers > 0){
+     nav.deliver_to_d1();
+     pickup.dropoff(BLACK);
+     }
+     nav.deliver_to_d2();
+     nCrackers = identifier.n_crackers_present(RED);
+     if(nCrackers > 0){
+     pickup.dropoff(RED);
+     }
+     nav.nav_to_d4();
+     nCrackers = identifier.n_crackers_present(WOOD);
+     if(nCrackers > 0){
+     nav.deliver_to_d4();
+     pickup.dropoff(RED);
+     nav.return_after_d4();
+     }
+     nav.return_dock();
+     */
+    
+
+    // ---------------- COMPETITION CODE ----------------
+    
+    
 	/*
 	cout << "starting motors at speed " << speed << endl;
 	motors_start(speed);
