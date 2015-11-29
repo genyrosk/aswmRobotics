@@ -57,9 +57,11 @@ int Pickup::perform_pickup(){
     return true;
 }
 
-void Pickup::dropoff(cracker_type type){
+int Pickup::dropoff(cracker_type type){
 	//TODO: Measure angle detector to base
+    
 	int cracker_angle;
+    int nCrackersDelivered = 0;
 	double angle_detector_base = 90;
     cout << "Request to drop type: " << type << endl;
     
@@ -83,8 +85,10 @@ void Pickup::dropoff(cracker_type type){
                 cout << "Past dropoff position, rotating angle: " << 360 + angle_detector_base - cracker_angle << endl;
 				dropoff(360 + angle_detector_base - cracker_angle);
 			}
+            nCrackersDelivered++;
 		}
 	}
+    return nCrackersDelivered;
 }
 
 int Pickup::dropoff(double angle_to_rotate){

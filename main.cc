@@ -185,24 +185,24 @@ int main (){
      nav.deliver_to_d3();
      int nCrackers = identifier.n_crackers_present(WHITE);
      if(nCrackers > 0){
-     pickup.dropoff(WHITE);
+     robotSettings.n_crackers_delivered += pickup.dropoff(WHITE);
      }
      nav.nav_to_d1();
      nCrackers = identifier.n_crackers_present(BLACK);
      if(nCrackers > 0){
      nav.deliver_to_d1();
-     pickup.dropoff(BLACK);
+     robotSettings.n_crackers_delivered += pickup.dropoff(BLACK);
      }
      nav.deliver_to_d2();
      nCrackers = identifier.n_crackers_present(RED);
      if(nCrackers > 0){
-     pickup.dropoff(RED);
+     robotSettings.n_crackers_delivered += pickup.dropoff(RED);
      }
      nav.nav_to_d4();
-     nCrackers = identifier.n_crackers_present(WOOD);
+     robotSettings.n_crackers_delivered += nCrackers = identifier.n_crackers_present(WOOD);
      if(nCrackers > 0){
      nav.deliver_to_d4();
-     pickup.dropoff(RED);
+     robotSettings.n_crackers_delivered += pickup.dropoff(RED);
      nav.return_after_d4();
      }
      nav.return_dock();

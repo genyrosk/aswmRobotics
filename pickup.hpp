@@ -24,7 +24,7 @@ public:
     
     int perform_pickup();
     int dropoff(double angle_to_rotate);
-    void dropoff(cracker_type type);
+    int dropoff(cracker_type type);
     bool set_distance_to_shelf(double demanded_distance);
     bool rotate_wheel(double angle_in_degrees, bool final_drop);
     
