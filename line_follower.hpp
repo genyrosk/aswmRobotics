@@ -23,7 +23,7 @@ public:
 	double proportional_error, integral_error, distance_moved;
 	
 	//TODO: Calibrate these gain values
-	static const double proportional_gain = 10;
+	static const double proportional_gain = 20;
 	static const double integral_gain = 2;
     static const int left_wheel_speed = 100;
     

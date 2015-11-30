@@ -31,8 +31,8 @@ ostringstream oss;
 int main (){
 	
 	//Save cout to file for debugging
-	//ofstream out("debug.txt");
-	//cout.rdbuf(out.rdbuf());
+	ofstream out("debug.txt");
+	cout.rdbuf(out.rdbuf());
 	
 	/*
 	RobotSettings robotSettings;
@@ -58,24 +58,41 @@ int main (){
 	
 	
 	
-	/*
+	
     //LINE FOLLOWING TESTS:
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	cout << "current status: " << linefollower.current_status <<". Negative ramp: " << linefollower.negative_ramp << endl;
 	linefollower.get_path_status();
     
+    
     //FOLLOW STRAIGHT LINE
-	linefollower.follow_line(100.0, true);
+	linefollower.follow_line(150.0, true);
 	
 	//PERFORM TURN
-    linefollower.turn(-90,100);
+    linefollower.turn(90,90);
     
 	linefollower.follow_line(100.0, true);
-    linefollower.turn(90,100);
+	linefollower.follow_line(100.0, true);
+	linefollower.follow_line(100.0, true);
+    linefollower.turn(90,90);
     
     //FOLLOW SET DISTANCE
-    linefollower.follow_line(50.0, false);
+    //linefollower.follow_line(20.0, false);
+    
+	linefollower.follow_line(100.0, true);
 	
+	/*
+	linefollower.follow_line(0.01, false);
+	linefollower.follow_line(-0.01, true);
+    delay(1000);
+    
+    
+    linefollower.turn(90,90);
+	linefollower.follow_line(100.0, true);
+    linefollower.turn(90,90);
+    */
+    
+	/*
     //TURN SET ANGLE
     linefollower.turn_degrees(45);
     
@@ -84,6 +101,7 @@ int main (){
     //NAVIGATION TESTS:
     Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
     Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+    
     
     //LINKING FOLLOW LINE AND TURN
     nav.test_nav();

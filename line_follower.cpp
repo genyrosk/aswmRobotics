@@ -48,13 +48,13 @@ void LineFollower::get_path_status(){
 	
     //TODO: may have to change to 0xFF for testing
     int sensor_output = micro_interface->read_line_sensors();
-    cout << "Sensor output: " << sensor_output << endl;
+    //cout << "Sensor output: " << sensor_output << endl;
     
     int ir_sensor_output = sensor_output bitand 0x07;
-    cout << "IR sensor output: " << ir_sensor_output << endl;
+    //cout << "IR sensor output: " << ir_sensor_output << endl;
         
     int junction_status = sensor_output bitand 0x08;
-    cout << "Junction status: " << junction_status << endl;
+    //cout << "Junction status: " << junction_status << endl;
     
     //Only interested in bits 0-2
     if(negative_ramp){
@@ -113,8 +113,8 @@ void LineFollower::get_path_status(){
         current_status = 0x08;
     }
     
-    cout << "proportion error: " << proportional_error << endl;
-    cout << "current status: " << current_status << endl;
+    //cout << "proportion error: " << proportional_error << endl;
+    //cout << "current status: " << current_status << endl;
 }
 
 
@@ -143,7 +143,7 @@ int LineFollower::follow_line(double distance, bool toJunction){
 		cout << "Current distance moved: " << distance_moved << endl;
 		
 		//TODO: Add this into if || distance_to_obstacle <= 10 
-		if(distance_moved > 0.6 * distance && current_status == 0x08){
+		if(distance_moved > 10 && current_status == 0x08){
 			cout<< "Exited while loop, status: " << current_status << " .Distance moved: " << distance_moved << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
 			
@@ -270,12 +270,12 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 			if(current_status == 0x01){
 				current_speed = current_speed * 2 / 3;
 				cout << "Just spotted line, slow down turning rate so we don't overshoot and miss it. Current speed = " << current_speed << endl;	
-				motors_interface->set_drive_motor_speed(-current_speed, current_speed);
+				motors_interface->set_drive_motor_speed(-30, 30);
 			}
 			else if(current_status == 0x03){
 				current_speed = current_speed / 2;
 				cout << "Almost there, slowing turning rate. Current speed = " << current_speed << endl;
-				motors_interface->set_drive_motor_speed(-current_speed, current_speed);
+				motors_interface->set_drive_motor_speed(-20, 20);
 			}
 			else if(current_status == 0x06){
 				current_speed = current_speed / 2;
@@ -293,12 +293,12 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 			if(current_status == 0x04){
 				current_speed = current_speed * 2 / 3;
 				cout << "Just spotted line, slow down turning rate so we don't overshoot and miss it. Current speed = " << current_speed << endl;
-				motors_interface->set_drive_motor_speed(current_speed, -current_speed);
+				motors_interface->set_drive_motor_speed(30, -30);
 			}
 			else if(current_status == 0x06){
 				current_speed = current_speed / 2;
 				cout << "Almost there, slowing turning rate. Current speed = " << current_speed << endl;
-				motors_interface->set_drive_motor_speed(current_speed, -current_speed);
+				motors_interface->set_drive_motor_speed(20, -20);
 			}
 			else if(current_status == 0x03){
 				current_speed = current_speed / 2;
@@ -325,6 +325,7 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 	
 	//Don't want to go into infinite loop
 	if(abs(new_angle_in_degrees) < 20){
+		cout << "didn't find the line lol" << endl << endl;
 		return false;
 	}
 	
