@@ -37,21 +37,23 @@ int MicrocontrollerInterface::read_line_sensors(){
 
 void MicrocontrollerInterface::indicate_lost(){
 	//SOS message
-	flash_leds(50);
-	flash_leds(50);
-	flash_leds(50);
+	flash_leds(100);
+	flash_leds(100);
+	flash_leds(100);
+	delay(200);
 	flash_leds(200);
 	flash_leds(200);
 	flash_leds(200);
-	flash_leds(50);
-	flash_leds(50);
-	flash_leds(50);
+	delay(200);
+	flash_leds(100);
+	flash_leds(100);
+	flash_leds(100);
 }
 
 void MicrocontrollerInterface::flash_leds(int time){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x60;
-	int output_byte_off = current_status bitand 0x9F;
+	int output_byte_off = current_status bitor 0x60;
+	int output_byte_on = current_status bitand 0x9F;
 	
 	write(output_byte_on);
 	delay(time);
@@ -61,8 +63,8 @@ void MicrocontrollerInterface::flash_leds(int time){
 
 void MicrocontrollerInterface::request_crackers(){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x10;
-	int output_byte_off = current_status bitand 0xEF;
+	int output_byte_off = current_status bitor 0x10;
+	int output_byte_on = current_status bitand 0xEF;
 	
 	write(output_byte_on);
 	delay(5000);
@@ -70,8 +72,8 @@ void MicrocontrollerInterface::request_crackers(){
 }
 void MicrocontrollerInterface::led1(bool on){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x20;
-	int output_byte_off = current_status bitand 0xDF;
+	int output_byte_off = current_status bitor 0x40;
+	int output_byte_on = current_status bitand 0xBF;
 	
 	if(on){
 		write(output_byte_on);
@@ -83,8 +85,8 @@ void MicrocontrollerInterface::led1(bool on){
 
 void MicrocontrollerInterface::led2(bool on){
 	int current_status = read(0xFF);
-	int output_byte_on = current_status bitor 0x40;
-	int output_byte_off = current_status bitand 0xBF;
+	int output_byte_off = current_status bitor 0x20;
+	int output_byte_on = current_status bitand 0xDF;
 	
 	if(on){
 		write(output_byte_on);
@@ -114,6 +116,7 @@ void MicrocontrollerInterface::indicate_type(bool led1on, bool led2on){
 	
 	flash_leds(100);
 	flash_leds(100);
+	delay(1000);
 	
 	led1(led1on);
 	led2(led2on);
@@ -121,6 +124,7 @@ void MicrocontrollerInterface::indicate_type(bool led1on, bool led2on){
 	led1(false);
 	led2(false);
 	
+	delay(1000);
 	flash_leds(100);
 	flash_leds(100);
 }

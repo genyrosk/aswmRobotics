@@ -1,0 +1,6 @@
+connection_status: 0
+...
+Connected
+connection time 59
+Requesting read with byte: 255
+Returned: 240

@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <fstream>
 using namespace std;
 #include <robot_instr.h>
 #include <robot_link.h>
@@ -28,6 +29,11 @@ ostringstream oss;
 
 
 int main (){
+	
+	//Save cout to file for debugging
+	//ofstream out("debug.txt");
+	//cout.rdbuf(out.rdbuf());
+	
 	/*
 	RobotSettings robotSettings;
 	if(robotSettings.load() == 0){
@@ -50,13 +56,9 @@ int main (){
 	
 	// ------- TEST CODE -------
 	
-	//TESTING DRIVE MOTORS:
-	//motors.set_ramp_time(50);
-	//cout << "Setting motor speeds."<< endl;
-	//motors.set_drive_motor_speed(60,127);
-	//delay(10000);
 	
 	
+	/*
     //LINE FOLLOWING TESTS:
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	cout << "current status: " << linefollower.current_status <<". Negative ramp: " << linefollower.negative_ramp << endl;
@@ -70,12 +72,10 @@ int main (){
     
 	linefollower.follow_line(100.0, true);
     linefollower.turn(90,100);
-    /*
+    
     //FOLLOW SET DISTANCE
     linefollower.follow_line(50.0, false);
 	
-    
-    
     //TURN SET ANGLE
     linefollower.turn_degrees(45);
     
@@ -128,40 +128,41 @@ int main (){
     cout << "Predicted final angle: "<< 78 + 40 << ". Actual final angle: " << identifier.angle_cracker1_from_detector << endl;
     
     
-    
+    */
     //LED INDICATION TESTS:
     
     //CRACKER REQUEST
-    microInterface.request_crackers();
+    //microInterface.request_crackers();
     
     //FLASH LEDS
-    microInterface.flash_leds(100);
-    microInterface.flash_leds(100);
+    //microInterface.flash_leds(100);
+    //microInterface.flash_leds(100);
     
     //SOS
-    microInterface.indicate_lost();
+    //cout<< "SOS" << endl;
+    //microInterface.indicate_lost();
     
     //LED1&2 ON/OFF
-    microInterface.led1(true);
-    delay(5000);
-    microInterface.led1(false);
-    delay(5000);
-    microInterface.led2(true);
-    delay(5000);
-    microInterface.led2(false);
-    delay(5000);
+    //microInterface.led1(true);
+    //delay(5000);
+    //microInterface.led1(false);
+    //delay(5000);
+    //microInterface.led2(true);
+    //delay(5000);
+    //microInterface.led2(false);
+    //delay(5000);
     
     //INDICATE TYPES
-    microInterface.indicate_red();
-    microInterface.indicate_black();
-    microInterface.indicate_white();
-    microInterface.indicate_wood();
+    //microInterface.indicate_red();
+    //microInterface.indicate_black();
+    //microInterface.indicate_white();
+    //microInterface.indicate_wood();
     
     //ACTUATOR TESTS:
     microInterface.extend_actuator();
     delay(5000);
     microInterface.retract_actuator();
-    
+    /*
     
     
     //ANALOGUE TESTS:
@@ -174,6 +175,13 @@ int main (){
 	
 	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
 	//identifier.indicate_cracker_type(RED);
+	 
+	
+	* //TESTING DRIVE MOTORS:
+	//motors.set_ramp_time(50);
+	//cout << "Setting motor speeds."<< endl;
+	//motors.set_drive_motor_speed(60,127);
+	//delay(10000);
 	
 	*/
     

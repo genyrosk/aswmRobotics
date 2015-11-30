@@ -119,10 +119,6 @@ void LineFollower::get_path_status(){
 
 
 int LineFollower::follow_line(double distance, bool toJunction){
-
-	//TODO: Remove test code
-	//int sensor[] = {0x05,0x05,0x04,0x04,0x05,0x05,0x04,0x04,0x06,0x06,0x05,0x05,0x01,0x01,0x03,0x03,0x01,0x01,0x05,0x06, 0x05,0x05,0x04,0x04,0x05,0x05,0x04,0x04,0x06,0x06,0x05,0x05,0x01,0x01,0x03,0x03,0x01,0x08,0x05,0x06};
-	//int j = 0;
 	
 	distance_moved = 0;
 	proportional_error = 0;
@@ -139,7 +135,6 @@ int LineFollower::follow_line(double distance, bool toJunction){
 	double time_in_s = 0;
 	double distance_to_obstacle;
 	
-	//TODO: REMOVE J & delay
 	while(distance_moved < 1.25 * distance){
 		get_path_status();
 		distance_to_obstacle = analogue_interface->get_distance();
@@ -147,8 +142,8 @@ int LineFollower::follow_line(double distance, bool toJunction){
 		cout << "Current status: " << current_status << endl;
 		cout << "Current distance moved: " << distance_moved << endl;
 		
-		//TODO: Add this into if ||  distance_to_obstacle <= 10 distance_moved > 0.6 * 
-		if(distance_moved > 10 && current_status == 0x08){
+		//TODO: Add this into if || distance_to_obstacle <= 10 
+		if(distance_moved > 0.6 * distance && current_status == 0x08){
 			cout<< "Exited while loop, status: " << current_status << " .Distance moved: " << distance_moved << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
 			
@@ -177,7 +172,6 @@ int LineFollower::follow_line(double distance, bool toJunction){
 		
 		distance_moved += (time_in_s * currentMeanSpeed * motors_interface->MAX_SPEED) / 127;
 		integral_error += time_in_s * proportional_error;
-		//j++;
 	}
 	
 	//Hasn't found junction
@@ -268,7 +262,6 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 		if(angle_moved_magnitude > 0.6 * angle_magnitude && (current_status == 0x02 ||current_status == 0x07)){
 			cout << "Found the line!" << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
-			//follow_line(100.0, false);
 			return true;
 		}
 		
