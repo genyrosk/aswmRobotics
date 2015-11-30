@@ -51,23 +51,30 @@ int main (){
 	// ------- TEST CODE -------
 	
 	//TESTING DRIVE MOTORS:
-	//motors.set_drive_motor_speed(127,127);
-	//delay(100000);
+	//motors.set_ramp_time(50);
+	//cout << "Setting motor speeds."<< endl;
+	//motors.set_drive_motor_speed(60,127);
+	//delay(10000);
 	
 	
     //LINE FOLLOWING TESTS:
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
-	cout << "current status: " << linefollower.current_status << endl;
+	cout << "current status: " << linefollower.current_status <<". Negative ramp: " << linefollower.negative_ramp << endl;
 	linefollower.get_path_status();
     
     //FOLLOW STRAIGHT LINE
 	linefollower.follow_line(100.0, true);
+	
+	//PERFORM TURN
+    linefollower.turn(-90,100);
     
+	linefollower.follow_line(100.0, true);
+    linefollower.turn(90,100);
+    /*
     //FOLLOW SET DISTANCE
     linefollower.follow_line(50.0, false);
 	
-    //PERFORM TURN
-    linefollower.turn(-90,127);
+    
     
     //TURN SET ANGLE
     linefollower.turn_degrees(45);
@@ -97,16 +104,16 @@ int main (){
     //DROPOFF TESTS:
     
     //CALCULATE ANGLE TO ROTATE
-    identifier.crackers[0].type == WHITE;
-    identifier.crackers[1].type == RED;
-    identifier.crackers[2].type == WOOD;
+    identifier.crackers[0].set_cracker_type(WHITE);
+    identifier.crackers[1].set_cracker_type(RED);
+    identifier.crackers[2].set_cracker_type(WOOD);
     identifier.angle_cracker1_from_detector = 57;
     pickup.dropoff(WHITE);
     
     //DEALING WITH MULTIPLE CRACKERS OF SAME TYPE
-    identifier.crackers[0].type == WHITE;
-    identifier.crackers[1].type == WHITE;
-    identifier.crackers[2].type == WHITE;
+    identifier.crackers[0].set_cracker_type(RED);
+    identifier.crackers[1].set_cracker_type(RED);
+    identifier.crackers[2].set_cracker_type(RED);
     identifier.angle_cracker1_from_detector = 76;
     pickup.dropoff(WHITE);
     
@@ -168,7 +175,7 @@ int main (){
 	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
 	//identifier.indicate_cracker_type(RED);
 	
-	
+	*/
     
     
      // ---------------- COMPETITION CODE ----------------

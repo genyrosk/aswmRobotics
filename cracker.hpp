@@ -30,6 +30,7 @@ public:
     double type_probabilities[max_limit];
     
     int calculate_probabilities(double peak_reading);
+    void set_cracker_type(cracker_type type);
 
 private:
     double normal_dist_cdf(double x);

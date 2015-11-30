@@ -18,12 +18,21 @@ bool MicrocontrollerInterface::write(int output_byte){
 }
 
 int MicrocontrollerInterface::read(int port_activation_byte){
+	cout << "Requesting read with byte: "<< port_activation_byte << endl;
     if(idp->rlink.command (WRITE_PORT_4, port_activation_byte)){
-		return idp->rlink.request(READ_PORT_4);
+		int returnRequest = idp->rlink.request(READ_PORT_4);
+		cout << "Returned: "<< returnRequest << endl;
+		return returnRequest;
     }
     else {
+		cout << "Read error" << endl;
         return 0;
     }
+}
+
+int MicrocontrollerInterface::read_line_sensors(){
+	cout << "Reading from line sensors" << endl;
+	return idp->rlink.request(READ_PORT_4);
 }
 
 void MicrocontrollerInterface::indicate_lost(){
@@ -233,29 +242,33 @@ int Motors::get_motor_speed(int motor){
 void Motors::set_drive_motor_speed(int left, int right){
 	//Converting to sign magnitude, ensuring within correct bounds and inverting speed of left wheel as
 	//it is mounted in a flipped orientation
-	left *= -1;
+	
+	cout << "Input speeds, left: " << left << ". Right: "<< right << endl; 
+	
+	right *= -1;
 	
     if(left > 127){
 		left = 127;
 	}
-    else if(left < -128){
-		left = -128;
+    else if(left < -127){
+		left = -127;
 	}
 	if(left < 0){
 		left = 127 - left;
 	}
+	cout << "Driving left motor with speed: " << left << endl;
     set_motor_speed(1, left);
     
     if(right > 127){
 		right = 127;
 	}
-	if(right < -128){
-		right = 128;
+	else if(right < -127){
+		right = -127;
 	}
-	else if(right < 0){
+	if(right < 0){
 		right = 127 - right;
 	}
-	
+	cout << "Driving right motor with speed: " << right << endl;
     set_motor_speed(2, right);
 }
 

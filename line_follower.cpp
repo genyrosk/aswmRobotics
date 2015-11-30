@@ -21,7 +21,8 @@ LineFollower::LineFollower(){
 }
 
 LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr){
-    LineFollower();
+    current_status = 0x02;
+    negative_ramp = false;
     
     motors_interface = motorsPtr;
     micro_interface = microPtr;
@@ -41,9 +42,12 @@ int LineFollower::reverse_after_pickup(){
 }
 
 void LineFollower::get_path_status(){
+
+	negative_ramp = false;
+	cout << "Current linefollower fields. Left wheel speed: "<< left_wheel_speed << ". Negative ramp: "<< negative_ramp << endl;
 	
     //TODO: may have to change to 0xFF for testing
-    int sensor_output = micro_interface->read(0x0F);
+    int sensor_output = micro_interface->read_line_sensors();
     cout << "Sensor output: " << sensor_output << endl;
     
     int ir_sensor_output = sensor_output bitand 0x07;
@@ -59,7 +63,7 @@ void LineFollower::get_path_status(){
 		cout << "Negative ramp inversion: " << ir_sensor_output << endl;
 	}    
     
-    //Note bit is high when black detected, low when white detected
+    //Note bit is high when white detected, low when black detected
     switch (ir_sensor_output) {
         case 0x06:
             //slightly too far left
@@ -95,7 +99,6 @@ void LineFollower::get_path_status(){
         case 0x00:
             // lost line
             current_status = 0x00;
-            proportional_error *= 3;
             break;
         case 0x07:
 			// Junction detected
@@ -136,18 +139,17 @@ int LineFollower::follow_line(double distance, bool toJunction){
 	double time_in_s = 0;
 	double distance_to_obstacle;
 	
-	//TODO: REMOVE J
+	//TODO: REMOVE J & delay
 	while(distance_moved < 1.25 * distance){
-		
 		get_path_status();
 		distance_to_obstacle = analogue_interface->get_distance();
 		
 		cout << "Current status: " << current_status << endl;
 		cout << "Current distance moved: " << distance_moved << endl;
 		
-		//TODO: Add this into if ||  distance_to_obstacle <= 10
-		if(distance_moved > 0.6 * distance && current_status == 0x08){
-			cout<< "Exited while loop, status: " << current_status << " .Distance: " << distance_to_obstacle << endl;
+		//TODO: Add this into if ||  distance_to_obstacle <= 10 distance_moved > 0.6 * 
+		if(distance_moved > 10 && current_status == 0x08){
+			cout<< "Exited while loop, status: " << current_status << " .Distance moved: " << distance_moved << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
 			
 			//Made it to junction!
@@ -164,8 +166,7 @@ int LineFollower::follow_line(double distance, bool toJunction){
         
 		motors_interface->set_drive_motor_speed(left_wheel_speed, right_wheel_speed);
 		
-		cout << "proportional error = " << proportional_error << " and proportional gain = " << proportional_gain << endl;
-		cout << "integral error = " << integral_error << " and integral gain = " << integral_gain << endl;
+		cout << "proportional error = " << proportional_error << " and integral error = " << integral_error << endl;
 		cout << "left speed = " << left_wheel_speed << " and right speed = " << right_wheel_speed << endl << endl;
 		
 		currentMeanSpeed = (left_wheel_speed + right_wheel_speed)/2;
@@ -264,9 +265,10 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 		cout << "Current status: " << current_status << endl;
 		cout << "Current angle: " << angle_moved_magnitude << endl;
 		
-		if(angle_moved_magnitude > 0.6 * angle_magnitude && (current_status == 0x05 ||current_status == 0x07)){
+		if(angle_moved_magnitude > 0.6 * angle_magnitude && (current_status == 0x02 ||current_status == 0x07)){
 			cout << "Found the line!" << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
+			//follow_line(100.0, false);
 			return true;
 		}
 		

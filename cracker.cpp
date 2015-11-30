@@ -49,6 +49,10 @@ int Cracker::calculate_probabilities(double peak_value){
     return 1;
 }
 
+void Cracker::set_cracker_type(cracker_type typeInput){
+	type = typeInput;
+}
+
 
 //Algorithm sourced from http://www.johndcook.com/blog/cpp_phi/ and is in the public domain
 double Cracker::normal_dist_cdf(double x){

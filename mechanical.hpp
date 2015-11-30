@@ -34,6 +34,7 @@ public:
 	Idp *idp;
     bool write(int output_byte);
     int read(int port_activation_byte);
+    int read_line_sensors();
     void indicate_lost();
     void flash_leds(int time);
     void extend_actuator();

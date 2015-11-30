@@ -6,7 +6,7 @@ tinyxml2.o: tinyxml2.cpp tinyxml2.h
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c tinyxml2.cpp
 RobotSettings.o: RobotSettings.cpp RobotSettings.hpp tinyxml2.h
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c RobotSettings.cpp
-pickup.o: pickup.cpp pickup.hpp mechanical.hpp idp.h
+pickup.o: pickup.cpp pickup.hpp mechanical.hpp idp.h identifier.hpp cracker.hpp
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c pickup.cpp
 peakdetection.o: peakdetection.cpp peakdetection.hpp
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c peakdetection.cpp
@@ -14,7 +14,7 @@ navigator.o: navigator.cpp navigator.hpp line_follower.hpp
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c navigator.cpp
 mechanical.o: mechanical.cpp mechanical.hpp
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c mechanical.cpp
-main.o: main.cc idp.h line_follower.hpp identifier.hpp mechanical.hpp RobotSettings.hpp navigator.hpp pickup.hpp
+main.o: main.cc idp.h line_follower.hpp identifier.hpp mechanical.hpp RobotSettings.hpp navigator.hpp pickup.hpp cracker.hpp
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c main.cc
 line_follower.o: line_follower.cpp line_follower.hpp idp.h
 	 g++ -ansi -Wall -g -I/export/teach/1BRobot -c line_follower.cpp
