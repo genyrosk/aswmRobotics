@@ -30,12 +30,12 @@ Pickup::Pickup(Motors *motorsPtr, MicrocontrollerInterface *microPtr, Identifier
 int Pickup::perform_pickup(int nPickup){
     
     micro_interface->retract_actuator();
-    linefollower_interface->follow_line(40,true,4,true);
+    linefollower_interface->follow_line(80,true,4,true);
     delay(500);
 		
 		cout << endl << "Forward junction detected" << endl << endl;
 		/* * */
-		double distances[] = {7.5,0.3,0.3};
+		double distances[] = {8.0,0.7,0.5};
     
 		for (int i = 0; i < 3 && i < nPickup; i++) {
 			
@@ -106,7 +106,17 @@ int Pickup::dropoff(double angle_to_rotate){
     int dropoff_distance = 10;
     
     cout << "Moving to distance: " << dropoff_distance << endl;
-    linefollower_interface->follow_line(20,false,20);
+    
+    
+    linefollower_interface->follow_line(20,true,4,true);
+    delay(500);
+    
+    linefollower_interface->left_wheel_speed = 60;
+	linefollower_interface->proportional_gain = 5;
+	
+    linefollower_interface->follow_line(5,false);
+    delay(500);
+    
     cout << "In position, rotating wheel..." << endl;
     rotate_wheel(angle_to_rotate);
     cout << "Retracting actuator" << endl;
@@ -117,6 +127,13 @@ int Pickup::dropoff(double angle_to_rotate){
     
     cout << "Extending actuator" << endl;
     micro_interface->extend_actuator();
+    
+    // back away to junction
+    linefollower_interface->reverse_after_pickup();
+    
+    linefollower_interface->left_wheel_speed = 100;
+	linefollower_interface->proportional_gain = 20;
+	
     return true;
 }
 

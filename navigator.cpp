@@ -136,3 +136,13 @@ bool Navigator::test_nav(){
 	micro_interface->indicate_lost();
 	return false;
 }
+
+bool Navigator::turn_left(){
+	
+	linefollower.follow_line(6.0, false);
+    linefollower.turn_degrees(-45.0);
+    linefollower.follow_line(20.0, true);
+	linefollower.reverse_after_pickup(3.5);
+    linefollower.turn_degrees(-50.0);
+
+}

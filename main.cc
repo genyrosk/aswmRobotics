@@ -31,8 +31,8 @@ ostringstream oss;
 int main (){
 	
 	//Save cout to file for debugging
-	ofstream out("debug.txt");
-	cout.rdbuf(out.rdbuf());
+	//ofstream out("debug.txt");
+	//cout.rdbuf(out.rdbuf());
 	
 	/*
 	RobotSettings robotSettings;
@@ -74,7 +74,7 @@ int main (){
 	microInterface.extend_actuator();
 	Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
     Pickup pickup = Pickup(&motors, &microInterface, &identifier, &linefollower);
-
+	Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
     /*
     if(linefollower.follow_line(10.0, true)){
 		if(linefollower.follow_line(19.0, true)){
@@ -87,25 +87,30 @@ int main (){
 	}
 	*/
 	
+	/*
 	
-	//pickup.perform_pickup(2);
-	
-	linefollower.reverse_after_pickup(1);
-	
-    linefollower.follow_line(6.0, false);
-    linefollower.turn_degrees(-45.0);
+	linefollower.follow_line(30.0, false);
+	linefollower.follow_line(30.0, false);
+	linefollower.follow_line(100.0, false);
+	*/
+	// perform pickup + back away a little
+	pickup.perform_pickup(3);
     
-    
-    linefollower.follow_line(20.0, true);
-    
-    
-    linefollower.turn_degrees(-45.0);
-    
+	// turn left towards negative ramp
     linefollower.follow_line(170.0, false,4,true);
+	nav.turn_left();
+    linefollower.follow_line(170.0, false,4,true);
+    linefollower.follow_line(60.0, false,4,true);
+    linefollower.follow_line(60.0, false,4,true);
+	
+	
+	pickup.dropoff(100);
 	
 	
 	
 
+    //READ FROM LDR
+    //analogueInterface.readLDR();
 	
 	
     /*
@@ -192,8 +197,6 @@ int main (){
     
     //ANALOGUE TESTS:
     
-    //READ FROM LDR
-    //analogueInterface.readLDR();
     
     //READ DISTANCE
    //

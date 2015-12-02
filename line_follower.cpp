@@ -50,7 +50,8 @@ int LineFollower::reverse_after_pickup(){
 
 int LineFollower::reverse_after_pickup(double distance){
 	
-	get_path_status();
+	cout << endl << " Reversing for a distance " << endl << endl;
+	
 	double distance_moved = 0;
 	double time_in_s = 0;
 	double delta_distance = 0;
@@ -62,10 +63,11 @@ int LineFollower::reverse_after_pickup(double distance){
 	
 	while(distance_moved < distance){
 		get_path_status();
-		gettimeofday(&lastReadingTime, NULL);
+		gettimeofday(&currentTime, NULL);
 		time_in_s = diff_ms(currentTime, lastReadingTime)/1000;
 		
-		cout << "distance moved: " << distance_moved << "in time:" << time_in_s<< endl;
+		cout << "distance moved: " << distance_moved << " in time:" << time_in_s << endl;
+		cout << "speed : " << left_wheel_speed << endl;
 		
 		delta_distance = (time_in_s * left_wheel_speed * motors_interface->MAX_SPEED) / 127;
 		distance_moved += delta_distance;
@@ -106,7 +108,7 @@ void LineFollower::get_path_status(){
             negative_ramp = !negative_ramp;
             
             if(left_wheel_speed > 90){
-				left_wheel_speed = 70;
+				left_wheel_speed = 89;
 			} else {
 				left_wheel_speed = 100;
 			}
@@ -255,7 +257,7 @@ void LineFollower::turn_degrees(double degrees){
 	cout << "Turning " << degrees << " degrees." << endl;
 
 	double abs_degrees = abs(degrees);
-	int speed = 65;
+	int speed = 70;
 	
 	int delayTime = static_cast<int>(1000 * abs_degrees / ((speed * motors_interface->MAX_SPEED * 180) / (127 * 8.2 * M_PI)));
     

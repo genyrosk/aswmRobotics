@@ -1,2 +1,9 @@
 connection_status: 0
 ...
+Connected
+connection time 86
+ADC0: 1.5098ADC1: 1.01961ADC2: 1ADC3: 1.03922
+Moving to distance 20cm
+Extending actuator, current status: 246
+Writing, output byte: 255
+Reached end of main

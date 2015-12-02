@@ -37,6 +37,7 @@ public:
 	bool deliver_to_d4();
 	bool return_after_d4();
 	bool return_dock();
+	bool turn_left();
 	
 	Identifier * identifier_interface;
 	MicrocontrollerInterface * micro_interface;
