@@ -56,64 +56,104 @@ int main (){
 	
 	// ------- TEST CODE -------
 	
-	
-	
-	
+	/*
     //LINE FOLLOWING TESTS:
-	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
+	
+	if(linefollower.follow_line(50.0, false, 10.0)){
+		cout << "Reached set distance, stopping and turning..." << endl;
+		linefollower.turn_degrees(-45.0);
+		linefollower.follow_line(40, true, 10.0);
+	}
+	
 	cout << "current status: " << linefollower.current_status <<". Negative ramp: " << linefollower.negative_ramp << endl;
-	linefollower.get_path_status();
-    
-    
-    //FOLLOW STRAIGHT LINE
-	linefollower.follow_line(150.0, true);
 	
-	//PERFORM TURN
-    linefollower.turn(90,90);
+	*/
+	cout << "ADC0: " << analogueInterface.readADC(0) <<  "ADC1: " << analogueInterface.readADC(1) << "ADC2: " << analogueInterface.readADC(2) <<"ADC3: " << analogueInterface.readADC(3) << endl;
+	cout << "Moving to distance 20cm" << endl;
+	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
+	microInterface.extend_actuator();
+	Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+    Pickup pickup = Pickup(&motors, &microInterface, &identifier, &linefollower);
+
+    /*
+    if(linefollower.follow_line(10.0, true)){
+		if(linefollower.follow_line(19.0, true)){
+			if(linefollower.follow_line(64.0, true)){
+				if(linefollower.follow_line(84.0, true, 30)){
+					
+				}
+			}
+		}
+	}
+	*/
+	
+	
+	//pickup.perform_pickup(2);
+	
+	linefollower.reverse_after_pickup(1);
+	
+    linefollower.follow_line(6.0, false);
+    linefollower.turn_degrees(-45.0);
     
-	linefollower.follow_line(100.0, true);
-	linefollower.follow_line(100.0, true);
-	linefollower.follow_line(100.0, true);
-    linefollower.turn(90,90);
     
+    linefollower.follow_line(20.0, true);
+    
+    
+    linefollower.turn_degrees(-45.0);
+    
+    linefollower.follow_line(170.0, false,4,true);
+	
+	
+	
+
+	
+	
+    /*
+    if(linefollower.follow_line(50, true, 30)){	
+		cout << "Picking up..." << endl;
+		pickup.perform_pickup(3);
+	}
+	*/
+	
+	//linefollower.follow_line(50.0, true, 4.0);
+	
+	/*
+	for(int i=0; i<1000; i++){
+		analogueInterface.get_distance();
+		delay(1000);
+	}
+	*/
+	
+	
+    /*
     //FOLLOW SET DISTANCE
-    //linefollower.follow_line(20.0, false);
-    
-	linefollower.follow_line(100.0, true);
+    if(linefollower.follow_line(16.0, false)){
+		cout << "Reached set distance, stopping and turning..." << endl;
+		linefollower.turn_degrees(-90.0);
+	}
+	*/
 	
-	/*
-	linefollower.follow_line(0.01, false);
-	linefollower.follow_line(-0.01, true);
-    delay(1000);
-    
-    
-    linefollower.turn(90,90);
-	linefollower.follow_line(100.0, true);
-    linefollower.turn(90,90);
-    */
-    
-	/*
+	
     //TURN SET ANGLE
-    linefollower.turn_degrees(45);
-    
-    
-    
-    //NAVIGATION TESTS:
-    Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
-    Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
-    
-    
-    //LINKING FOLLOW LINE AND TURN
-    nav.test_nav();
-    
-    
+    /*
+    linefollower.follow_line(30.0, true,0,true);
+    linefollower.follow_line(30.0, true,0,true);
+    linefollower.turn_degrees(-75.0);
+    linefollower.follow_line(100.0, false);
+    */
+
+	//Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+	//linefollower.follow_line(50, true);
+	//nav.go_to_dock();
+ 
     
     //PICKUP TESTS:
-    Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);
+    //Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+    
     
     //STOP AT DISTANCE
-    pickup.set_distance_to_shelf(10);
     
+    /*
     //ALIGNS CORRECTLY
     pickup.perform_pickup();
     
@@ -147,52 +187,19 @@ int main (){
     
     
     */
-    //LED INDICATION TESTS:
-    
-    //CRACKER REQUEST
-    //microInterface.request_crackers();
-    
-    //FLASH LEDS
-    //microInterface.flash_leds(100);
-    //microInterface.flash_leds(100);
-    
-    //SOS
-    //cout<< "SOS" << endl;
-    //microInterface.indicate_lost();
-    
-    //LED1&2 ON/OFF
-    //microInterface.led1(true);
-    //delay(5000);
-    //microInterface.led1(false);
-    //delay(5000);
-    //microInterface.led2(true);
-    //delay(5000);
-    //microInterface.led2(false);
-    //delay(5000);
-    
-    //INDICATE TYPES
-    //microInterface.indicate_red();
-    //microInterface.indicate_black();
-    //microInterface.indicate_white();
-    //microInterface.indicate_wood();
-    
-    //ACTUATOR TESTS:
-    microInterface.extend_actuator();
-    delay(5000);
-    microInterface.retract_actuator();
-    /*
+
     
     
     //ANALOGUE TESTS:
     
     //READ FROM LDR
-    analogueInterface.readLDR();
+    //analogueInterface.readLDR();
     
     //READ DISTANCE
-    analogueInterface.get_distance();
-	
+   //
+    //analogueInterface.get_distance();
+	    /*
 	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
-	//identifier.indicate_cracker_type(RED);
 	 
 	
 	* //TESTING DRIVE MOTORS:
@@ -212,7 +219,8 @@ int main (){
      Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);
      
      nav.go_to_dock();
-     pickup.perform_pickup();
+     int nCrackerPickup = 6 - robotSettings.n_crackers_delivered;
+     pickup.perform_pickup(nCrackerPickup);
      identifier.id_procedure();
      nav.reverse_after_pickup();
      nav.deliver_to_d3();
@@ -242,7 +250,8 @@ int main (){
      
      //Made it around the board once!
      
-     pickup.perform_pickup();
+     int nCrackerPickup = 6 - robotSettings.n_crackers_delivered;
+     pickup.perform_pickup(nCrackerPickup);
      identifier.id_procedure();
      nav.deliver_to_d3();
      nCrackers = identifier.n_crackers_present(WHITE);
@@ -297,56 +306,53 @@ int main (){
 		cout << "Error saving settings" << endl;
 	}
 	*/
+	
+	//LED INDICATION TESTS:
+    
+    //CRACKER REQUEST
+    //microInterface.stop_request_crackers();
+    //delay(2000);
+    //microInterface.request_crackers();
+    //delay(2000);
+    //microInterface.stop_request_crackers();
+    
+    //FLASH LEDS
+    //microInterface.flash_leds(100);
+    //microInterface.flash_leds(100);
+    
+    //SOS
+    //cout<< "SOS" << endl;
+    //microInterface.indicate_lost();
+    
+    //LED1&2 ON/OFF
+    //microInterface.led1(false);
+    //delay(2000);
+    //microInterface.led2(true);
+    //delay(2000);
+    //microInterface.led2(false);
+    //delay(5000);
+    
+    //INDICATE TYPES
+    //microInterface.indicate_red();
+    //microInterface.indicate_black();
+    //microInterface.indicate_white();
+    //microInterface.indicate_wood();
+    
+    //NAVIGATION TESTS:
+    //Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+    //Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+    
+    
+    //LINKING FOLLOW LINE AND TURN
+    //nav.test_nav();
+    
+        
+    //ACTUATOR TESTS:
+    //cout << "Retracting actuator" << endl;
+    //microInterface.retract_actuator();
+    //motors.set_motor_speed(3,127);
+    //delay(20000);
+    //microInterface.extend_actuator();
+    
+    cout << "Reached end of main" << endl;
 }
-
-
-
-
-
-/*
- * DO NOT TRASPASS
- * ---------POLICE--------POLICE----------POLICE------------
- * ---------POLICE--------POLICE----------POLICE------------
-int get_sensor_output(){
-	
-	int iBus [4];
-	int hex;
-	string hex_str;
-	
-	iBus[0] = rlink.request (READ_PORT_0);
-	iBus[1] = rlink.request (READ_PORT_1);
-	iBus[2] = rlink.request (READ_PORT_2);
-	iBus[3] = rlink.request (READ_PORT_3);
-	
-	for(int i=0; i<4; i++){
-		oss << abs(iBus[i]);
-		hex_str = oss.str();
-		cout << hex_str << endl;
-	}
-	
-	cout << hex_str << endl;
-	istringstream ( hex_str ) >> hex;
-	
-	return hex;
-}
-
-
-void motors_start(int speed) {
-
-	// red -> 1
-	// green -> 2
-	// blue -> 3
-	// yellow -> 4
-
-
-	//rlink.command (BOTH_MOTORS_GO_SAME, speed);
-	cout << "In motors_start, starting motor 4 " << endl;
-	idp.rlink.command (MOTOR_1_GO, speed);
-	delay(1000);
-	idp.rlink.command (MOTOR_2_GO, speed);
-}
-*/
-
-
-
-

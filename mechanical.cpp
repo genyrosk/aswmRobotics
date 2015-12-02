@@ -14,24 +14,18 @@ MicrocontrollerInterface::MicrocontrollerInterface(Idp *idpPtr){
 }
 
 bool MicrocontrollerInterface::write(int output_byte){
-    return idp->rlink.command (WRITE_PORT_4, output_byte);
+    int requestResponse = idp->rlink.command(WRITE_PORT_4, output_byte);
+    if(requestResponse == -1){
+		link_err error = idp->rlink.get_err();
+		cout << "Error reading, code: "<< error << endl;
+		return -1;
+	}
+	else{
+		return requestResponse;
+	}
 }
 
-int MicrocontrollerInterface::read(int port_activation_byte){
-	cout << "Requesting read with byte: "<< port_activation_byte << endl;
-    if(idp->rlink.command (WRITE_PORT_4, port_activation_byte)){
-		int returnRequest = idp->rlink.request(READ_PORT_4);
-		cout << "Returned: "<< returnRequest << endl;
-		return returnRequest;
-    }
-    else {
-		cout << "Read error" << endl;
-        return 0;
-    }
-}
-
-int MicrocontrollerInterface::read_line_sensors(){
-	cout << "Reading from line sensors" << endl;
+int MicrocontrollerInterface::read(){
 	return idp->rlink.request(READ_PORT_4);
 }
 
@@ -51,9 +45,12 @@ void MicrocontrollerInterface::indicate_lost(){
 }
 
 void MicrocontrollerInterface::flash_leds(int time){
-	int current_status = read(0xFF);
-	int output_byte_off = current_status bitor 0x60;
-	int output_byte_on = current_status bitand 0x9F;
+	int current_status = read();
+    cout << "Read from microcontroller: " << current_status << endl;
+    
+	int output_byte_off = current_status bitor 0x6F;
+    int output_byte_on = current_status bitand 0x9F;
+    cout << "Output byte on: " << output_byte_on << ". Output byte off: " << output_byte_off << endl;
 	
 	write(output_byte_on);
 	delay(time);
@@ -62,17 +59,22 @@ void MicrocontrollerInterface::flash_leds(int time){
 }
 
 void MicrocontrollerInterface::request_crackers(){
-	int current_status = read(0xFF);
-	int output_byte_off = current_status bitor 0x10;
-	int output_byte_on = current_status bitand 0xEF;
+	int current_status = read();
+    int output_byte_on = current_status bitand 0xEF;
 	
 	write(output_byte_on);
-	delay(5000);
-	write(output_byte_off);
 }
+
+void MicrocontrollerInterface::stop_request_crackers(){
+    int current_status = read();
+    int output_byte_on = current_status bitor 0x1F;
+    
+    write(output_byte_on);
+}
+
 void MicrocontrollerInterface::led1(bool on){
-	int current_status = read(0xFF);
-	int output_byte_off = current_status bitor 0x40;
+	int current_status = read();
+	int output_byte_off = current_status bitor 0x4F;
 	int output_byte_on = current_status bitand 0xBF;
 	
 	if(on){
@@ -84,8 +86,8 @@ void MicrocontrollerInterface::led1(bool on){
 }
 
 void MicrocontrollerInterface::led2(bool on){
-	int current_status = read(0xFF);
-	int output_byte_off = current_status bitor 0x20;
+	int current_status = read();
+	int output_byte_off = current_status bitor 0x2F;
 	int output_byte_on = current_status bitand 0xDF;
 	
 	if(on){
@@ -130,13 +132,19 @@ void MicrocontrollerInterface::indicate_type(bool led1on, bool led2on){
 }
 
 void MicrocontrollerInterface::extend_actuator(){
-	int current_status = read(0xFF);
-	int output_byte = current_status bitor 0x80;
+	int current_status = read();
+	cout << "Extending actuator, current status: " << current_status << endl;
+	int output_byte = current_status bitor 0x8F;
+	
+	cout << "Writing, output byte: " << output_byte << endl;
 	write(output_byte);
 }
 void MicrocontrollerInterface::retract_actuator(){
-	int current_status = read(0xFF);
-	int output_byte = current_status bitor 0x7F;
+	int current_status = read();
+	cout << "Retracting actuator, current status: " << current_status << endl;
+	int output_byte = current_status bitand 0x7F;
+	
+	cout << "Writing, output byte: " << output_byte << endl;
 	write(output_byte);
 }
 
@@ -151,7 +159,7 @@ double AnalogueInterface::readLDR(){
 ///Returns scaled voltage read from the ADC ports, with a reference of 5V
 double AnalogueInterface::readADC(int port){
     int request_output = 0;
-    int max_reading = 255;
+    double max_reading = 255.0;
     
     switch(port)
     {
@@ -163,6 +171,12 @@ double AnalogueInterface::readADC(int port){
         //LDR
             request_output = idp->rlink.request(ADC1);
             break;
+		case 2:
+			request_output = idp->rlink.request(ADC2);
+			break;
+		case 3:
+			request_output = idp->rlink.request(ADC3);
+			break;
         default:
             return request_output;
     }
@@ -174,7 +188,8 @@ double AnalogueInterface::readADC(int port){
 ///Returns distance in cm from the distance detector 
 double AnalogueInterface::get_distance(){
     
-    double DD_return = readADC(0);
+    double DD_return = readADC(1);
+    cout << "DD returned: " << DD_return << endl;
     double m = 0;
     
     if(DD_return> 0.1961 && DD_return <= 0.7451){
@@ -197,10 +212,11 @@ double AnalogueInterface::get_distance(){
 	}
 	
 	if(DD_return != 0){
+		cout << "Distance = " << m/DD_return <<  endl;
 		return m/DD_return;
 	}
     else{
-		return false;
+		return 120;
 	}
 }
 
@@ -209,9 +225,10 @@ Motors::Motors(Idp *idpPtr){
 	idp = idpPtr;
 	//TODO: Check these values again.
 	//Max speed of drive motors in cm/s
-	MAX_SPEED = 6.59;
+	//MAX_SPEED = 6.59;
+	MAX_SPEED = 7.95;
 	//Max speed in degrees/s
-    MAX_ROTATION_SPEED=310;
+    MAX_ROTATION_SPEED=61.96;
 }
 
 void Motors::set_motor_speed(int motor, int speed){
@@ -224,6 +241,10 @@ void Motors::set_motor_speed(int motor, int speed){
             break;
         case 3:
             idp->rlink.command (MOTOR_3_GO, speed);
+            idp->rlink.command (MOTOR_4_GO, speed);
+            break;
+		case 4:
+			idp->rlink.command (MOTOR_4_GO, speed);
             break;
         default:
             break;
@@ -246,9 +267,7 @@ int Motors::get_motor_speed(int motor){
 void Motors::set_drive_motor_speed(int left, int right){
 	//Converting to sign magnitude, ensuring within correct bounds and inverting speed of left wheel as
 	//it is mounted in a flipped orientation
-	
-	cout << "Input speeds, left: " << left << ". Right: "<< right << endl; 
-	
+    
 	right *= -1;
 	
     if(left > 127){
@@ -260,7 +279,6 @@ void Motors::set_drive_motor_speed(int left, int right){
 	if(left < 0){
 		left = 127 - left;
 	}
-	cout << "Driving left motor with speed: " << left << endl;
     set_motor_speed(1, left);
     
     if(right > 127){
@@ -272,7 +290,6 @@ void Motors::set_drive_motor_speed(int left, int right){
 	if(right < 0){
 		right = 127 - right;
 	}
-	cout << "Driving right motor with speed: " << right << endl;
     set_motor_speed(2, right);
 }
 

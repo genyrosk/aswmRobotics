@@ -14,33 +14,31 @@
 #include "mechanical.hpp"
 #include "identifier.hpp"
 #include "cracker.hpp"
+#include "line_follower.hpp"
 
 //TODO: Move private methods back
 class Pickup{
 public:
     
     Pickup();
-    Pickup(Motors *motorsPtr, AnalogueInterface * anaPtr, MicrocontrollerInterface *microPtr, Identifier *idenPtr);
+    Pickup(Motors *motorsPtr, MicrocontrollerInterface *microPtr, Identifier *idenPtr, LineFollower *linePtr);
     
-    int perform_pickup();
+    int perform_pickup(int nPickup);
     int dropoff(double angle_to_rotate);
     int dropoff(cracker_type type);
     bool set_distance_to_shelf(double demanded_distance);
-    bool rotate_wheel(double angle_in_degrees, bool final_drop);
+    bool rotate_wheel(double angle_in_degrees);
     
 private:
-    
-    double distance_from_shelf, integral_distance, proportional_gain, integral_gain, speed_gain;
-    timeval last_reading;
-    AnalogueInterface *analogue_interface;
+
     Motors *motors_interface;
     MicrocontrollerInterface *micro_interface;
     Identifier *identifier_interface;
+    LineFollower *linefollower_interface;
     
     
-    int set_wheel_speed(double demanded_distance);
-    void update_integral_distance(double demanded_distance);
-    bool rotate_wheel_for_dropoff();
+    //int set_wheel_speed(double demanded_distance);
+    //void update_integral_distance(double demanded_distance);
     
 };
 

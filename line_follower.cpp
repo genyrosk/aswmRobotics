@@ -2,7 +2,7 @@
 //  line_follower.cpp
 //  awsmRobot
 //
-//  Created by Peter Boothroyd on 15/11/15.
+//  Created by Peter Boothroyd on 17/11/15.
 //  Copyright © 2015 Awsme. All rights reserved.
 //
 
@@ -23,6 +23,10 @@ LineFollower::LineFollower(){
 LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPtr, AnalogueInterface * anaPtr){
     current_status = 0x02;
     negative_ramp = false;
+    junction_detected = false;
+    
+    proportional_gain = 20;
+    left_wheel_speed = 100;
     
     motors_interface = motorsPtr;
     micro_interface = microPtr;
@@ -31,36 +35,61 @@ LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPt
 
 int LineFollower::reverse_after_pickup(){
 	get_path_status();
+	
+	
 	motors_interface->set_drive_motor_speed( -128, -128);
-	if(current_status == 0x08){
-		motors_interface->set_drive_motor_speed(0, 0);
-		return true;
+	
+	while(current_status != 7){
+		get_path_status();
 	}
-	else{
-		return false;
+	
+	motors_interface->set_drive_motor_speed(0, 0);
+	return true;
+	
+}
+
+int LineFollower::reverse_after_pickup(double distance){
+	
+	get_path_status();
+	double distance_moved = 0;
+	double time_in_s = 0;
+	double delta_distance = 0;
+	timeval lastReadingTime;
+	timeval currentTime;
+	gettimeofday(&lastReadingTime, NULL);
+	
+	motors_interface->set_drive_motor_speed( -100, -100);
+	
+	while(distance_moved < distance){
+		get_path_status();
+		gettimeofday(&lastReadingTime, NULL);
+		time_in_s = diff_ms(currentTime, lastReadingTime)/1000;
+		
+		cout << "distance moved: " << distance_moved << "in time:" << time_in_s<< endl;
+		
+		delta_distance = (time_in_s * left_wheel_speed * motors_interface->MAX_SPEED) / 127;
+		distance_moved += delta_distance;
+	
+		lastReadingTime = currentTime;
+		
 	}
+	
+	motors_interface->set_drive_motor_speed(0, 0);
+	return true;
+	
 }
 
 void LineFollower::get_path_status(){
 
-	negative_ramp = false;
-	cout << "Current linefollower fields. Left wheel speed: "<< left_wheel_speed << ". Negative ramp: "<< negative_ramp << endl;
-	
-    //TODO: may have to change to 0xFF for testing
-    int sensor_output = micro_interface->read_line_sensors();
-    //cout << "Sensor output: " << sensor_output << endl;
-    
+    int sensor_output = micro_interface->read();
     int ir_sensor_output = sensor_output bitand 0x07;
-    //cout << "IR sensor output: " << ir_sensor_output << endl;
-        
     int junction_status = sensor_output bitand 0x08;
-    //cout << "Junction status: " << junction_status << endl;
     
     //Only interested in bits 0-2
     if(negative_ramp){
 		ir_sensor_output = ir_sensor_output xor 0x07;
-		junction_status = junction_status xor 0x08;
-		cout << "Negative ramp inversion: " << ir_sensor_output << endl;
+		//junction_status = junction_status xor 0x08;
+		cout << "Found negative ramp! Sensor output: " << ir_sensor_output << endl;
 	}    
     
     //Note bit is high when white detected, low when black detected
@@ -75,6 +104,14 @@ void LineFollower::get_path_status(){
             current_status = 0x05;
             proportional_error = 0;
             negative_ramp = !negative_ramp;
+            
+            if(left_wheel_speed > 90){
+				left_wheel_speed = 70;
+			} else {
+				left_wheel_speed = 100;
+			}
+            
+            //change ramp time
             break;
         case 0x04:
             // too far left
@@ -109,23 +146,32 @@ void LineFollower::get_path_status(){
             break;
     }
     
-    if(junction_status == 0x08){
-        current_status = 0x08;
-    }
     
-    //cout << "proportion error: " << proportional_error << endl;
-    //cout << "current status: " << current_status << endl;
+    if(junction_status == 0x08 && !negative_ramp){
+		cout << "Junction detected!. Negative ramp: " << negative_ramp << endl;
+        junction_detected = true;
+    }
+    else{
+		junction_detected = false;
+	}
 }
 
-
 int LineFollower::follow_line(double distance, bool toJunction){
+	return follow_line(distance, toJunction, 0, false);
+}
+
+int LineFollower::follow_line(double distance, bool toJunction, double stop_obstacle_distance){
+	return follow_line(distance, toJunction, stop_obstacle_distance, false);
+}
+
+int LineFollower::follow_line(double distance, bool toJunction, double stop_after_distance, bool junctionDistance){
 	
 	distance_moved = 0;
 	proportional_error = 0;
 	integral_error = 0;
 	current_status = 0x02;
 	
-	cout << "Following line for distance: " << distance << ". Current status: " << current_status << endl;
+	cout << "Following line for distance: " << distance << ". Current status: " << current_status <<  ". Stop after distance: " << stop_after_distance << endl;
 	
 	timeval lastReadingTime;
 	timeval currentTime;
@@ -133,18 +179,30 @@ int LineFollower::follow_line(double distance, bool toJunction){
 	
 	double currentMeanSpeed = 0;
 	double time_in_s = 0;
-	double distance_to_obstacle;
+	double delta_distance = 0;
+	double distance_after_junction = 0;
 	
 	while(distance_moved < 1.25 * distance){
 		get_path_status();
-		distance_to_obstacle = analogue_interface->get_distance();
 		
+		if(current_status == 0x07 && junctionDistance){
+			cout << "Front junction detected" << endl;
+			motors_interface->set_drive_motor_speed(0, 0);
+			return true;
+		}
+			
 		cout << "Current status: " << current_status << endl;
 		cout << "Current distance moved: " << distance_moved << endl;
+		cout << "Current distance from junction: " << distance_after_junction << endl;
 		
-		//TODO: Add this into if || distance_to_obstacle <= 10 
-		if(distance_moved > 10 && current_status == 0x08){
-			cout<< "Exited while loop, status: " << current_status << " .Distance moved: " << distance_moved << endl;
+		if(distance_moved > distance && !toJunction){
+			cout << "Got to required distance "<< endl;
+			motors_interface->set_drive_motor_speed(0, 0);
+			return true;
+		}
+		
+		if(distance_moved > 10 && junction_detected){
+			cout<< "Exited while loop, status: " << current_status << ". Distance moved: " << distance_moved << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
 			
 			//Made it to junction!
@@ -156,6 +214,7 @@ int LineFollower::follow_line(double distance, bool toJunction){
 				return false;
 			}	
 		}
+		
         
 		right_wheel_speed = static_cast<int>(left_wheel_speed + proportional_error * proportional_gain + integral_error * integral_gain);
         
@@ -170,52 +229,52 @@ int LineFollower::follow_line(double distance, bool toJunction){
 		time_in_s = diff_ms(currentTime, lastReadingTime)/1000;
 		lastReadingTime = currentTime;
 		
-		distance_moved += (time_in_s * currentMeanSpeed * motors_interface->MAX_SPEED) / 127;
+		cout << "Time in s: " << time_in_s << endl;
+		
+		delta_distance = (time_in_s * currentMeanSpeed * motors_interface->MAX_SPEED) / 127;
+		distance_moved += delta_distance;
+		
 		integral_error += time_in_s * proportional_error;
 	}
 	
 	//Hasn't found junction
 	if(toJunction){
+		motors_interface->set_drive_motor_speed(0, 0);
 		return false;
 	}
 	//Got to distance without finding junction
 	else{
+		motors_interface->set_drive_motor_speed(0, 0);
 		return true;
 	}
 }
 
-//True for right, false for left
+//Positive for right, negative for left
 void LineFollower::turn_degrees(double degrees){
+	
+	cout << "Turning " << degrees << " degrees." << endl;
 
-	double delta_angle = 0;
-	double angle_moved_magnitude = 0;
-	double speed = 60;
+	double abs_degrees = abs(degrees);
+	int speed = 65;
 	
-	timeval lastReadingTime;
-	timeval currentTime;
-	gettimeofday(&lastReadingTime, NULL);
-	double time_in_s = 0;
-	
-	cout << "Turning " << degrees << " degrees. Current status: " << current_status << endl;
+	int delayTime = static_cast<int>(1000 * abs_degrees / ((speed * motors_interface->MAX_SPEED * 180) / (127 * 8.2 * M_PI)));
+    
 	
 	//Turning left
-	if(degrees < 0){
+	if(degrees < 0.0){
+		cout << "Setting wheel speeds to turn left" << endl;
 		motors_interface->set_drive_motor_speed(-speed, speed);
 	}
 	//Turning right
 	else{
+		cout << "Setting wheel speeds to turn right" << endl;
 		motors_interface->set_drive_motor_speed(speed, -speed);
 	}
+	cout << "Delaying for " << delayTime << " seconds" << endl;
 	
-	while(angle_moved_magnitude < degrees){
-		gettimeofday(&currentTime, NULL);
-		time_in_s = diff_ms(currentTime, lastReadingTime)/1000;
-		lastReadingTime = currentTime;
-		
-		delta_angle = ((time_in_s * speed * motors_interface->MAX_SPEED * 180) / (127 * 8.2 * M_PI));
-		angle_moved_magnitude += delta_angle;
-	}
-	cout << "Turned 45 degrees"<< endl;
+	delay(delayTime);
+	motors_interface->set_drive_motor_speed(0, 0);
+	cout << "Finished turning" << endl;
 }
 
 //Positive degrees indicates a right turn
@@ -230,6 +289,7 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 	
 	double angle_magnitude = abs(angle_in_degrees);
 	double delta_angle = 0;
+    double angle_moved = 0;
 	double angle_moved_magnitude = 0;
 	int current_speed = abs(speed);
 	
@@ -238,7 +298,7 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 	gettimeofday(&lastReadingTime, NULL);
 	double time_in_s = 0;
 	
-	cout << "Turning " << angle_in_degrees  << " degrees. "<< "Current status: " << current_status << endl;
+	cout << "Turning " << angle_in_degrees  << " degrees, with speed: " << current_speed << "Current status: " << current_status << endl;
 	
 	//Turning left
 	if(angle_sign == -1){
@@ -250,65 +310,74 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 	}
 	
 	//TODO: Change this value so that it doesn't sense the line it's leaving.
+	cout << "Delaying to allow robot to leave line" << endl;
 	delay(200);
+	cout << "Can now detect path" << endl;
 	
 	while(angle_moved_magnitude < 1.25 * angle_magnitude){
 		
 		get_path_status();
 		
-		cout << "Current status: " << current_status << endl;
+		cout << endl << "Current status: " << current_status << endl;
 		cout << "Current angle: " << angle_moved_magnitude << endl;
 		
-		if(angle_moved_magnitude > 0.6 * angle_magnitude && (current_status == 0x02 ||current_status == 0x07)){
-			cout << "Found the line!" << endl;
+		if(angle_moved_magnitude > 0.6 * angle_magnitude){
+			
+			if(current_status == 0x02 || current_status == 0x07){
+			cout << "Found the line!" << endl << endl;
 			motors_interface->set_drive_motor_speed(0, 0);
 			return true;
-		}
+			}
 		
-		//Turning left
-		if(angle_sign == -1){			
-			if(current_status == 0x01){
-				current_speed = current_speed * 2 / 3;
-				cout << "Just spotted line, slow down turning rate so we don't overshoot and miss it. Current speed = " << current_speed << endl;	
-				motors_interface->set_drive_motor_speed(-30, 30);
+			//Turning left
+			if(angle_sign == -1){			
+				if(current_status == 0x01){
+					cout << "Just spotted line, slow down turning rate so we don't overshoot and miss it." << endl;
+					current_speed = 30;
+					motors_interface->set_drive_motor_speed(-current_speed, current_speed);
+				}
+				else if(current_status == 0x03){
+					cout << "Almost there, slowing turning rate" << endl;
+					current_speed = 20;
+					motors_interface->set_drive_motor_speed(-current_speed, current_speed);
+					}
+				else if(current_status == 0x06){
+					cout << "Overshot slightly, turning back with speed 20" << endl;
+					current_speed = 10;
+					motors_interface->set_drive_motor_speed(current_speed, -current_speed);
+					angle_sign *= -1;
+					}
+				else if(current_status == 0x04){
+					cout << "Overshot a bit more, turning back with speed 30" << endl;
+					current_speed = 15;
+					motors_interface->set_drive_motor_speed(current_speed, -current_speed);
+					angle_sign *= -1;
+					}
 			}
-			else if(current_status == 0x03){
-				current_speed = current_speed / 2;
-				cout << "Almost there, slowing turning rate. Current speed = " << current_speed << endl;
-				motors_interface->set_drive_motor_speed(-20, 20);
-			}
-			else if(current_status == 0x06){
-				current_speed = current_speed / 2;
-				cout << "Overshot slightly, turning back with speed 20" << endl;
-				motors_interface->set_drive_motor_speed(20, -20);
-			}
-			else if(current_status == 0x04){
-				current_speed = current_speed / 2;
-				cout << "Overshot a bit more, turning back with speed 30" << current_speed << endl;
-				motors_interface->set_drive_motor_speed(30, -30);
-			}
-		}
-		//Turning right
-		else{
-			if(current_status == 0x04){
-				current_speed = current_speed * 2 / 3;
-				cout << "Just spotted line, slow down turning rate so we don't overshoot and miss it. Current speed = " << current_speed << endl;
-				motors_interface->set_drive_motor_speed(30, -30);
-			}
-			else if(current_status == 0x06){
-				current_speed = current_speed / 2;
-				cout << "Almost there, slowing turning rate. Current speed = " << current_speed << endl;
-				motors_interface->set_drive_motor_speed(20, -20);
-			}
-			else if(current_status == 0x03){
-				current_speed = current_speed / 2;
-				cout << "Overshot slightly, turning back with speed 20" << endl;
-				motors_interface->set_drive_motor_speed(-20, 20);
-			}
-			else if(current_status == 0x01){
-				current_speed = current_speed / 2;
-				cout << "Overshot a bit more, turning back with speed 30" << current_speed << endl;
-				motors_interface->set_drive_motor_speed(-30, 30);
+			//Turning right
+			else{
+				if(current_status == 0x04){
+					cout << "Just spotted line, slow down turning rate so we don't overshoot and miss it." << endl;
+					current_speed = 30;
+					motors_interface->set_drive_motor_speed(current_speed, -current_speed);
+				}
+				else if(current_status == 0x06){
+					cout << "Almost there, slowing turning rate." << endl;
+					current_speed = 20;
+					motors_interface->set_drive_motor_speed(current_speed, -current_speed);
+				}
+				else if(current_status == 0x03){
+					cout << "Overshot slightly, turning back with speed 20" << endl;
+					current_speed = 10;
+					motors_interface->set_drive_motor_speed(-current_speed, current_speed);
+					angle_sign *= -1;
+				}
+				else if(current_status == 0x01){
+					cout << "Overshot a bit more, turning back with speed 30" << current_speed << endl;
+					current_speed = 15;
+					motors_interface->set_drive_motor_speed(-current_speed, current_speed);
+					angle_sign *= -1;
+				}
 			}
 		}
 		
@@ -317,7 +386,11 @@ int LineFollower::turn(double angle_in_degrees, int speed){
 		lastReadingTime = currentTime;
 		
 		delta_angle = ((time_in_s * current_speed * motors_interface->MAX_SPEED * 180) / (127 * 8.2 * M_PI));
-		angle_moved_magnitude += delta_angle;
+        
+        angle_moved += delta_angle * angle_sign;
+		angle_moved_magnitude = abs(angle_moved);
+		cout << "Angle moved: " << angle_moved << endl;
+		cout << "Angle moved magnitude: " << angle_moved_magnitude << endl;
 	}
 	
 	cout << "Turned too far. Turning back at slower rate" << endl;

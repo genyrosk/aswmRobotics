@@ -33,13 +33,13 @@ public:
 	MicrocontrollerInterface(Idp * idpPtr);
 	Idp *idp;
     bool write(int output_byte);
-    int read(int port_activation_byte);
-    int read_line_sensors();
+    int read();
     void indicate_lost();
     void flash_leds(int time);
     void extend_actuator();
     void retract_actuator();
     void request_crackers();
+    void stop_request_crackers();
     void indicate_red();
     void indicate_black();
     void indicate_white();
@@ -59,8 +59,9 @@ public:
 	Idp *idp;
     double get_distance();
     double readLDR();
-private:
     double readADC(int port);
+private:
+    
 };
 
 #endif /* mechanical_hpp */

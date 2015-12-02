@@ -16,44 +16,52 @@
 #include "cracker.hpp"
 
 
-Pickup::Pickup(){
-    gettimeofday(&last_reading, NULL);
-    distance_from_shelf = 80;
-    integral_distance=0;
-    
-    //TODO: Calibrate these values negative as when it is far away demand_distance - distance_from_shelf < 0 and actually want the speed to be > 0
-    proportional_gain = -5;
-    integral_gain = -5;
+Pickup::Pickup(){  
 }
 
-Pickup::Pickup(Motors *motorsPtr, AnalogueInterface * anaPtr, MicrocontrollerInterface *microPtr, Identifier *idenPtr){
-	Pickup();
-	analogue_interface = anaPtr;
+Pickup::Pickup(Motors *motorsPtr, MicrocontrollerInterface *microPtr, Identifier *idenPtr, LineFollower *linePtr){
+    
 	motors_interface = motorsPtr;
 	micro_interface = microPtr;
 	identifier_interface = idenPtr;
+	linefollower_interface = linePtr;
 }
 
-int Pickup::perform_pickup(){
+int Pickup::perform_pickup(int nPickup){
+    
     micro_interface->retract_actuator();
+    linefollower_interface->follow_line(40,true,4,true);
+    delay(500);
+		
+		cout << endl << "Forward junction detected" << endl << endl;
+		/* * */
+		double distances[] = {7.5,0.3,0.3};
     
-    int distances[] = {20,15,10};
-    
-    for (int i = 0; i < 3; i++) {
-		cout << "Moving to distance: " << distances[i] << endl;
-        if(set_distance_to_shelf(distances[i])){
-            cout << "In position, rotating wheel..." << endl;
-            //TODO: may have to implement different angles - eg first rotates 100, then 110 then 120 for tolerances
-            rotate_wheel(120, false);
-        }
-        else{
-			cout << "Failed to get to set distance" << endl;
+		for (int i = 0; i < 3 && i < nPickup; i++) {
+			
+			linefollower_interface->left_wheel_speed = 60;
+			linefollower_interface->proportional_gain = 5;
+			
+			double stop_distance = distances[i];
+			cout << "Moving to distance: " << stop_distance << endl;
+		
+			linefollower_interface->follow_line(stop_distance,false);
+				
+			cout << "In position, rotating wheel..." << endl;
+			
+			//TODO: may have to implement different angles - eg first rotates 100, then 110 then 120 for tolerances
+			rotate_wheel(120);
+		
 		}
-    }
-    
-    cout << "Extending actuator" << endl;
+
+    cout << "Pickup complete. Extending actuator" << endl;
     micro_interface->extend_actuator();
     
+    linefollower_interface->reverse_after_pickup();
+	
+	linefollower_interface->left_wheel_speed = 100;
+	linefollower_interface->proportional_gain = 20;
+	
     return true;
 }
 
@@ -63,6 +71,7 @@ int Pickup::dropoff(cracker_type type){
 	int cracker_angle;
     int nCrackersDelivered = 0;
 	double angle_detector_base = 90;
+	
     cout << "Request to drop type: " << type << endl;
     
 	for(int i = 0; i < 3 ; i++){
@@ -97,23 +106,69 @@ int Pickup::dropoff(double angle_to_rotate){
     int dropoff_distance = 10;
     
     cout << "Moving to distance: " << dropoff_distance << endl;
-    set_distance_to_shelf(dropoff_distance);
+    linefollower_interface->follow_line(20,false,20);
     cout << "In position, rotating wheel..." << endl;
-    rotate_wheel(angle_to_rotate, false);
+    rotate_wheel(angle_to_rotate);
     cout << "Retracting actuator" << endl;
     micro_interface->retract_actuator();
     
     cout << "Final rotation to drop cracker" << endl;
-    rotate_wheel_for_dropoff();
+    rotate_wheel(60);
     
     cout << "Extending actuator" << endl;
     micro_interface->extend_actuator();
     return true;
 }
 
+
+bool Pickup::rotate_wheel(double angle_in_degrees){
+    
+    cout << "Started rotating wheel. Demanded angle = " << angle_in_degrees << endl;
+    
+    int delayTime = static_cast<int>(1000 * angle_in_degrees / motors_interface->MAX_ROTATION_SPEED);
+    motors_interface->set_motor_speed(3, 127);
+    delay(delayTime);
+    
+    cout << "Reached demanded angle." << endl;
+    motors_interface->set_motor_speed(3, 0);
+    return true;
+}
+
+/*
+bool Pickup::set_distance_to_shelf(double demanded_distance) {
+    time_t start_time = time(NULL);
+    int wheel_speed = 0;
+    gettimeofday(&last_reading, NULL);
+    
+    //TODO: Check it can reach required distance in time
+    while(difftime(time(NULL), start_time) < 10){
+        wheel_speed = set_wheel_speed(demanded_distance);
+        
+        cout << "Demanded wheel speed: " << wheel_speed << endl;
+        
+        motors_interface->set_drive_motor_speed(wheel_speed, wheel_speed);
+        
+        if(wheel_speed != 0){
+            continue;
+        }
+        else{
+            cout << "--------------- Reached demanded_distance! ---------------" << endl << endl;
+            return true;
+        } 
+    }
+    //Hasn't reached required distance
+    cout << "Failed to reach demanded_distance... " << endl;
+    motors_interface->set_drive_motor_speed(0, 0);
+    return false;
+}
+
 int Pickup::set_wheel_speed(double demand_distance){
+    
     //TODO: Calibrate the tolerance
-    if(abs(distance_from_shelf - demand_distance) < 2){
+    distance_from_shelf = analogue_interface->get_distance();
+    update_integral_distance(demand_distance);
+    
+    if(abs(distance_from_shelf - demand_distance) < 1){
         return 0;
     }
     else{
@@ -125,9 +180,9 @@ int Pickup::set_wheel_speed(double demand_distance){
         
         //Should be in the range -1 -> 1
         double requested_speed = control_signal * speed_gain;
-        int int_speed = static_cast<int>(128*requested_speed);
+        cout << "Requested speed: " << requested_speed << endl;
+        int int_speed = static_cast<int>(requested_speed);
         
-        cout << "Calculated speed after sign magnitude: " << int_speed << endl;
         return int_speed;
     }
 }
@@ -137,75 +192,11 @@ void Pickup::update_integral_distance(double demanded_distance){
     gettimeofday(&currentTime, NULL);
     
     double diff_time = diff_ms(currentTime, last_reading)/1000;
+    last_reading = currentTime;
+    
     cout << "Difference in time (s): " << diff_time << endl;
     
     integral_distance += (diff_time * (demanded_distance - distance_from_shelf));
     cout << "Integral distance: " << integral_distance << endl;
 }
-
-bool Pickup::set_distance_to_shelf(double demanded_distance) {
-    time_t start_time = time(NULL);
-    int wheel_speed;
-    
-    //TODO: Check it can reach required distance in time
-    while(difftime(time(NULL), start_time) < 10){
-        wheel_speed = set_wheel_speed(demanded_distance);
-        cout << "Demanded wheel speed" << wheel_speed << endl;
-        motors_interface->set_drive_motor_speed(wheel_speed, wheel_speed);
-        
-        if(wheel_speed != 0){
-            continue;
-        }
-        else{
-            cout << "Reached demanded_distance" << endl;
-            return true;
-        } 
-    }
-    //Hasn't reached required distance
-    motors_interface->set_drive_motor_speed(0, 0);
-    return false;
-}
-
-bool Pickup::rotate_wheel(double angle_in_degrees, bool final_drop){
-    
-    cout << "Started rotating wheel. Demanded angle = " << angle_in_degrees << endl;
-    
-    double angle_moved = 0;
-    double current_speed = 0;
-    double diffTime = 0;
-    int setRotationSpeed = 127;
-    
-    if(final_drop){
-		setRotationSpeed = 60;
-	}
-    
-    timeval time_last_speed_reading, current_time;
-    gettimeofday(&time_last_speed_reading, NULL);
-    
-    motors_interface->set_motor_speed(3, setRotationSpeed);
-    
-    while(angle_moved < angle_in_degrees){
-        
-        current_speed = motors_interface->MAX_ROTATION_SPEED * setRotationSpeed / 127;
-        
-        gettimeofday(&current_time, NULL);
-        
-        diffTime = diff_ms(current_time, last_reading)/1000;
-        
-        //Updating angles of crackers
-		identifier_interface->update_angle(current_speed * diffTime);
-		
-        angle_moved += current_speed * diffTime;
-        
-        cout << "Current angle: " << angle_moved << endl;
-        time_last_speed_reading = current_time;
-    }
-    cout << "Reached demanded angle." << endl;
-    motors_interface->set_motor_speed(3, 0);
-    return true;
-}
-
-bool Pickup::rotate_wheel_for_dropoff(){
-	cout << "Doing final rotation to drop off the cracker" << endl;
-	return rotate_wheel(60, true);
-}
+*/

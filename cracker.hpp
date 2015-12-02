@@ -14,7 +14,7 @@
 using namespace std;
 
 enum cracker_type { RED, BLACK, WOOD, WHITE, UNKNOWN };
-const static char* cracker_type_strings[] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
+//const static char* cracker_type_strings[] = {"RED", "BLACK", "WOOD", "WHITE", "UNKNOWN"};
 
 class Cracker {
 public:
