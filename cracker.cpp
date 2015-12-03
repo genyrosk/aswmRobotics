@@ -24,8 +24,8 @@ Cracker::Cracker(double angle){
 
 int Cracker::calculate_probabilities(double peak_value){
     //TODO: Calculate these values from experiments (Again Red, Black, Wood, White)
-    double mean[] = {2.235,2.718,1.923,1.401};
-    double std_deviation[] = {0.10437,0.17504,0.04738,0.14027};
+    double mean[] = {2.124,2.72,2.310,2.000};
+    double std_deviation[] = {0.1047,0.1504,0.138,0.1407};
     
     for (int i = 0; i < 4; i++) {
         double normalised_reading = fabs(peak_value - mean[i]) / std_deviation[i];

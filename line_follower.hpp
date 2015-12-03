@@ -26,8 +26,8 @@ public:
 	double proportional_gain;
 	static const double integral_gain = 10;
     int left_wheel_speed;
-    
     int right_wheel_speed;
+    int wheel_speed_offset;
 	int current_status;
     bool negative_ramp;
     bool junction_detected;

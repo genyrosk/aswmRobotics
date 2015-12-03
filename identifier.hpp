@@ -31,6 +31,7 @@ public:
     
     void id_procedure();
     void update_angle(double delta_angle);
+    double get_cracker_angle(int cracker_index);
     
 private:
     PeakDetection peak_detector;

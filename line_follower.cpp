@@ -27,6 +27,7 @@ LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPt
     
     proportional_gain = 20;
     left_wheel_speed = 100;
+    wheel_speed_offset = 0;
     
     motors_interface = motorsPtr;
     micro_interface = microPtr;
@@ -34,10 +35,11 @@ LineFollower::LineFollower(Motors *motorsPtr, MicrocontrollerInterface * microPt
 }
 
 int LineFollower::reverse_after_pickup(){
+	cout << "Reversing after pickup" << endl;
+	
 	get_path_status();
 	
-	
-	motors_interface->set_drive_motor_speed( -128, -128);
+	motors_interface->set_drive_motor_speed( -80, -80);
 	
 	while(current_status != 7){
 		get_path_status();
@@ -107,10 +109,10 @@ void LineFollower::get_path_status(){
             proportional_error = 0;
             negative_ramp = !negative_ramp;
             
-            if(left_wheel_speed > 90){
-				left_wheel_speed = 89;
+            if(wheel_speed_offset == 0){
+				wheel_speed_offset = -38;
 			} else {
-				left_wheel_speed = 100;
+				wheel_speed_offset = 0;
 			}
             
             //change ramp time
@@ -175,14 +177,14 @@ int LineFollower::follow_line(double distance, bool toJunction, double stop_afte
 	
 	cout << "Following line for distance: " << distance << ". Current status: " << current_status <<  ". Stop after distance: " << stop_after_distance << endl;
 	
-	timeval lastReadingTime;
-	timeval currentTime;
+	timeval lastReadingTime, currentTime;
 	gettimeofday(&lastReadingTime, NULL);
 	
 	double currentMeanSpeed = 0;
 	double time_in_s = 0;
 	double delta_distance = 0;
 	double distance_after_junction = 0;
+	int right_difference = 0;
 	
 	while(distance_moved < 1.25 * distance){
 		get_path_status();
@@ -217,10 +219,17 @@ int LineFollower::follow_line(double distance, bool toJunction, double stop_afte
 			}	
 		}
 		
+        right_difference = static_cast<int>(proportional_error * proportional_gain + integral_error * integral_gain);
+        if(right_difference < 0){
+			left_wheel_speed = 127;
+			right_wheel_speed = 127 + right_difference;
+		}
+		else{
+			left_wheel_speed = 127 - right_difference;
+			right_wheel_speed = 127;
+		}
         
-		right_wheel_speed = static_cast<int>(left_wheel_speed + proportional_error * proportional_gain + integral_error * integral_gain);
-        
-		motors_interface->set_drive_motor_speed(left_wheel_speed, right_wheel_speed);
+		motors_interface->set_drive_motor_speed(left_wheel_speed + wheel_speed_offset, right_wheel_speed + wheel_speed_offset);
 		
 		cout << "proportional error = " << proportional_error << " and integral error = " << integral_error << endl;
 		cout << "left speed = " << left_wheel_speed << " and right speed = " << right_wheel_speed << endl << endl;
@@ -257,7 +266,7 @@ void LineFollower::turn_degrees(double degrees){
 	cout << "Turning " << degrees << " degrees." << endl;
 
 	double abs_degrees = abs(degrees);
-	int speed = 70;
+	int speed = 75;
 	
 	int delayTime = static_cast<int>(1000 * abs_degrees / ((speed * motors_interface->MAX_SPEED * 180) / (127 * 8.2 * M_PI)));
     

@@ -31,19 +31,9 @@ ostringstream oss;
 int main (){
 	
 	//Save cout to file for debugging
-	//ofstream out("debug.txt");
-	//cout.rdbuf(out.rdbuf());
-	
-	/*
-	RobotSettings robotSettings;
-	if(robotSettings.load() == 0){
-		cout << "Settings loaded successfully" << endl;
-	}
-	else{
-		cout << "Settings not found" << endl;
-	}
-	*/
-	
+	ofstream out("debug.txt");
+	cout.rdbuf(out.rdbuf());
+
 	//Setting up interfaces
 	Idp idp;
 	Motors motors = Motors(&idp);	
@@ -55,114 +45,138 @@ int main (){
 	}
 	
 	// ------- TEST CODE -------
-	
-	/*
-    //LINE FOLLOWING TESTS:
-	
-	if(linefollower.follow_line(50.0, false, 10.0)){
-		cout << "Reached set distance, stopping and turning..." << endl;
-		linefollower.turn_degrees(-45.0);
-		linefollower.follow_line(40, true, 10.0);
-	}
-	
-	cout << "current status: " << linefollower.current_status <<". Negative ramp: " << linefollower.negative_ramp << endl;
-	
-	*/
-	cout << "ADC0: " << analogueInterface.readADC(0) <<  "ADC1: " << analogueInterface.readADC(1) << "ADC2: " << analogueInterface.readADC(2) <<"ADC3: " << analogueInterface.readADC(3) << endl;
-	cout << "Moving to distance 20cm" << endl;
+
 	LineFollower linefollower = LineFollower(&motors, &microInterface, &analogueInterface);
 	microInterface.extend_actuator();
 	Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
     Pickup pickup = Pickup(&motors, &microInterface, &identifier, &linefollower);
 	Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
-    /*
-    if(linefollower.follow_line(10.0, true)){
-		if(linefollower.follow_line(19.0, true)){
-			if(linefollower.follow_line(64.0, true)){
-				if(linefollower.follow_line(84.0, true, 30)){
-					
-				}
-			}
-		}
-	}
-	*/
 	
+	// ---------------- COMPETITION CODE ----------------
+	
+	RobotSettings robotSettings;
+      if(robotSettings.load() == 0){
+        cout << "Settings loaded successfully" << endl;
+      }
+      else{
+        cout << "Settings not found" << endl;
+      }
+      //Get how many seconds passed since the competition started
+      //TODO: Implement timing method
+      long current_time = static_cast<long>(time(NULL));
+      long seconds_passed = current_time - robotSettings.start_time;
+      
+	
+	
+	// perform pickup + back away a little
+	//nav.go_to_dock();
+	cout << "Retracting actuator" << endl;
+	//microInterface.stop_request_crackers();
+	//microInterface.retract_actuator();
+	//delay(2000);
+	
+	
+	// ------- LAB CODE -- KEEP AWAY -- RADIOACTIVE -------
 	/*
 	
-	linefollower.follow_line(30.0, false);
-	linefollower.follow_line(30.0, false);
-	linefollower.follow_line(100.0, false);
+	identifier.id_procedure();
+	
+	
+	linefollower.follow_line(80, false, 4, true);
+	pickup.dropoff(RED);
+	pickup.dropoff(BLACK);
+	pickup.dropoff(WOOD);
+	//return 1;
 	*/
-	// perform pickup + back away a little
+	// ------- REAL CODE AHEAD -- PEOPLE GONNA DIE -------
+	
+	
+	microInterface.extend_actuator();
+	
+	// go to dock area
+	linefollower.follow_line(80, false, 4, true);
 	pickup.perform_pickup(3);
-    
-	// turn left towards negative ramp
-    linefollower.follow_line(170.0, false,4,true);
+	identifier.id_procedure();
+	
+	
+	
+	// turn left towards negative ramp + go to d3
 	nav.turn_left();
-    linefollower.follow_line(170.0, false,4,true);
-    linefollower.follow_line(60.0, false,4,true);
-    linefollower.follow_line(60.0, false,4,true);
+	nav.deliver_to_d3();
 	
+	int nCrackers = identifier.n_crackers_present(WHITE);
+		if(nCrackers > 0){
+			robotSettings.n_crackers_delivered += pickup.dropoff(WHITE);
+    }
 	
-	pickup.dropoff(100);
+	// turn left again + go to d1
+	nav.turn_left();
+	nav.nav_to_d1();
+	delay(1000);
 	
+	// go straight to d2
+	//linefollower.turn_degrees(-90);
+	//linefollower.turn(90, 60);
+	linefollower.follow_line(10, true);
+	linefollower.follow_line(70, false, 4, true);
+	delay(500);
 	
+	// turn left go down the ramp
+	nav.turn_left();
+	linefollower.follow_line(190, false, 4, true);
+	delay(500);
+	linefollower.follow_line(15, false);
+	delay(500);
+	//nav.turn_left();
 	
+	// arrived down to the starting box => turn left 
+	linefollower.turn_degrees(-60.0);
+	delay(500);
+    linefollower.follow_line(20.0, true);
+    delay(500);
+    linefollower.turn_degrees(-20.0);
+    delay(500);
+    linefollower.follow_line(20.0, true);
+    delay(500);
+	linefollower.follow_line(80, true);
+	delay(500);
+	
+	// turn left to towards d4 (central drop off)
+	linefollower.turn(-90,70);
+	delay(500);
+	linefollower.follow_line(100, true);
+	delay(500);
+	linefollower.turn(90,70);
+	delay(500);
+	
+	// drop off into d4
+	// come back to base
+	linefollower.turn(90,70);
+	delay(500);
+	linefollower.follow_line(100, false, 0, true);
+	delay(500);
+	nav.turn_left();
+	linefollower.follow_line(100, false, 0, true); // should be in front of the dock now
+	
+	//delay(1000);
+	//
+	//linefollower.follow_line(80, true);
+	//linefollower.follow_line(10, false);
+	//delay(1000);
+	//
+	//
+	
+	//pickup.dropoff(100);
+    
 
     //READ FROM LDR
-    //analogueInterface.readLDR();
-	
-	
+    //cout << "LDR reading" << analogueInterface.readLDR() << endl;
+    
     /*
-    if(linefollower.follow_line(50, true, 30)){	
-		cout << "Picking up..." << endl;
-		pickup.perform_pickup(3);
-	}
-	*/
-	
-	//linefollower.follow_line(50.0, true, 4.0);
-	
-	/*
-	for(int i=0; i<1000; i++){
-		analogueInterface.get_distance();
-		delay(1000);
-	}
-	*/
-	
-	
-    /*
-    //FOLLOW SET DISTANCE
-    if(linefollower.follow_line(16.0, false)){
-		cout << "Reached set distance, stopping and turning..." << endl;
-		linefollower.turn_degrees(-90.0);
-	}
-	*/
-	
-	
-    //TURN SET ANGLE
-    /*
-    linefollower.follow_line(30.0, true,0,true);
-    linefollower.follow_line(30.0, true,0,true);
-    linefollower.turn_degrees(-75.0);
-    linefollower.follow_line(100.0, false);
+   
     */
-
-	//Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
-	//linefollower.follow_line(50, true);
-	//nav.go_to_dock();
- 
-    
-    //PICKUP TESTS:
-    //Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
-    
-    
-    //STOP AT DISTANCE
     
     /*
-    //ALIGNS CORRECTLY
-    pickup.perform_pickup();
-    
-    
     
     //DROPOFF TESTS:
     
@@ -192,31 +206,25 @@ int main (){
     
     
     */
-
-    
-    
-    //ANALOGUE TESTS:
-    
-    
-    //READ DISTANCE
-   //
-    //analogueInterface.get_distance();
-	    /*
-	//Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
-	 
-	
-	* //TESTING DRIVE MOTORS:
-	//motors.set_ramp_time(50);
-	//cout << "Setting motor speeds."<< endl;
-	//motors.set_drive_motor_speed(60,127);
-	//delay(10000);
-	
-	*/
     
     
      // ---------------- COMPETITION CODE ----------------
      
      /*
+      
+      
+      RobotSettings robotSettings;
+      if(robotSettings.load() == 0){
+        cout << "Settings loaded successfully" << endl;
+      }
+      else{
+        cout << "Settings not found" << endl;
+      }
+      //Get how many seconds passed since the competition started
+      //TODO: Implement timing method
+      long current_time = static_cast<long>(time(NULL);
+      long seconds_passed = current_time - robotSettings.start_time;
+      
      Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
      Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
      Pickup pickup = Pickup(&motors, &analogueInterface, &microInterface, &identifier);
@@ -356,6 +364,100 @@ int main (){
     //motors.set_motor_speed(3,127);
     //delay(20000);
     //microInterface.extend_actuator();
+    
+    /*
+     //FOLLOW SET DISTANCE
+     if(linefollower.follow_line(16.0, false)){
+     cout << "Reached set distance, stopping and turning..." << endl;
+     linefollower.turn_degrees(-90.0);
+     }
+     */
+    
+    
+    //TURN SET ANGLE
+    /*
+     linefollower.follow_line(30.0, true,0,true);
+     linefollower.follow_line(30.0, true,0,true);
+     linefollower.turn_degrees(-75.0);
+     linefollower.follow_line(100.0, false);
+     */
+    
+    //Navigator nav = Navigator(&motors, &microInterface, &analogueInterface, &identifier);
+    //linefollower.follow_line(50, true);
+    //nav.go_to_dock();
+    
+    
+    //PICKUP TESTS:
+    //Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+    
+    
+    //STOP AT DISTANCE
+    
+    /*
+     //ALIGNS CORRECTLY
+     pickup.perform_pickup();
+     
+     //ANALOGUE TESTS:
+     
+     
+     //READ DISTANCE
+     //
+     //analogueInterface.get_distance();
+
+     //Identifier identifier = Identifier(&motors, &analogueInterface, &microInterface);
+     
+     
+     * //TESTING DRIVE MOTORS:
+     //motors.set_ramp_time(50);
+     //cout << "Setting motor speeds."<< endl;
+     //motors.set_drive_motor_speed(60,127);
+     //delay(10000);
+     
+     */
+    
+    
+    /*
+     if(linefollower.follow_line(50, true, 30)){
+     cout << "Picking up..." << endl;
+     pickup.perform_pickup(3);
+     }
+     */
+    
+    //linefollower.follow_line(50.0, true, 4.0);
+    
+    
+    
+    /*
+     for(int i=0; i<1000; i++){
+     analogueInterface.get_distance();
+     delay(1000);
+     }
+     */
+    
+    
+    /*
+     //LINE FOLLOWING TESTS:
+     
+     if(linefollower.follow_line(50.0, false, 10.0)){
+     cout << "Reached set distance, stopping and turning..." << endl;
+     linefollower.turn_degrees(-45.0);
+     linefollower.follow_line(40, true, 10.0);
+     }
+     
+     cout << "current status: " << linefollower.current_status <<". Negative ramp: " << linefollower.negative_ramp << endl;
+     
+     */
+     
+     // identification process 
+	/*
+	cout << "Starting rotation..." << endl;
+    motors.set_motor_speed(3,127);
+    for (int i = 0; i < 2000; i++) {
+        cout << analogueInterface.readLDR() << endl;
+        delay(10);
+    }
+    motors.set_motor_speed(3,0);
+    */
     
     cout << "Reached end of main" << endl;
 }

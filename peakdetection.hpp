@@ -23,6 +23,8 @@ using namespace std;
 class PeakDetection {
 public:
     PeakDetection();
+    
+    double backgroundMean, backgroundStdDeviation;
 
     ///As readings are taken from the ADC port, the function add_data_point should be called with an argument of the reading. This function will return an int to indicate what has been detected (1 for calibration, 2 for background reading, 3 for peak).
     string add_data_point(double reading);
@@ -37,7 +39,7 @@ public:
     void hysteresis(bool peakDetected);
     
 private:
-    double backgroundMean, backgroundStdDeviation, peakMean, reading1, reading2, nStdDeviations;
+    double peakMean, reading1, reading2, nStdDeviations;
     timeval peakDetectionTime;
     int readingLag, nReadings;
     bool peakBeingDetected;

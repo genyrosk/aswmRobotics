@@ -26,7 +26,16 @@ bool MicrocontrollerInterface::write(int output_byte){
 }
 
 int MicrocontrollerInterface::read(){
-	return idp->rlink.request(READ_PORT_4);
+	int requestResponse = idp->rlink.request(READ_PORT_4);
+	cout << "Reading from microcontroller, returned: " << requestResponse << endl;
+	if(requestResponse == -1){
+		link_err error = idp->rlink.get_err();
+		cout << "Error reading, code: "<< error << endl;
+		return -1;
+	}
+	else{
+		return requestResponse;
+	}
 }
 
 void MicrocontrollerInterface::indicate_lost(){
@@ -131,7 +140,7 @@ void MicrocontrollerInterface::indicate_type(bool led1on, bool led2on){
 	flash_leds(100);
 }
 
-void MicrocontrollerInterface::extend_actuator(){
+void MicrocontrollerInterface::retract_actuator(){
 	int current_status = read();
 	cout << "Extending actuator, current status: " << current_status << endl;
 	int output_byte = current_status bitor 0x8F;
@@ -139,7 +148,7 @@ void MicrocontrollerInterface::extend_actuator(){
 	cout << "Writing, output byte: " << output_byte << endl;
 	write(output_byte);
 }
-void MicrocontrollerInterface::retract_actuator(){
+void MicrocontrollerInterface::extend_actuator(){
 	int current_status = read();
 	cout << "Retracting actuator, current status: " << current_status << endl;
 	int output_byte = current_status bitand 0x7F;
@@ -169,7 +178,7 @@ double AnalogueInterface::readADC(int port){
             break;
         case 1:
         //LDR
-            request_output = idp->rlink.request(ADC1);
+            request_output = idp->rlink.request(ADC0);
             break;
 		case 2:
 			request_output = idp->rlink.request(ADC2);
@@ -184,7 +193,7 @@ double AnalogueInterface::readADC(int port){
 
 }
 
-
+/*
 ///Returns distance in cm from the distance detector 
 double AnalogueInterface::get_distance(){
     
@@ -219,16 +228,14 @@ double AnalogueInterface::get_distance(){
 		return 120;
 	}
 }
-
+*/
 
 Motors::Motors(Idp *idpPtr){
 	idp = idpPtr;
-	//TODO: Check these values again.
 	//Max speed of drive motors in cm/s
-	//MAX_SPEED = 6.59;
 	MAX_SPEED = 7.95;
 	//Max speed in degrees/s
-    MAX_ROTATION_SPEED=61.96;
+    MAX_ROTATION_SPEED=59.86;
 }
 
 void Motors::set_motor_speed(int motor, int speed){

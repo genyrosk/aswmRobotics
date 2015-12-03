@@ -11,45 +11,44 @@ Navigator::Navigator(Motors *motorsPtr, MicrocontrollerInterface * microPtr, Ana
 
 //Navigate to dock from start point
 bool Navigator::go_to_dock(){
-	if(linefollower.follow_line(19.0, true)){
-		if(linefollower.follow_line(19.0, true)){
-			if(linefollower.follow_line(64.0, true)){
-				if(linefollower.follow_line(84.0, true, 30)){
-					return true;
-				}
-			}
-		}
-	}
-	micro_interface->indicate_lost();
-	return false;
+	linefollower.follow_line(19.0, true);
+	linefollower.follow_line(19.0, true);
+	linefollower.follow_line(64.0, true);
+	linefollower.follow_line(84.0, false, 4, true);
+	return true;
+				
+	//micro_interface->indicate_lost();
+	//return false;
 }
 
 bool Navigator::reverse_after_pickup(){
-	return linefollower.reverse_after_pickup();
+	if(linefollower.reverse_after_pickup()){
+		return true;
+	}
+	else{
+		micro_interface->indicate_lost();
+		return false;
+	}
 }
 
 bool Navigator::deliver_to_d3(){
-	if(linefollower.turn(-90,127)){
-		if(linefollower.follow_line(185.0, true, 30)){
-            micro_interface->request_crackers();
-			return true;
-		}
-	}
-	//LOST!
-	micro_interface->indicate_lost();
-	return false;
+	linefollower.follow_line(185.0, false, 0, true);
+	delay(500);
+	linefollower.follow_line(40.0, false, 0, true);
+	delay(500);
+	linefollower.follow_line(40.0, false, 0, true);
+	delay(500);
+	linefollower.follow_line(40.0, false, 0, true);
+	delay(500);
+	micro_interface->request_crackers();
+	return true;
 }
 
 bool Navigator::nav_to_d1(){
 	//TODO: Measure distances, remember the distance to centre / 1.25
-	linefollower.turn_degrees(-45.0);
-	if(linefollower.follow_line(100.0, true)){
-		if(linefollower.follow_line(10.0, false)){
-			return true;
-		}
-	}
-	micro_interface->indicate_lost();
-	return false;
+	linefollower.follow_line(80.0, true);
+	linefollower.follow_line(10.0, false);
+	return true;
 }
 
 void Navigator::deliver_to_d1(){
@@ -57,18 +56,16 @@ void Navigator::deliver_to_d1(){
 }
 
 bool Navigator::return_after_d1(){
-	if(linefollower.reverse_after_pickup()){
-		if(linefollower.turn(90.0, 127)){
+	if(linefollower.turn(90.0, 60)){
 		return true;
-		}
 	}
 	micro_interface->indicate_lost();
 	return false;
 }
 
 bool Navigator::deliver_to_d2(){
-	if(linefollower.follow_line(50.0, true)){
-		if(linefollower.follow_line(70.0, true, 30)){
+	if(linefollower.follow_line(20.0, true)){
+		if(linefollower.follow_line(70.0, true, 4, true)){
 			return true;
 		}
 	}
@@ -77,17 +74,12 @@ bool Navigator::deliver_to_d2(){
 }
 
 bool Navigator::nav_to_d4(){
-	linefollower.turn_degrees(-45.0);
-	if(linefollower.follow_line(185.0, true)){
-		if(linefollower.follow_line(15.0, true,20)){
-			if(linefollower.turn(-90,127)){
-				if(linefollower.follow_line(19.0, true,20)){
-					if(linefollower.follow_line(64.0, true,20)){
-						return true;
-					}
-				}
-			}
-		}
+	if(linefollower.follow_line(185.0, true,4, true)){
+		linefollower.follow_line(15, false);
+		linefollower.turn_degrees(-60.0);
+		linefollower.follow_line(20.0, true);
+		linefollower.turn_degrees(-20.0);
+		linefollower.follow_line(20.0, true);
 	}
 	micro_interface->indicate_lost();
 	return false;
@@ -95,8 +87,8 @@ bool Navigator::nav_to_d4(){
 
 bool Navigator::deliver_to_d4(){
 	//TODO: Measure distances
-	if(linefollower.turn(-90,127)){
-		if(linefollower.follow_line(60.0, true,20)){
+	if(linefollower.turn(-90,60)){
+		if(linefollower.follow_line(60.0, true)){
 			if(linefollower.turn(90,127)){
 				return true;
 			}
@@ -107,12 +99,11 @@ bool Navigator::deliver_to_d4(){
 }
 
 bool Navigator::return_after_d4(){
-	linefollower.reverse_after_pickup();
-	if(linefollower.turn(90,127)){
-		if(linefollower.follow_line(60.0, true,20)){
-			if(linefollower.turn(-90,127)){
-				return true;
-			}	
+	if(linefollower.turn(90,60)){
+		if(linefollower.follow_line(60.0, true, 4, true)){
+			turn_left();
+			linefollower.follow_line(60.0, true, 4, true);
+			return true;
 		}
 	}
 	micro_interface->indicate_lost();
@@ -127,22 +118,11 @@ bool Navigator::return_dock(){
 	return false;
 }
 
-bool Navigator::test_nav(){
-	if(linefollower.follow_line(50.0, true,20)){
-		if(linefollower.turn(-90, 127)){
-			return true;
-		}
-	}
-	micro_interface->indicate_lost();
-	return false;
-}
-
 bool Navigator::turn_left(){
-	
 	linefollower.follow_line(6.0, false);
-    linefollower.turn_degrees(-45.0);
-    linefollower.follow_line(20.0, true);
+    linefollower.turn_degrees(-35.0);
+    linefollower.follow_line(30.0, true);
 	linefollower.reverse_after_pickup(3.5);
-    linefollower.turn_degrees(-50.0);
-
+    linefollower.turn(-60.0, 60);
+    return true;
 }

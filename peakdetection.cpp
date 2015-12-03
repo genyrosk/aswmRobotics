@@ -16,8 +16,8 @@ using namespace std;
 
 PeakDetection::PeakDetection(){
 	   
-    readingLag = 15;
-    nStdDeviations = 3.0;
+    readingLag = 2000;
+    nStdDeviations = 2.0;
     nReadings = 0;
     
     backgroundMean = 0.0;
@@ -40,7 +40,7 @@ void PeakDetection::reset_max_values(){
 }
 
 string PeakDetection::add_data_point(double dataPoint){
-    cout << "Adding data point to PeakDetectionClass = " << dataPoint << endl;
+    //cout << "Adding data point to PeakDetectionClass = " << dataPoint << endl;
     
     double currentMean = (dataPoint + reading1 + reading2)/3;
     reading2 = reading1;
@@ -48,7 +48,7 @@ string PeakDetection::add_data_point(double dataPoint){
     
     //First few readings must be taken before we can calculate if subsequent readings vary significantly
     if(nReadings < readingLag){
-		cout << "Calibration in progress. " << nReadings << " readings taken" << endl; 
+		//cout << "Calibration in progress. " << nReadings << " readings taken" << endl; 
 		update_mean_stdDeviation(dataPoint);
         return "CALIBRATING";
 	}
@@ -59,7 +59,7 @@ string PeakDetection::add_data_point(double dataPoint){
 		}
 		
 		//Process for dealing with background readings
-		if(!(abs(dataPoint - backgroundMean) > nStdDeviations * backgroundStdDeviation)){
+		if((dataPoint - backgroundMean) < nStdDeviations * backgroundStdDeviation){
 			update_mean_stdDeviation(dataPoint);
             hysteresis(false);
             return "BACKGROUNDREADING";
@@ -67,7 +67,7 @@ string PeakDetection::add_data_point(double dataPoint){
 		
 		//This is invoked when a peak has been detected. Note we dont want mean or stdDeviation to be altered from now on
 		else{
-            cout << "Peak detected! Value = " << dataPoint << endl;
+            //cout << "Peak detected! Value = " << dataPoint << endl;
             hysteresis(true);
             if(currentMean > peakMean){
                 peakMean = currentMean;
@@ -101,18 +101,22 @@ void PeakDetection::update_mean_stdDeviation(double dataPoint){
         backgroundStdDeviation = sqrt(variance);
     }
     nReadings++;
+    //cout << "Background mean: " << backgroundMean << ". Background std. deviation: " << backgroundStdDeviation << endl;
 }
 
 void PeakDetection::hysteresis(bool peakDetected){
-	cout << "Threshold before = " << backgroundMean + nStdDeviations * backgroundStdDeviation << endl;
     if(!peakBeingDetected && peakDetected){
-        nStdDeviations *= 2;
+        //cout << "Threshold before hysteresis = " << backgroundMean + nStdDeviations * backgroundStdDeviation << endl;
+        nStdDeviations /= 3;
         peakBeingDetected = true;
+        //cout << "Threshold after hysteresis = " << backgroundMean + nStdDeviations * backgroundStdDeviation << endl;
     }
     else if(peakBeingDetected && !peakDetected){
-        nStdDeviations /= 2;
+        //cout << "Threshold before hysteresis = " << backgroundMean + nStdDeviations * backgroundStdDeviation << endl;
+        nStdDeviations *= 3;
         peakBeingDetected = false;
+        //cout << "Threshold after hysteresis = " << backgroundMean + nStdDeviations * backgroundStdDeviation << endl;
     }
-    cout << "Threshold after = " << backgroundMean + nStdDeviations * backgroundStdDeviation << endl;
+    
 }
 // modify PeakDetection class methods
