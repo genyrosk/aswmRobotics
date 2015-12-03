@@ -80,7 +80,9 @@ int Pickup::dropoff(cracker_type type){
 		if(identifier_interface->crackers[i].type == type){
             
             cout << "Types match! Starting drop off sequence... " << endl;
-            
+            // approach the box
+			linefollower_interface->follow_line(5,false);
+			
 			cracker_angle = static_cast<int>(identifier_interface->get_cracker_angle(i));
             cout << "Cracker angle = " << cracker_angle << endl;
             
@@ -90,7 +92,11 @@ int Pickup::dropoff(cracker_type type){
 			
 			cout << "Rotating angle: " << 360 - cracker_angle << endl;
 			dropoff(360 - cracker_angle);
-
+			
+			
+			// back away to junction
+			linefollower_interface->reverse_after_pickup();
+			
             nCrackersDelivered++;
 		}
 	}

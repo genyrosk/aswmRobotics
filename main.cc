@@ -83,18 +83,21 @@ int main (){
 	
 	
 	linefollower.follow_line(80, false, 4, true);
-	pickup.dropoff(RED);
+	pickup.dropoff(WHITE);
 	pickup.dropoff(BLACK);
+	pickup.dropoff(RED);
 	pickup.dropoff(WOOD);
 	//return 1;
 	*/
 	// ------- REAL CODE AHEAD -- PEOPLE GONNA DIE -------
 	
 	
+	
 	microInterface.extend_actuator();
 	
 	// go to dock area
-	linefollower.follow_line(80, false, 4, true);
+	linefollower.follow_line(80, false, 0, true);
+	linefollower.follow_line(80, false, 0, true);
 	pickup.perform_pickup(3);
 	identifier.id_procedure();
 	
@@ -103,6 +106,8 @@ int main (){
 	// turn left towards negative ramp + go to d3
 	nav.turn_left();
 	nav.deliver_to_d3();
+	
+	pickup.dropoff(WHITE);
 	
 	int nCrackers = identifier.n_crackers_present(WHITE);
 		if(nCrackers > 0){
@@ -114,12 +119,16 @@ int main (){
 	nav.nav_to_d1();
 	delay(1000);
 	
+	pickup.dropoff(BLACK);
+	
 	// go straight to d2
 	//linefollower.turn_degrees(-90);
 	//linefollower.turn(90, 60);
 	linefollower.follow_line(10, true);
 	linefollower.follow_line(70, false, 4, true);
 	delay(500);
+	
+	pickup.dropoff(RED);
 	
 	// turn left go down the ramp
 	nav.turn_left();
@@ -144,6 +153,9 @@ int main (){
 	// turn left to towards d4 (central drop off)
 	linefollower.turn(-90,70);
 	delay(500);
+	
+	pickup.dropoff(WOOD);
+	
 	linefollower.follow_line(100, true);
 	delay(500);
 	linefollower.turn(90,70);
@@ -157,6 +169,10 @@ int main (){
 	delay(500);
 	nav.turn_left();
 	linefollower.follow_line(100, false, 0, true); // should be in front of the dock now
+
+
+	
+	
 	
 	//delay(1000);
 	//
